@@ -1,0 +1,13 @@
+name: "💡 To do"
+description: 해야 할 것이 생겼어요
+title: "💡 "
+
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Summary"
+      description: 해야 할 것을 입력해주세요
+      placeholder: 로그인을 구현해야 돼요
+    validations:
+      required: true
