@@ -37,8 +37,22 @@ function ProfilePage() {
 
   const handlePetRegistration = (e) => {
     e.preventDefault();
-    const petData = { petName, birthDate, gender };
 
+    // gender를 true/false로 변환
+    const genderBoolean = gender === "암컷" ? true : false;
+
+    // 서버로 보낼 데이터 객체 생성
+    const petData = {
+      petName,
+      birthDate, // "YYYY-MM-DD" 형식이어야 함
+      gender: genderBoolean, // Boolean 타입으로 설정
+      member: 2, // 현재는 member ID를 고정 값으로 설정 (로그인 구현 시 동적으로 설정 가능)
+    };
+
+    // 데이터를 서버로 전송하기 전, 확인
+    console.log("Sending pet data:", petData);
+
+    // 서버로 POST 요청
     fetch("http://localhost:8080/api/pets", {
       method: "POST",
       headers: {
@@ -47,7 +61,11 @@ function ProfilePage() {
       body: JSON.stringify(petData),
     })
       .then((response) => {
-        if (!response.ok) throw new Error("Failed to register pet");
+        if (!response.ok) {
+          return response.json().then((err) => {
+            throw new Error(`Failed to register pet: ${err.message}`);
+          });
+        }
         return response.json();
       })
       .then((data) => {
