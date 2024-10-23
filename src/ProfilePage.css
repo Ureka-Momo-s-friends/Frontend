@@ -1,0 +1,65 @@
+/* 페이지 전체 레이아웃 */
+.profile-container {
+  display: flex;
+  justify-content: center; /* 수평 중앙 정렬 */
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #f5f5f5;
+}
+
+/* 왼쪽 사용자 프로필 */
+.left-side {
+  flex: 3; /* 3대7 비율 중 왼쪽 */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* 좌측 정렬 */
+  justify-content: flex-start; /* 상단 정렬 */
+}
+
+/* 오른쪽 고양이 프로필 */
+.right-side {
+  flex: 7; /* 3대7 비율 중 오른쪽 */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* 가운데 정렬 */
+  background-color: #ffffff; /* 임시 배경색 */
+}
+
+/* 사용자 및 고양이 이미지 */
+.user-avatar {
+  width: 150px;
+  height: 150px;
+  background-color: #e0e0e0;
+  margin-bottom: 20px;
+  border-radius: 50%;
+}
+
+/* 정보 텍스트 */
+.info-label {
+  font-size: 20px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+/* 프로필 수정 버튼 */
+.profile-edit-button {
+  background-color: #9c9a9a;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px; /* 버튼 위쪽 여백 */
+  margin-left: 0; /* 기본적으로 왼쪽 여백 없음 */
+}
+
+.profile-edit-button:hover {
+  background-color: #7c7a7a;
+}
+
