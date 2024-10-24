@@ -30,23 +30,46 @@ function PetProfileUpdatePage() {
       });
   }, []);
 
+  const handleFileChange = (e, isEdit = false) => {
+    const file = e.target.files[0];
+    if (isEdit) {
+      setSelectedPet({ ...selectedPet, profileImgUrl: file });
+    } else {
+      setNewPet({ ...newPet, profileImgUrl: file });
+    }
+  };
+
   const handleSaveChanges = (e) => {
     e.preventDefault();
+    const formData = new FormData();
+
+    // gender를 Boolean 타입으로 변환
     const genderBoolean = selectedPet.gender === "암컷" ? true : false;
 
-    const updatedPetData = {
+    // JSON 데이터를 FormData에 추가
+    const petData = {
       petName: selectedPet.petName,
       birthDate: selectedPet.birthDate,
       gender: genderBoolean,
-      member: 2, // 고정된 멤버 ID, 로그인 구현 시 변경 필요
+      member: 2, // 현재 고정된 멤버 ID
     };
+
+    formData.append(
+      "petData",
+      new Blob([JSON.stringify(petData)], { type: "application/json" }),
+    );
+
+    // 이미지가 있다면 추가
+    if (selectedPet.profileImgUrl) {
+      formData.append("profileImgUrl", selectedPet.profileImgUrl);
+    }
+
+    // FormData에 추가된 데이터를 확인하기 위한 콘솔 로그
+    console.log("FormData content:", formData.get("profileImgUrl"));
 
     fetch(`http://localhost:8080/api/pets/${selectedPet.id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedPetData),
+      body: formData,
     })
       .then((response) => {
         if (!response.ok) {
@@ -58,7 +81,7 @@ function PetProfileUpdatePage() {
         // 프로필 업데이트 후 새로 고침
         setPetList((prevList) =>
           prevList.map((pet) =>
-            pet.id === selectedPet.id ? { ...pet, ...updatedPetData } : pet,
+            pet.id === selectedPet.id ? { ...pet, ...petData } : pet,
           ),
         );
         setShowEditModal(false);
@@ -72,30 +95,46 @@ function PetProfileUpdatePage() {
     e.preventDefault();
     const genderBoolean = newPet.gender === "암컷" ? true : false;
 
+    const formData = new FormData();
     const petData = {
       petName: newPet.petName,
       birthDate: newPet.birthDate,
       gender: genderBoolean,
-      member: 2, // 현재 고정된 멤버 ID, 로그인 구현 시 동적으로 변경 필요
+      member: 2, // 고정된 멤버 ID
     };
+
+    // JSON 데이터를 FormData에 추가
+    formData.append(
+      "petData",
+      new Blob([JSON.stringify(petData)], { type: "application/json" }),
+    );
+
+    // 이미지가 선택된 경우에만 FormData에 추가
+    if (newPet.profileImgUrl && newPet.profileImgUrl instanceof File) {
+      formData.append("profileImgUrl", newPet.profileImgUrl);
+    }
 
     fetch("http://localhost:8080/api/pets", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(petData),
+      body: formData,
     })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to add pet");
         }
-        return response.json();
+        return response.json(); // 서버에서 반환된 새로운 pet 객체를 받아옴
       })
-      .then((newPet) => {
-        setPetList([...petList, newPet]);
+      .then((createdPet) => {
+        // 서버에서 받아온 새로운 pet 객체를 이용하여 상태를 업데이트
+        setPetList((prevList) => [...prevList, createdPet]);
         setShowAddModal(false);
-        setNewPet({ petName: "", birthDate: "", gender: "" });
+        // 데이터 초기화
+        setNewPet({
+          petName: "",
+          birthDate: "",
+          gender: "",
+          profileImgUrl: null,
+        });
       })
       .catch((error) => {
         console.error("Error adding pet:", error);
@@ -126,7 +165,6 @@ function PetProfileUpdatePage() {
           <Card>
             <Card.Body>
               <div className="info-section">
-                <h2>고양이 프로필</h2>
                 <Button
                   className="card-button"
                   variant="secondary"
@@ -137,6 +175,7 @@ function PetProfileUpdatePage() {
                       petName: pet.petName,
                       birthDate: pet.birthDate,
                       gender: pet.gender ? "암컷" : "수컷",
+                      profileImgUrl: null,
                     });
                     setShowEditModal(true);
                   }}
@@ -144,7 +183,8 @@ function PetProfileUpdatePage() {
                   수정
                 </Button>
               </div>
-              <p>{`${pet.petName} | ${pet.gender ? "암컷" : "수컷"} | ${pet.birthDate}`}</p>
+              <h6>{`${pet.petName}`}</h6>
+              <p>{`${pet.breed} | ${pet.birthDate} | ${pet.gender ? "암컷" : "수컷"}`}</p>
               <div
                 className="text-center mt-3"
                 onClick={() => handleDeletePet(pet.id)}
@@ -206,6 +246,13 @@ function PetProfileUpdatePage() {
                 <option value="수컷">수컷</option>
               </Form.Control>
             </Form.Group>
+            <Form.Group controlId="formProfileImg" className="mt-3">
+              <Form.Label>프로필 이미지</Form.Label>
+              <Form.Control
+                type="file"
+                onChange={(e) => handleFileChange(e, true)}
+              />
+            </Form.Group>
             <Button variant="primary" type="submit" className="mt-3" size="sm">
               저장
             </Button>
@@ -252,6 +299,13 @@ function PetProfileUpdatePage() {
                 <option value="암컷">암컷</option>
                 <option value="수컷">수컷</option>
               </Form.Control>
+            </Form.Group>
+            <Form.Group controlId="formNewProfileImg" className="mt-3">
+              <Form.Label>프로필 이미지</Form.Label>
+              <Form.Control
+                type="file"
+                onChange={(e) => handleFileChange(e, false)}
+              />
             </Form.Group>
             <Button variant="primary" type="submit" className="mt-3" size="sm">
               등록

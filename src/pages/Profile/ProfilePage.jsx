@@ -11,7 +11,9 @@ function ProfilePage() {
   const [error, setError] = useState(null);
   const [petData, setPetData] = useState([]); // 고양이 데이터를 저장할 state 추가
   const [selectedPet, setSelectedPet] = useState(null); // 선택한 고양이를 저장할 state
-  const [showModal, setShowModal] = useState(false); // 모달 표시 상태
+  const [selectedUser, setSelectedUser] = useState(null); // 선택한 사용자 저장할 state
+  const [showPetModal, setShowPetModal] = useState(false); // 고양이 모달 표시 상태
+  const [showUserModal, setShowUserModal] = useState(false); // 사용자 모달 표시 상태
 
   const handleProfileEdit = () => {
     navigate("/profileupdate");
@@ -21,14 +23,24 @@ function ProfilePage() {
     navigate("/petprofileupdate");
   };
 
-  const handleDoubleClick = (pet) => {
+  const handlePetClick = (pet) => {
     setSelectedPet(pet);
-    setShowModal(true);
+    setShowPetModal(true);
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const handleUserClick = () => {
+    setSelectedUser(userData);
+    setShowUserModal(true);
+  };
+
+  const handleClosePetModal = () => {
+    setShowPetModal(false);
     setSelectedPet(null);
+  };
+
+  const handleCloseUserModal = () => {
+    setShowUserModal(false);
+    setSelectedUser(null);
   };
 
   useEffect(() => {
@@ -75,9 +87,12 @@ function ProfilePage() {
   return (
     <Container className="profile-container mt-4">
       <Header />
+
       {/* User Profile Section */}
       <div className="card-section">
-        <Card>
+        <Card onClick={handleUserClick}>
+          {" "}
+          {/* 사용자 프로필 클릭 시 모달 표시 */}
           <Card.Body>
             <div className="info-section">
               <h2>프로필 정보</h2>
@@ -89,7 +104,24 @@ function ProfilePage() {
                 편집
               </Button>
             </div>
-            <p>{userData.username}</p>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {/* 유저 프로필 이미지 표시 */}
+              <img
+                src={`http://localhost:8080${userData.profileImgUrl}`}
+                alt="User Profile"
+                style={{
+                  width: "50px",
+                  height: "50px",
+                  borderRadius: "50%",
+                  marginRight: "15px",
+                }}
+              />
+              <div>
+                <p style={{ margin: 0, fontWeight: "bold" }}>
+                  {userData.username}
+                </p>
+              </div>
+            </div>
           </Card.Body>
         </Card>
       </div>
@@ -112,11 +144,32 @@ function ProfilePage() {
               {petData.map((pet) => (
                 <ListGroup.Item
                   key={pet.id}
-                  onDoubleClick={() => handleDoubleClick(pet)}
-                  style={{ cursor: "pointer" }}
+                  onClick={() => handlePetClick(pet)}
+                  style={{
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
                 >
-                  이름: {pet.petName} | 종: {pet.breed || "알 수 없음"} |{" "}
-                  {pet.birthDate}
+                  {/* 고양이 프로필 이미지 표시 */}
+                  <img
+                    src={`http://localhost:8080${pet.profileImgUrl}`}
+                    alt="Pet Profile"
+                    style={{
+                      width: "50px",
+                      height: "50px",
+                      borderRadius: "50%",
+                      marginRight: "15px",
+                    }}
+                  />
+                  <div>
+                    <p style={{ margin: 0, fontWeight: "bold" }}>
+                      {pet.petName}
+                    </p>
+                    <p style={{ margin: 0, color: "#888" }}>
+                      {pet.breed || "알 수 없음"}
+                    </p>
+                  </div>
                 </ListGroup.Item>
               ))}
             </ListGroup>
@@ -125,13 +178,19 @@ function ProfilePage() {
       </div>
 
       {/* Pet Details Modal */}
-      <Modal show={showModal} onHide={handleCloseModal}>
+      <Modal show={showPetModal} onHide={handleClosePetModal}>
         <Modal.Header closeButton>
           <Modal.Title>고양이 상세 정보</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {selectedPet && (
             <div>
+              {/* 선택한 고양이 이미지 표시 */}
+              <img
+                src={`http://localhost:8080${selectedPet.profileImgUrl}`}
+                alt="Selected Pet"
+                style={{ width: "80px", height: "80px", borderRadius: "50%" }}
+              />
               <p>이름: {selectedPet.petName}</p>
               <p>종: {selectedPet.breed || "알 수 없음"}</p>
               <p>성별: {selectedPet.gender ? "암컷" : "수컷"}</p>
@@ -140,7 +199,33 @@ function ProfilePage() {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
+          <Button variant="secondary" onClick={handleClosePetModal}>
+            닫기
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* User Details Modal */}
+      <Modal show={showUserModal} onHide={handleCloseUserModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>사용자 상세 정보</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedUser && (
+            <div>
+              {/* 선택한 사용자 이미지 표시 */}
+              <img
+                src={`http://localhost:8080${selectedUser.profileImgUrl}`}
+                alt="Selected User"
+                style={{ width: "80px", height: "80px", borderRadius: "50%" }}
+              />
+              <p>이름: {selectedUser.username}</p>
+              <p>연락처: {selectedUser.contact}</p>
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseUserModal}>
             닫기
           </Button>
         </Modal.Footer>
