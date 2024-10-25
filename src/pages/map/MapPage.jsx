@@ -6,27 +6,34 @@ const MapPage = () => {
   const [isHovered1, setIsHovered1] = useState(false);
 
   useEffect(() => {
+    // .env 파일에서 API 키 가져오기
+    const kakaoApiKey = process.env.REACT_APP_KAKAO_MAP_API_KEY;
+
+    // 카카오맵 API 스크립트를 동적으로 추가
     const script = document.createElement("script");
-    script.src =
-      "//dapi.kakao.com/v2/maps/sdk.js?appkey=bc8bb3ad17d2d029b002292dc9ca5d78&libraries=services&autoload=false";
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoApiKey}&libraries=services&autoload=false`;
     script.async = true;
 
     script.onload = () => {
+      // 카카오맵 로드 후 위치 정보 가져오기
       window.kakao.maps.load(() => {
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const userLat = position.coords.latitude;
             const userLng = position.coords.longitude;
 
+            // 지도의 컨테이너와 옵션 설정
             const container = document.getElementById("map");
             const options = {
               center: new window.kakao.maps.LatLng(userLat, userLng),
               level: 3,
             };
 
+            // 지도 생성 및 초기 설정
             const mapInstance = new window.kakao.maps.Map(container, options);
             setMap(mapInstance);
 
+            // 현재 위치에 마커 추가
             const markerPosition = new window.kakao.maps.LatLng(
               userLat,
               userLng,
@@ -36,11 +43,11 @@ const MapPage = () => {
               map: mapInstance,
             });
 
+            // 마커 위에 인포윈도우 표시
             const infowindowContent = `
               <div style="width: 147px; padding: 7px; text-align: center; font-size: 12px; background: #fff; border: 1px solid #ccc; border-radius: 5px;">
                 <small class="text-muted">현재 위치</small>
               </div>`;
-
             const infowindow = new window.kakao.maps.InfoWindow({
               content: infowindowContent,
             });
@@ -48,6 +55,7 @@ const MapPage = () => {
           },
           (error) => {
             console.error("Geolocation error:", error);
+            // 위치 정보 실패 시 디폴트 위치 설정
             const defaultPosition = new window.kakao.maps.LatLng(
               33.450701,
               126.570667,
@@ -65,8 +73,14 @@ const MapPage = () => {
     };
 
     document.head.appendChild(script);
+
+    // 스크립트 제거
+    return () => {
+      document.head.removeChild(script);
+    };
   }, []);
 
+  // 외부 보호소 목록으로 이동
   const goToShelterList = () => {
     window.open(
       "https://www.animal.go.kr/front/awtis/institution/institutionList.do?menuNo=1000000059",
@@ -74,6 +88,7 @@ const MapPage = () => {
     );
   };
 
+  // 스타일 객체
   const styles = {
     mapPage: {
       width: "90%",

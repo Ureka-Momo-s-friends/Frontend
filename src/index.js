@@ -6,13 +6,16 @@ import { RecoilRoot } from "recoil";
 import GlobalStyle from "./styles/GlobalStyle";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
+// .env 파일에서 clientId 불러오기
+const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
     <RecoilRoot>
       <GlobalStyle />
-      <GoogleOAuthProvider clientId="307131914161-mp331ecodiej5fcbi3sv91gk6bj0f80k.apps.googleusercontent.com">
+      <GoogleOAuthProvider clientId={googleClientId}>
         <App />
       </GoogleOAuthProvider>
     </RecoilRoot>
