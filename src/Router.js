@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { HomePage } from "./pages";
-import { MapPage } from "./pages";import ProfilePage from "./pages/Profile/ProfilePage";
+import { MapPage } from "./pages";
+import ProfilePage from "./pages/Profile/ProfilePage";
 import ProfileUpdatePage from "./pages/Profile/ProfileUpdatePage";
 import PetProfileUpdatePage from "./pages/Profile/PetProfileUpdatePage";
 import "./ProfilePage.css";
