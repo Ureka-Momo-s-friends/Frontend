@@ -1,6 +1,6 @@
-import React from 'react';
-import * as S from './style';
-import { CartIcon, CatIcon, HomeIcon, UserIcon } from 'assets/svgs';
+import React from "react";
+import * as S from "./style";
+import { CartIcon, CatIcon, HomeIcon, UserIcon } from "assets/svgs";
 
 const MenuItem = ({ link, children }) => {
   return (

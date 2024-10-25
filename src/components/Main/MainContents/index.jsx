@@ -1,5 +1,5 @@
-import React from 'react';
-import * as S from './style';
+import React from "react";
+import * as S from "./style";
 
 const MainContents = () => {
   return (
@@ -10,8 +10,8 @@ const MainContents = () => {
             <img
               src="img/categoryimg/cateitem.png"
               alt="사료"
-              width={'40px'}
-              height={'70px'}
+              width={"40px"}
+              height={"70px"}
             />
           </div>
           <p>사료</p>
@@ -21,8 +21,8 @@ const MainContents = () => {
             <img
               src="img/categoryimg/cateitem2.png"
               alt="간식"
-              width={'40px'}
-              height={'70px'}
+              width={"40px"}
+              height={"70px"}
             />
           </div>
           <p>캔/간식</p>
@@ -32,8 +32,8 @@ const MainContents = () => {
             <img
               src="img/categoryimg/cateitem3.png"
               alt="모래"
-              width={'80px'}
-              height={'70px'}
+              width={"80px"}
+              height={"70px"}
             />
           </div>
           <p>모래/탈취제</p>
@@ -43,8 +43,8 @@ const MainContents = () => {
             <img
               src="img/categoryimg/cateitem4.png"
               alt="스크래쳐"
-              width={'80px'}
-              height={'50px'}
+              width={"80px"}
+              height={"50px"}
             />
           </div>
           <p>
