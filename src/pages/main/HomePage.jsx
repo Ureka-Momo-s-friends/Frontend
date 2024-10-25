@@ -4,6 +4,7 @@ import Header from "components/Main/Header";
 import MainContents from "components/Main/MainContents";
 import Bottombar from "components/Main/Bottombar";
 import Login from "../Login";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   display: flex;
