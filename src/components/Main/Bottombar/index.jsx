@@ -13,7 +13,7 @@ const MenuItem = ({ link, children }) => {
 const Bottombar = () => {
   return (
     <S.Layer>
-      <MenuItem link="/cat">
+      <MenuItem link="/MapPage">
         <CatIcon />
         <p>길냥이</p>
       </MenuItem>

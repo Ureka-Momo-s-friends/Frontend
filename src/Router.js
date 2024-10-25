@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { HomePage } from "./pages";
-import ProfilePage from "./pages/Profile/ProfilePage";
+import { MapPage } from "./pages";import ProfilePage from "./pages/Profile/ProfilePage";
 import ProfileUpdatePage from "./pages/Profile/ProfileUpdatePage";
 import PetProfileUpdatePage from "./pages/Profile/PetProfileUpdatePage";
 import "./ProfilePage.css";
@@ -10,6 +10,7 @@ const Router = () => {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
+      <Route path="/map" element={<MapPage />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/profileupdate" element={<ProfileUpdatePage />} />
       <Route path="/petprofileupdate" element={<PetProfileUpdatePage />} />
