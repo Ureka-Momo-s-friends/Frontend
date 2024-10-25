@@ -11,8 +11,17 @@ function ProfileUpdatePage() {
   const [newContact, setNewContact] = useState("");
 
   useEffect(() => {
+    // 현재 로그인된 사용자의 정보를 localStorage에서 가져오기
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+    console.log("Logged in user:", loggedInUser);
+
+    if (!loggedInUser || !loggedInUser.id) {
+      console.error("로그인된 사용자가 없습니다.");
+      return;
+    }
+
     // API 호출을 통해 사용자 데이터 불러오기
-    fetch("http://localhost:8080/api/members/2")
+    fetch(`http://localhost:8080/api/members/${loggedInUser.id}`)
       .then((response) => response.json())
       .then((data) => {
         setUserData(data);
@@ -27,13 +36,22 @@ function ProfileUpdatePage() {
   const handleSaveChanges = (e) => {
     e.preventDefault();
 
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+    if (!loggedInUser || !loggedInUser.id) {
+      console.error("로그인된 사용자가 없습니다.");
+      return;
+    }
+
     // API 호출을 통해 수정된 데이터 저장
     const updatedData = {
       username: newName,
       contact: newContact,
     };
 
-    fetch(`http://localhost:8080/api/members/2`, {
+    // 콘솔 로그 추가
+    console.log("Updated Data:", updatedData);
+
+    fetch(`http://localhost:8080/api/members/${loggedInUser.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

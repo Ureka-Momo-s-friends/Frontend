@@ -19,8 +19,15 @@ function PetProfileUpdatePage() {
   });
 
   useEffect(() => {
-    // API 호출을 통해 전체 고양이 데이터 불러오기
-    fetch("http://localhost:8080/api/pets")
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+
+    if (!loggedInUser || !loggedInUser.id) {
+      console.error("로그인된 사용자가 없습니다.");
+      return;
+    }
+
+    // API 호출을 통해 해당 사용자의 고양이 데이터 불러오기
+    fetch(`http://localhost:8080/api/pets/member/${loggedInUser.id}`)
       .then((response) => response.json())
       .then((data) => {
         setPetList(data);
@@ -43,15 +50,18 @@ function PetProfileUpdatePage() {
     e.preventDefault();
     const formData = new FormData();
 
-    // gender를 Boolean 타입으로 변환
-    const genderBoolean = selectedPet.gender === "암컷" ? true : false;
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+    if (!loggedInUser || !loggedInUser.id) {
+      console.error("로그인된 사용자가 없습니다.");
+      return;
+    }
 
-    // JSON 데이터를 FormData에 추가
+    const genderBoolean = selectedPet.gender === "암컷" ? true : false;
     const petData = {
       petName: selectedPet.petName,
       birthDate: selectedPet.birthDate,
       gender: genderBoolean,
-      member: 2, // 현재 고정된 멤버 ID
+      member: loggedInUser.id, // 현재 로그인된 사용자의 ID
     };
 
     formData.append(
@@ -59,13 +69,9 @@ function PetProfileUpdatePage() {
       new Blob([JSON.stringify(petData)], { type: "application/json" }),
     );
 
-    // 이미지가 있다면 추가
     if (selectedPet.profileImgUrl) {
       formData.append("profileImgUrl", selectedPet.profileImgUrl);
     }
-
-    // FormData에 추가된 데이터를 확인하기 위한 콘솔 로그
-    console.log("FormData content:", formData.get("profileImgUrl"));
 
     fetch(`http://localhost:8080/api/pets/${selectedPet.id}`, {
       method: "PUT",
@@ -78,7 +84,6 @@ function PetProfileUpdatePage() {
         return response.json();
       })
       .then(() => {
-        // 프로필 업데이트 후 새로 고침
         setPetList((prevList) =>
           prevList.map((pet) =>
             pet.id === selectedPet.id ? { ...pet, ...petData } : pet,
@@ -93,23 +98,27 @@ function PetProfileUpdatePage() {
 
   const handleAddPet = (e) => {
     e.preventDefault();
-    const genderBoolean = newPet.gender === "암컷" ? true : false;
-
     const formData = new FormData();
+
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+    if (!loggedInUser || !loggedInUser.id) {
+      console.error("로그인된 사용자가 없습니다.");
+      return;
+    }
+
+    const genderBoolean = newPet.gender === "암컷" ? true : false;
     const petData = {
       petName: newPet.petName,
       birthDate: newPet.birthDate,
       gender: genderBoolean,
-      member: 2, // 고정된 멤버 ID
+      member: loggedInUser.id, // 현재 로그인된 사용자의 ID
     };
 
-    // JSON 데이터를 FormData에 추가
     formData.append(
       "petData",
       new Blob([JSON.stringify(petData)], { type: "application/json" }),
     );
 
-    // 이미지가 선택된 경우에만 FormData에 추가
     if (newPet.profileImgUrl && newPet.profileImgUrl instanceof File) {
       formData.append("profileImgUrl", newPet.profileImgUrl);
     }
@@ -122,13 +131,11 @@ function PetProfileUpdatePage() {
         if (!response.ok) {
           throw new Error("Failed to add pet");
         }
-        return response.json(); // 서버에서 반환된 새로운 pet 객체를 받아옴
+        return response.json();
       })
       .then((createdPet) => {
-        // 서버에서 받아온 새로운 pet 객체를 이용하여 상태를 업데이트
         setPetList((prevList) => [...prevList, createdPet]);
         setShowAddModal(false);
-        // 데이터 초기화
         setNewPet({
           petName: "",
           birthDate: "",
@@ -149,7 +156,6 @@ function PetProfileUpdatePage() {
         if (!response.ok) {
           throw new Error("Failed to delete pet");
         }
-        // 성공 시 해당 고양이 제거
         setPetList(petList.filter((pet) => pet.id !== petId));
       })
       .catch((error) => {
@@ -171,7 +177,7 @@ function PetProfileUpdatePage() {
                   size="sm"
                   onClick={() => {
                     setSelectedPet({
-                      id: pet.id, // ID 포함
+                      id: pet.id,
                       petName: pet.petName,
                       birthDate: pet.birthDate,
                       gender: pet.gender ? "암컷" : "수컷",
@@ -184,7 +190,9 @@ function PetProfileUpdatePage() {
                 </Button>
               </div>
               <h6>{`${pet.petName}`}</h6>
-              <p>{`${pet.breed} | ${pet.birthDate} | ${pet.gender ? "암컷" : "수컷"}`}</p>
+              <p>{`${pet.breed} | ${pet.birthDate} | ${
+                pet.gender ? "암컷" : "수컷"
+              }`}</p>
               <div
                 className="text-center mt-3"
                 onClick={() => handleDeletePet(pet.id)}

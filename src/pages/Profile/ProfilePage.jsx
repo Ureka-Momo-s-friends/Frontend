@@ -44,8 +44,17 @@ function ProfilePage() {
   };
 
   useEffect(() => {
-    // 사용자 데이터 가져오기
-    fetch("http://localhost:8080/api/members/2")
+    // 현재 로그인한 사용자 정보를 localStorage에서 가져오기
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+
+    if (!loggedInUser || !loggedInUser.id) {
+      setError("로그인된 사용자가 없습니다.");
+      setLoading(false);
+      return;
+    }
+
+    // API 호출을 통해 사용자 데이터 가져오기
+    fetch(`http://localhost:8080/api/members/${loggedInUser.id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("데이터를 가져오는 데 실패했습니다.");
@@ -61,8 +70,8 @@ function ProfilePage() {
         setLoading(false);
       });
 
-    // 고양이 데이터 가져오기
-    fetch("http://localhost:8080/api/pets")
+    // 고양이 데이터 가져오기 - 현재 로그인한 사용자의 고양이만 가져옴
+    fetch(`http://localhost:8080/api/pets/member/${loggedInUser.id}`)
       .then((response) => response.json())
       .then((data) => {
         setPetData(data);
