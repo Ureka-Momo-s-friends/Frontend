@@ -1,8 +1,8 @@
-import { Global, css } from "@emotion/react";
+import { Global, css } from '@emotion/react';
 
 const baseStyle = css`
   * {
-    font-family: "Kodchasan-Light", "NanumSquareRoundExtraBold", "Sans-serif";
+    font-family: 'Kodchasan-Light', 'NanumSquareRoundExtraBold', 'Sans-serif';
   }
 
   * {
