@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import 'bootstrap-icons/font/bootstrap-icons.css'; // 부트스트랩 아이콘 CSS 불러오기
-import 'bootstrap/dist/css/bootstrap.min.css'; // 부트스트랩 CSS 불러오기
+import Bottombar from 'components/Main/Bottombar';
 
 const MapPage = () => {
   const [map, setMap] = useState(null);
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const [markers, setMarkers] = useState([]);
   const [isHovered1, setIsHovered1] = useState(false);
 
   useEffect(() => {
@@ -24,13 +21,12 @@ const MapPage = () => {
             const container = document.getElementById('map');
             const options = {
               center: new window.kakao.maps.LatLng(userLat, userLng),
-              level: 3, // 줌 레벨 설정
+              level: 3,
             };
 
             const mapInstance = new window.kakao.maps.Map(container, options);
-            setMap(mapInstance); // 지도 객체 저장
+            setMap(mapInstance);
 
-            // 현재 위치에 마커 표시
             const markerPosition = new window.kakao.maps.LatLng(
               userLat,
               userLng,
@@ -40,16 +36,15 @@ const MapPage = () => {
               map: mapInstance,
             });
 
-            // 간단한 부트스트랩 스타일 InfoWindow, 너비 조정 추가
             const infowindowContent = `
-            <div style="width: 147px; padding: 7px; text-align: center; font-size: 12px; background: #fff; border: 1px solid #ccc; border-radius: 5px;">
-            <small class="text-muted">현재 위치</small>
+              <div style="width: 147px; padding: 7px; text-align: center; font-size: 12px; background: #fff; border: 1px solid #ccc; border-radius: 5px;">
+                <small class="text-muted">현재 위치</small>
               </div>`;
 
             const infowindow = new window.kakao.maps.InfoWindow({
               content: infowindowContent,
             });
-            infowindow.open(mapInstance, marker); // 정보 창을 마커 위에 표시
+            infowindow.open(mapInstance, marker);
           },
           (error) => {
             console.error('Geolocation error:', error);
@@ -63,7 +58,7 @@ const MapPage = () => {
               level: 3,
             };
             const mapInstance = new window.kakao.maps.Map(container, options);
-            setMap(mapInstance); // 지도 객체 저장
+            setMap(mapInstance);
           },
         );
       });
@@ -72,43 +67,13 @@ const MapPage = () => {
     document.head.appendChild(script);
   }, []);
 
-  // 보호센터 검색
-  const searchShelters = () => {
-    if (!searchKeyword || !map) return;
-
-    // 이전에 표시된 마커 제거
-    markers.forEach((marker) => marker.setMap(null));
-    setMarkers([]);
-
-    const places = new window.kakao.maps.services.Places();
-    places.keywordSearch(searchKeyword, (data, status) => {
-      if (status === window.kakao.maps.services.Status.OK) {
-        const newMarkers = data.map((place) => {
-          const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
-          const marker = new window.kakao.maps.Marker({
-            position: markerPosition,
-            map,
-          });
-
-          // 마커 클릭 시 정보 표시
-          const infowindow = new window.kakao.maps.InfoWindow({
-            content: `<div style="padding:5px;">${place.place_name}</div>`,
-          });
-          window.kakao.maps.event.addListener(marker, 'click', () => {
-            infowindow.open(map, marker);
-          });
-
-          return marker;
-        });
-
-        setMarkers(newMarkers);
-      } else {
-        alert('검색 결과가 없습니다.');
-      }
-    });
+  const goToShelterList = () => {
+    window.open(
+      'https://www.animal.go.kr/front/awtis/institution/institutionList.do?menuNo=1000000059',
+      '_blank',
+    );
   };
 
-  // 스타일 객체
   const styles = {
     mapPage: {
       width: '90%',
@@ -146,6 +111,7 @@ const MapPage = () => {
       flex: 1,
       width: '100%',
       height: '60vh',
+      cursor: 'url(/img/cat-paw.png), auto',
     },
     buttonsContainer: {
       display: 'flex',
@@ -166,20 +132,7 @@ const MapPage = () => {
       borderRadius: '10px',
       transition: 'background-color 0.3s ease',
     },
-    searchContainer: {
-      flex: 6,
-      display: 'flex',
-      alignItems: 'center',
-    },
-    searchInput: {
-      flex: 1,
-      padding: '10px',
-      fontSize: '16px',
-      borderRadius: '5px',
-      border: '1px solid #ccc',
-      marginRight: '10px',
-    },
-    searchButton: {
+    allSheltersButton: {
       padding: '10px 20px',
       fontSize: '16px',
       cursor: 'pointer',
@@ -187,27 +140,6 @@ const MapPage = () => {
       backgroundColor: '#4F4F4F',
       color: '#ffffff',
       borderRadius: '5px',
-    },
-    footer: {
-      display: 'flex',
-      justifyContent: 'space-around',
-      alignItems: 'center',
-      backgroundColor: '#f8f9fa',
-      padding: '10px 0',
-      boxShadow: '0 -2px 5px rgba(0, 0, 0, 0.1)',
-    },
-    navButton: {
-      flex: 1,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: '12px',
-      color: '#4B2E2E',
-    },
-    navIcon: {
-      fontSize: '24px',
-      marginBottom: '5px',
     },
   };
 
@@ -222,7 +154,7 @@ const MapPage = () => {
 
       <div id="map" style={styles.mapContainer}></div>
 
-      {/* "내 길냥이 도감 보기" 버튼과 검색창 */}
+      {/* "내 길냥이 도감 보기" 버튼과 전체 보호소 목록 버튼 */}
       <div style={styles.buttonsContainer}>
         <button
           style={styles.footerButton1}
@@ -231,39 +163,13 @@ const MapPage = () => {
         >
           내 길냥이 도감 보기
         </button>
-        <div style={styles.searchContainer}>
-          <input
-            type="text"
-            style={styles.searchInput}
-            placeholder="동물 보호센터 검색"
-            value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
-          />
-          <button style={styles.searchButton} onClick={searchShelters}>
-            검색
-          </button>
-        </div>
+        <button style={styles.allSheltersButton} onClick={goToShelterList}>
+          전체 보호소 목록
+        </button>
       </div>
 
-      {/* 네비게이션 바 */}
-      <footer style={styles.footer}>
-        <div style={styles.navButton}>
-          <i className="bi bi-patch-question" style={styles.navIcon}></i>
-          <span>길냥이</span>
-        </div>
-        <div style={styles.navButton}>
-          <i className="bi bi-house-door" style={styles.navIcon}></i>
-          <span>홈</span>
-        </div>
-        <div style={styles.navButton}>
-          <i className="bi bi-cart3" style={styles.navIcon}></i>
-          <span>장바구니</span>
-        </div>
-        <div style={styles.navButton}>
-          <i className="bi bi-person-circle" style={styles.navIcon}></i>
-          <span>마이</span>
-        </div>
-      </footer>
+      {/* Bottombar로 푸터 부분 교체 */}
+      <Bottombar />
     </div>
   );
 };

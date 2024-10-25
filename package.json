@@ -44,8 +44,8 @@
     ]
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.20",
     "@svgr/webpack": "^8.1.0",
+    "autoprefixer": "^10.4.20",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "postcss": "^8.4.47",

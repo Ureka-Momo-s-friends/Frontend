@@ -1,6 +1,6 @@
-import React from "react";
-import * as S from "./style";
-import { CartIcon, CatIcon, HomeIcon, UserIcon } from "assets/svgs";
+import React from 'react';
+import * as S from './style';
+import { CartIcon, CatIcon, HomeIcon, UserIcon } from 'assets/svgs';
 
 const MenuItem = ({ link, children }) => {
   return (
@@ -13,7 +13,7 @@ const MenuItem = ({ link, children }) => {
 const Bottombar = () => {
   return (
     <S.Layer>
-      <MenuItem link="/cat">
+      <MenuItem link="/MapPage">
         <CatIcon />
         <p>길냥이</p>
       </MenuItem>
