@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import Header from "components/Main/Header";
 import MainContents from "components/Main/MainContents";
 import Bottombar from "components/Main/Bottombar";
+import Login from "../Login";
 
 const Wrapper = styled.div`
   display: flex;
@@ -19,6 +20,9 @@ function HomePage() {
   return (
     <Wrapper>
       <Header />
+      <section>
+        <Login></Login>
+      </section>
       <MainContents />
       <Bottombar />
     </Wrapper>
