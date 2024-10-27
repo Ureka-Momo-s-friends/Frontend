@@ -98,8 +98,6 @@ function PetProfileUpdatePage() {
 
   const handleAddPet = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
     if (!loggedInUser || !loggedInUser.id) {
       console.error("로그인된 사용자가 없습니다.");
@@ -107,11 +105,12 @@ function PetProfileUpdatePage() {
     }
 
     const genderBoolean = newPet.gender === "암컷" ? true : false;
+    const formData = new FormData();
     const petData = {
       petName: newPet.petName,
       birthDate: newPet.birthDate,
       gender: genderBoolean,
-      member: loggedInUser.id, // 현재 로그인된 사용자의 ID
+      member: loggedInUser.id, // 로그인된 사용자 ID 사용
     };
 
     formData.append(
@@ -128,12 +127,14 @@ function PetProfileUpdatePage() {
       body: formData,
     })
       .then((response) => {
+        console.log("Add pet response:", response);
         if (!response.ok) {
-          throw new Error("Failed to add pet");
+          throw new Error(`Failed to add pet: ${response.status}`);
         }
         return response.json();
       })
       .then((createdPet) => {
+        console.log("Created Pet:", createdPet);
         setPetList((prevList) => [...prevList, createdPet]);
         setShowAddModal(false);
         setNewPet({
@@ -166,8 +167,8 @@ function PetProfileUpdatePage() {
   return (
     <Container className="profile-container mt-4">
       <Header />
-      {petList.map((pet, index) => (
-        <div key={index} className="card-section">
+      {petList.map((pet) => (
+        <div key={pet.id} className="card-section">
           <Card>
             <Card.Body>
               <div className="info-section">

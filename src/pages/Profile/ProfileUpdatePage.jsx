@@ -22,8 +22,15 @@ function ProfileUpdatePage() {
 
     // API 호출을 통해 사용자 데이터 불러오기
     fetch(`http://localhost:8080/api/members/${loggedInUser.id}`)
-      .then((response) => response.json())
+      .then((response) => {
+        console.log("Fetch response:", response); // 응답 상태 로그 추가
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data"); // 에러 메시지 추가
+        }
+        return response.json();
+      })
       .then((data) => {
+        console.log("Fetched user data:", data); // 가져온 데이터 로그 추가
         setUserData(data);
         setNewName(data.username);
         setNewContact(data.contact);
@@ -59,12 +66,14 @@ function ProfileUpdatePage() {
       body: JSON.stringify(updatedData),
     })
       .then((response) => {
+        console.log("Update response:", response); // 응답 상태 로그 추가
         if (!response.ok) {
-          throw new Error("Failed to update profile");
+          throw new Error(`Failed to update profile: ${response.status}`); // 상세한 에러 메시지 추가
         }
         return response.json();
       })
-      .then(() => {
+      .then((data) => {
+        console.log("Updated user data:", data); // 업데이트된 데이터 로그 추가
         setUserData(updatedData);
         setShowModal(false);
       })
