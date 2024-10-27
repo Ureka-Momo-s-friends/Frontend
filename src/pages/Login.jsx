@@ -8,6 +8,8 @@ import {
   useNavigate,
 } from "react-router-dom";
 
+const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+
 function Login() {
   const [selectedTopic, setSelectedTopic] = useState();
   const [user, setUser] = useState(
@@ -115,6 +117,7 @@ function Login() {
       {!user ? (
         <div className="login-container">
           <GoogleLogin
+            clientId={clientId}
             onSuccess={handleLoginSuccess}
             onError={() => {
               console.log("Login Failed");

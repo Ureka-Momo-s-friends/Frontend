@@ -9,6 +9,13 @@ const MapPage = () => {
     // .env 파일에서 API 키 가져오기
     const kakaoApiKey = process.env.REACT_APP_KAKAO_MAP_API_KEY;
 
+    console.log("Kakao API Key:", kakaoApiKey); // 키가 제대로 들어오는지 확인
+
+    if (!kakaoApiKey) {
+      console.error("Kakao API Key가 설정되지 않았습니다.");
+      return;
+    }
+
     // 카카오맵 API 스크립트를 동적으로 추가
     const script = document.createElement("script");
     script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoApiKey}&libraries=services&autoload=false`;
