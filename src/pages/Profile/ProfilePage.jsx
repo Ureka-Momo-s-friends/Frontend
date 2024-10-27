@@ -100,10 +100,8 @@ function ProfilePage() {
       {/* User Profile Section */}
       <div className="card-section">
         <Card onClick={handleUserClick}>
-          {" "}
-          {/* 사용자 프로필 클릭 시 모달 표시 */}
           <Card.Body>
-            <div className="info-section">
+            <div className="info-section d-flex justify-content-between align-items-center">
               <h2>프로필 정보</h2>
               <Button
                 className="card-button"
@@ -113,15 +111,16 @@ function ProfilePage() {
                 편집
               </Button>
             </div>
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div className="d-flex align-items-center mt-3">
               {/* 유저 프로필 이미지 표시 */}
               <img
                 src={`http://localhost:8080${userData.profileImgUrl}`}
                 alt="User Profile"
                 style={{
-                  width: "50px",
-                  height: "50px",
+                  width: "80px",
+                  height: "80px",
                   borderRadius: "50%",
+                  objectFit: "cover",
                   marginRight: "15px",
                 }}
               />
@@ -136,10 +135,10 @@ function ProfilePage() {
       </div>
 
       {/* Cat Profiles Section */}
-      <div className="card-section">
+      <div className="card-section mt-4">
         <Card>
           <Card.Body>
-            <div className="info-section">
+            <div className="info-section d-flex justify-content-between align-items-center">
               <h2>고양이 프로필</h2>
               <Button
                 className="card-button"
@@ -149,7 +148,7 @@ function ProfilePage() {
                 편집
               </Button>
             </div>
-            <ListGroup variant="flush">
+            <ListGroup variant="flush" className="mt-3">
               {petData.map((pet) => (
                 <ListGroup.Item
                   key={pet.id}
@@ -162,15 +161,17 @@ function ProfilePage() {
                 >
                   {/* 고양이 프로필 이미지 표시 */}
                   <img
-                    src={`http://localhost:8080${pet.profileImgUrl}`}
+                    src={`http://localhost:8080/api/pets/uploads/${pet.profileImgUrl.split("/").pop()}`}
                     alt="Pet Profile"
                     style={{
-                      width: "50px",
-                      height: "50px",
+                      width: "80px",
+                      height: "80px",
                       borderRadius: "50%",
+                      objectFit: "cover",
                       marginRight: "15px",
                     }}
                   />
+
                   <div>
                     <p style={{ margin: 0, fontWeight: "bold" }}>
                       {pet.petName}
@@ -193,12 +194,17 @@ function ProfilePage() {
         </Modal.Header>
         <Modal.Body>
           {selectedPet && (
-            <div>
+            <div className="text-center">
               {/* 선택한 고양이 이미지 표시 */}
               <img
-                src={`http://localhost:8080${selectedPet.profileImgUrl}`}
+                src={`http://localhost:8080/api/pets/uploads/${selectedPet.profileImgUrl.split("/").pop()}`}
                 alt="Selected Pet"
-                style={{ width: "80px", height: "80px", borderRadius: "50%" }}
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
               />
               <p>이름: {selectedPet.petName}</p>
               <p>종: {selectedPet.breed || "알 수 없음"}</p>
@@ -221,12 +227,12 @@ function ProfilePage() {
         </Modal.Header>
         <Modal.Body>
           {selectedUser && (
-            <div>
+            <div className="text-center">
               {/* 선택한 사용자 이미지 표시 */}
               <img
                 src={`http://localhost:8080${selectedUser.profileImgUrl}`}
                 alt="Selected User"
-                style={{ width: "80px", height: "80px", borderRadius: "50%" }}
+                style={{ width: "100px", height: "100px", borderRadius: "50%" }}
               />
               <p>이름: {selectedUser.username}</p>
               <p>연락처: {selectedUser.contact}</p>

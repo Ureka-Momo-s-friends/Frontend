@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card, Form, Modal, Container } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Form,
+  Modal,
+  Container,
+  Row,
+  Col,
+  Image,
+} from "react-bootstrap";
 import Header from "../../components/Header";
 
 function PetProfileUpdatePage() {
@@ -19,6 +28,10 @@ function PetProfileUpdatePage() {
   });
 
   useEffect(() => {
+    fetchPetList(); // 처음 페이지 로드 시 고양이 목록 불러오기
+  }, []);
+
+  const fetchPetList = () => {
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
 
     if (!loggedInUser || !loggedInUser.id) {
@@ -35,7 +48,7 @@ function PetProfileUpdatePage() {
       .catch((error) => {
         console.error("Error fetching pet data:", error);
       });
-  }, []);
+  };
 
   const handleFileChange = (e, isEdit = false) => {
     const file = e.target.files[0];
@@ -83,12 +96,9 @@ function PetProfileUpdatePage() {
         }
         return response.json();
       })
-      .then(() => {
-        setPetList((prevList) =>
-          prevList.map((pet) =>
-            pet.id === selectedPet.id ? { ...pet, ...petData } : pet,
-          ),
-        );
+      .then((updatedPet) => {
+        // 상태 업데이트 후 전체 목록 새로 불러오기
+        fetchPetList();
         setShowEditModal(false);
       })
       .catch((error) => {
@@ -127,15 +137,14 @@ function PetProfileUpdatePage() {
       body: formData,
     })
       .then((response) => {
-        console.log("Add pet response:", response);
         if (!response.ok) {
           throw new Error(`Failed to add pet: ${response.status}`);
         }
         return response.json();
       })
       .then((createdPet) => {
-        console.log("Created Pet:", createdPet);
-        setPetList((prevList) => [...prevList, createdPet]);
+        // 상태 업데이트 후 전체 목록 새로 불러오기
+        fetchPetList();
         setShowAddModal(false);
         setNewPet({
           petName: "",
@@ -157,7 +166,8 @@ function PetProfileUpdatePage() {
         if (!response.ok) {
           throw new Error("Failed to delete pet");
         }
-        setPetList(petList.filter((pet) => pet.id !== petId));
+        // 상태 업데이트 후 전체 목록 새로 불러오기
+        fetchPetList();
       })
       .catch((error) => {
         console.error("Error deleting pet:", error);
@@ -168,42 +178,58 @@ function PetProfileUpdatePage() {
     <Container className="profile-container mt-4">
       <Header />
       {petList.map((pet) => (
-        <div key={pet.id} className="card-section">
-          <Card>
-            <Card.Body>
-              <div className="info-section">
-                <Button
-                  className="card-button"
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedPet({
-                      id: pet.id,
-                      petName: pet.petName,
-                      birthDate: pet.birthDate,
-                      gender: pet.gender ? "암컷" : "수컷",
-                      profileImgUrl: null,
-                    });
-                    setShowEditModal(true);
+        <Card key={pet.id} className="mb-3">
+          <Card.Body>
+            <Row>
+              <Col xs={3}>
+                {/* 여기서 이미지를 왼쪽에 배치 */}
+                <Image
+                  src={`http://localhost:8080/api/pets/uploads/${pet.profileImgUrl.split("/").pop()}?timestamp=${new Date().getTime()}`}
+                  roundedCircle
+                  className="img-fluid"
+                  alt="Pet Profile"
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    objectFit: "cover",
                   }}
+                />
+              </Col>
+              <Col xs={9}>
+                <div className="info-section d-flex justify-content-between align-items-center">
+                  <h6>{`${pet.petName}`}</h6>
+                  <Button
+                    className="card-button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedPet({
+                        id: pet.id,
+                        petName: pet.petName,
+                        birthDate: pet.birthDate,
+                        gender: pet.gender ? "암컷" : "수컷",
+                        profileImgUrl: null,
+                      });
+                      setShowEditModal(true);
+                    }}
+                  >
+                    수정
+                  </Button>
+                </div>
+                <p>{`${pet.breed || "품종 정보 없음"} | ${pet.birthDate} | ${
+                  pet.gender ? "암컷" : "수컷"
+                }`}</p>
+                <div
+                  className="text-center mt-3"
+                  onClick={() => handleDeletePet(pet.id)}
+                  style={{ cursor: "pointer", color: "#ff0000" }}
                 >
-                  수정
-                </Button>
-              </div>
-              <h6>{`${pet.petName}`}</h6>
-              <p>{`${pet.breed} | ${pet.birthDate} | ${
-                pet.gender ? "암컷" : "수컷"
-              }`}</p>
-              <div
-                className="text-center mt-3"
-                onClick={() => handleDeletePet(pet.id)}
-                style={{ cursor: "pointer", color: "#ff0000" }}
-              >
-                삭제하기
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
+                  삭제하기
+                </div>
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
       ))}
 
       <Button

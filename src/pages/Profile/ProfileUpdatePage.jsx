@@ -1,36 +1,35 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Card, Form, Modal, Container } from "react-bootstrap";
+import { Button, Card, Form, Modal, Container, Image } from "react-bootstrap";
 import Header from "../../components/Header";
 
 function ProfileUpdatePage() {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState({ username: "", contact: "" });
+  const [userData, setUserData] = useState({
+    username: "",
+    contact: "",
+    profileImgUrl: "",
+  });
   const [showModal, setShowModal] = useState(false);
   const [newName, setNewName] = useState("");
   const [newContact, setNewContact] = useState("");
+  const [profileImgUrl, setProfileImgUrl] = useState(null); // 프로필 이미지 상태 추가
 
   useEffect(() => {
-    // 현재 로그인된 사용자의 정보를 localStorage에서 가져오기
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
-    console.log("Logged in user:", loggedInUser);
-
     if (!loggedInUser || !loggedInUser.id) {
       console.error("로그인된 사용자가 없습니다.");
       return;
     }
 
-    // API 호출을 통해 사용자 데이터 불러오기
     fetch(`http://localhost:8080/api/members/${loggedInUser.id}`)
       .then((response) => {
-        console.log("Fetch response:", response); // 응답 상태 로그 추가
         if (!response.ok) {
-          throw new Error("Failed to fetch user data"); // 에러 메시지 추가
+          throw new Error("Failed to fetch user data");
         }
         return response.json();
       })
       .then((data) => {
-        console.log("Fetched user data:", data); // 가져온 데이터 로그 추가
         setUserData(data);
         setNewName(data.username);
         setNewContact(data.contact);
@@ -39,6 +38,10 @@ function ProfileUpdatePage() {
         console.error("Error fetching user data:", error);
       });
   }, []);
+
+  const handleFileChange = (e) => {
+    setProfileImgUrl(e.target.files[0]); // 선택된 파일 설정
+  };
 
   const handleSaveChanges = (e) => {
     e.preventDefault();
@@ -49,32 +52,43 @@ function ProfileUpdatePage() {
       return;
     }
 
-    // API 호출을 통해 수정된 데이터 저장
-    const updatedData = {
-      username: newName,
-      contact: newContact,
-    };
+    const formData = new FormData();
+    formData.append(
+      "userData",
+      new Blob(
+        [
+          JSON.stringify({
+            username: newName,
+            contact: newContact,
+            googleId: loggedInUser.googleId,
+          }),
+        ],
+        { type: "application/json" },
+      ),
+    );
 
-    // 콘솔 로그 추가
-    console.log("Updated Data:", updatedData);
+    if (profileImgUrl) {
+      formData.append("profileImgUrl", profileImgUrl);
+    }
 
     fetch(`http://localhost:8080/api/members/${loggedInUser.id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedData),
+      body: formData,
     })
       .then((response) => {
-        console.log("Update response:", response); // 응답 상태 로그 추가
         if (!response.ok) {
-          throw new Error(`Failed to update profile: ${response.status}`); // 상세한 에러 메시지 추가
+          throw new Error(`Failed to update profile: ${response.status}`);
         }
         return response.json();
       })
       .then((data) => {
-        console.log("Updated user data:", data); // 업데이트된 데이터 로그 추가
-        setUserData(updatedData);
+        console.log("Updated user data:", data);
+        setUserData({
+          ...userData,
+          username: newName,
+          contact: newContact,
+          profileImgUrl: data.profileImgUrl, // 서버에서 반환된 새로운 이미지 경로 반영
+        });
         setShowModal(false);
       })
       .catch((error) => {
@@ -88,23 +102,26 @@ function ProfileUpdatePage() {
       <div className="card-section">
         <Card>
           <Card.Body>
-            <div className="info-section">
+            <div className="info-section d-flex justify-content-between align-items-center">
               <h2>프로필 수정</h2>
-              <Button
-                className="card-button"
-                variant="primary"
-                onClick={() => setShowModal(true)}
-              >
+              <Button variant="primary" onClick={() => setShowModal(true)}>
                 수정
               </Button>
             </div>
-            <p>이름: {userData.username}</p>
+            <div className="text-center mt-3">
+              <Image
+                src={`http://localhost:8080${userData.profileImgUrl}`}
+                alt="User Profile"
+                roundedCircle
+                style={{ width: "100px", height: "100px", objectFit: "cover" }}
+              />
+            </div>
+            <p className="mt-3">이름: {userData.username}</p>
             <p>전화번호: {userData.contact}</p>
           </Card.Body>
         </Card>
       </div>
 
-      {/* 수정 모달 */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>프로필 수정</Modal.Title>
@@ -126,6 +143,10 @@ function ProfileUpdatePage() {
                 value={newContact}
                 onChange={(e) => setNewContact(e.target.value)}
               />
+            </Form.Group>
+            <Form.Group controlId="formProfileImg" className="mt-3">
+              <Form.Label>프로필 이미지</Form.Label>
+              <Form.Control type="file" onChange={handleFileChange} />
             </Form.Group>
             <Button variant="primary" type="submit" className="mt-3">
               저장
