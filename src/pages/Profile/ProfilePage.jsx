@@ -43,14 +43,22 @@ function ProfilePage() {
     setSelectedUser(null);
   };
 
-  const convertToBase64 = (buffer) => {
-    if (buffer) {
-      const binary = new Uint8Array(buffer).reduce((data, byte) => {
-        return data + String.fromCharCode(byte);
-      }, "");
-      return `data:image/jpeg;base64,${btoa(binary)}`;
-    }
-    return "";
+  const fetchPetList = (userId) => {
+    // API 호출을 통해 해당 사용자의 고양이 데이터 불러오기
+    fetch(`http://localhost:8080/api/pets/member/${userId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        const petsWithImages = data.map((pet) => ({
+          ...pet,
+          profileImg: pet.profileImg
+            ? `data:image/jpeg;base64,${pet.profileImg}`
+            : null,
+        }));
+        setPetData(petsWithImages);
+      })
+      .catch((error) => {
+        console.error("Error fetching pet data:", error);
+      });
   };
 
   useEffect(() => {
@@ -73,21 +81,12 @@ function ProfilePage() {
       })
       .then((data) => {
         setUserData(data);
+        fetchPetList(loggedInUser.id); // Fetch the pet data for the logged-in user
         setLoading(false);
       })
       .catch((error) => {
         setError(error.message);
         setLoading(false);
-      });
-
-    // 고양이 데이터 가져오기 - 현재 로그인한 사용자의 고양이만 가져옴
-    fetch(`http://localhost:8080/api/pets/member/${loggedInUser.id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setPetData(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching pet data:", error);
       });
   }, []);
 
@@ -124,7 +123,11 @@ function ProfilePage() {
             <div className="d-flex align-items-center mt-3">
               {/* 유저 프로필 이미지 표시 */}
               <img
-                src={convertToBase64(userData.profileImg)}
+                src={
+                  userData.profileImg
+                    ? `data:image/jpeg;base64,${userData.profileImg}`
+                    : null
+                }
                 alt="User Profile"
                 style={{
                   width: "80px",
@@ -171,7 +174,7 @@ function ProfilePage() {
                 >
                   {/* 고양이 프로필 이미지 표시 */}
                   <img
-                    src={convertToBase64(pet.profileImg)}
+                    src={pet.profileImg}
                     alt="Pet Profile"
                     style={{
                       width: "80px",
@@ -206,7 +209,7 @@ function ProfilePage() {
             <div className="text-center">
               {/* 선택한 고양이 이미지 표시 */}
               <img
-                src={convertToBase64(selectedPet.profileImg)}
+                src={selectedPet.profileImg}
                 alt="Selected Pet"
                 style={{
                   width: "100px",
@@ -239,7 +242,11 @@ function ProfilePage() {
             <div className="text-center">
               {/* 선택한 사용자 이미지 표시 */}
               <img
-                src={convertToBase64(selectedUser.profileImg)}
+                src={
+                  selectedUser.profileImg
+                    ? `data:image/jpeg;base64,${selectedUser.profileImg}`
+                    : null
+                }
                 alt="Selected User"
                 style={{ width: "100px", height: "100px", borderRadius: "50%" }}
               />

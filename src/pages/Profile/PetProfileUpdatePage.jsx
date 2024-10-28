@@ -92,8 +92,12 @@ function PetProfileUpdatePage() {
       new Blob([JSON.stringify(petData)], { type: "application/json" }),
     );
 
+    // 새로운 파일이 선택된 경우에만 파일 추가
     if (selectedPet.profileImg && selectedPet.profileImg instanceof File) {
       formData.append("profileImg", selectedPet.profileImg);
+      console.log("Image file added for update:", selectedPet.profileImg.name);
+    } else {
+      console.log("No new image file selected for update");
     }
 
     fetch(`http://localhost:8080/api/pets/${selectedPet.id}`, {
