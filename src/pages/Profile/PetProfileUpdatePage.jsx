@@ -140,6 +140,9 @@ function PetProfileUpdatePage() {
 
     if (newPet.profileImg && newPet.profileImg instanceof File) {
       formData.append("profileImg", newPet.profileImg); // 여기도 필드명이 일치하는지 확인
+      console.log("Image File added to FormData:", newPet.profileImg.name);
+    } else {
+      console.log("No image file selected");
     }
 
     fetch("http://localhost:8080/api/pets", {
