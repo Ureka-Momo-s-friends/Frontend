@@ -43,6 +43,16 @@ function ProfilePage() {
     setSelectedUser(null);
   };
 
+  const convertToBase64 = (buffer) => {
+    if (buffer) {
+      const binary = new Uint8Array(buffer).reduce((data, byte) => {
+        return data + String.fromCharCode(byte);
+      }, "");
+      return `data:image/jpeg;base64,${btoa(binary)}`;
+    }
+    return "";
+  };
+
   useEffect(() => {
     // 현재 로그인한 사용자 정보를 localStorage에서 가져오기
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
@@ -114,7 +124,7 @@ function ProfilePage() {
             <div className="d-flex align-items-center mt-3">
               {/* 유저 프로필 이미지 표시 */}
               <img
-                src={`http://localhost:8080${userData.profileImgUrl}`}
+                src={convertToBase64(userData.profileImg)}
                 alt="User Profile"
                 style={{
                   width: "80px",
@@ -161,7 +171,7 @@ function ProfilePage() {
                 >
                   {/* 고양이 프로필 이미지 표시 */}
                   <img
-                    src={`http://localhost:8080/api/pets/uploads/${pet.profileImgUrl.split("/").pop()}`}
+                    src={convertToBase64(pet.profileImg)}
                     alt="Pet Profile"
                     style={{
                       width: "80px",
@@ -171,7 +181,6 @@ function ProfilePage() {
                       marginRight: "15px",
                     }}
                   />
-
                   <div>
                     <p style={{ margin: 0, fontWeight: "bold" }}>
                       {pet.petName}
@@ -197,7 +206,7 @@ function ProfilePage() {
             <div className="text-center">
               {/* 선택한 고양이 이미지 표시 */}
               <img
-                src={`http://localhost:8080/api/pets/uploads/${selectedPet.profileImgUrl.split("/").pop()}`}
+                src={convertToBase64(selectedPet.profileImg)}
                 alt="Selected Pet"
                 style={{
                   width: "100px",
@@ -230,7 +239,7 @@ function ProfilePage() {
             <div className="text-center">
               {/* 선택한 사용자 이미지 표시 */}
               <img
-                src={`http://localhost:8080${selectedUser.profileImgUrl}`}
+                src={convertToBase64(selectedUser.profileImg)}
                 alt="Selected User"
                 style={{ width: "100px", height: "100px", borderRadius: "50%" }}
               />

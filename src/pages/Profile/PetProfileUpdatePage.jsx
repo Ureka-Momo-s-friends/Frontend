@@ -20,11 +20,13 @@ function PetProfileUpdatePage() {
     petName: "",
     birthDate: "",
     gender: "",
+    profileImg: null,
   });
   const [newPet, setNewPet] = useState({
     petName: "",
     birthDate: "",
     gender: "",
+    profileImg: null,
   });
 
   useEffect(() => {
@@ -43,7 +45,14 @@ function PetProfileUpdatePage() {
     fetch(`http://localhost:8080/api/pets/member/${loggedInUser.id}`)
       .then((response) => response.json())
       .then((data) => {
-        setPetList(data);
+        // 데이터가 base64로 인코딩된 이미지를 포함하고 있는 경우 처리
+        const petsWithImages = data.map((pet) => ({
+          ...pet,
+          profileImg: pet.profileImg
+            ? `data:image/jpeg;base64,${pet.profileImg}`
+            : null,
+        }));
+        setPetList(petsWithImages);
       })
       .catch((error) => {
         console.error("Error fetching pet data:", error);
@@ -53,12 +62,13 @@ function PetProfileUpdatePage() {
   const handleFileChange = (e, isEdit = false) => {
     const file = e.target.files[0];
     if (isEdit) {
-      setSelectedPet({ ...selectedPet, profileImgUrl: file });
+      setSelectedPet({ ...selectedPet, profileImg: file });
     } else {
-      setNewPet({ ...newPet, profileImgUrl: file });
+      setNewPet({ ...newPet, profileImg: file });
     }
   };
 
+  // 고양이 정보 수정 핸들러
   const handleSaveChanges = (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -82,8 +92,8 @@ function PetProfileUpdatePage() {
       new Blob([JSON.stringify(petData)], { type: "application/json" }),
     );
 
-    if (selectedPet.profileImgUrl) {
-      formData.append("profileImgUrl", selectedPet.profileImgUrl);
+    if (selectedPet.profileImg && selectedPet.profileImg instanceof File) {
+      formData.append("profileImg", selectedPet.profileImg);
     }
 
     fetch(`http://localhost:8080/api/pets/${selectedPet.id}`, {
@@ -120,7 +130,7 @@ function PetProfileUpdatePage() {
       petName: newPet.petName,
       birthDate: newPet.birthDate,
       gender: genderBoolean,
-      member: loggedInUser.id, // 로그인된 사용자 ID 사용
+      memberId: loggedInUser.id, // 수정된 부분: memberId 필드
     };
 
     formData.append(
@@ -128,8 +138,8 @@ function PetProfileUpdatePage() {
       new Blob([JSON.stringify(petData)], { type: "application/json" }),
     );
 
-    if (newPet.profileImgUrl && newPet.profileImgUrl instanceof File) {
-      formData.append("profileImgUrl", newPet.profileImgUrl);
+    if (newPet.profileImg && newPet.profileImg instanceof File) {
+      formData.append("profileImg", newPet.profileImg); // 여기도 필드명이 일치하는지 확인
     }
 
     fetch("http://localhost:8080/api/pets", {
@@ -150,7 +160,7 @@ function PetProfileUpdatePage() {
           petName: "",
           birthDate: "",
           gender: "",
-          profileImgUrl: null,
+          profileImg: null,
         });
       })
       .catch((error) => {
@@ -184,7 +194,7 @@ function PetProfileUpdatePage() {
               <Col xs={3}>
                 {/* 여기서 이미지를 왼쪽에 배치 */}
                 <Image
-                  src={`http://localhost:8080/api/pets/uploads/${pet.profileImgUrl.split("/").pop()}?timestamp=${new Date().getTime()}`}
+                  src={pet.profileImg}
                   roundedCircle
                   className="img-fluid"
                   alt="Pet Profile"
@@ -208,7 +218,7 @@ function PetProfileUpdatePage() {
                         petName: pet.petName,
                         birthDate: pet.birthDate,
                         gender: pet.gender ? "암컷" : "수컷",
-                        profileImgUrl: null,
+                        profileImg: null,
                       });
                       setShowEditModal(true);
                     }}
