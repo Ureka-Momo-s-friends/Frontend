@@ -85,25 +85,6 @@ function Login() {
 
   // 로그아웃 함수
   function handleLogout() {
-    if (user && user.id) {
-      console.log("User ID:", user.id); // 로그로 ID 확인
-      // 서버에 유저 정보 삭제 요청 보내기
-      fetch(`http://localhost:8080/api/members/${user.id}`, {
-        method: "DELETE",
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Failed to delete user from database");
-          }
-          console.log("서버에서 유저 정보가 성공적으로 삭제되었습니다.");
-        })
-        .catch((error) => {
-          console.error("서버에서 유저 정보 삭제 중 오류 발생:", error);
-        });
-    } else {
-      console.error("User ID is undefined. Cannot delete user.");
-    }
-
     // 구글 로그아웃 호출 및 상태 초기화
     googleLogout();
     setUser(null);
