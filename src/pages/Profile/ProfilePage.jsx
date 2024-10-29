@@ -6,45 +6,70 @@ import Header from "../../components/Header"; // Header 컴포넌트 경로 확�
 
 function ProfilePage() {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [petData, setPetData] = useState([]); // 고양이 데이터를 저장할 state 추가
+  const [userData, setUserData] = useState(null); // 사용자 정보를 저장할 state
+  const [loading, setLoading] = useState(true); // 로딩 상태를 저장할 state
+  const [error, setError] = useState(null); // 오류 메시지를 저장할 state
+  const [petData, setPetData] = useState([]); // 고양이 데이터를 저장할 state
   const [selectedPet, setSelectedPet] = useState(null); // 선택한 고양이를 저장할 state
   const [selectedUser, setSelectedUser] = useState(null); // 선택한 사용자 저장할 state
   const [showPetModal, setShowPetModal] = useState(false); // 고양이 모달 표시 상태
   const [showUserModal, setShowUserModal] = useState(false); // 사용자 모달 표시 상태
 
+  // 사용자 프로필 수정 페이지로 이동
   const handleProfileEdit = () => {
     navigate("/profileupdate");
   };
 
+  // 고양이 프로필 수정 페이지로 이동
   const handlePetProfileEdit = () => {
     navigate("/petprofileupdate");
   };
 
+  // 고양이 프로필 카드 클릭 시 모달을 열고, 선택한 고양이 데이터를 저장
   const handlePetClick = (pet) => {
     setSelectedPet(pet);
     setShowPetModal(true);
   };
 
+  // 사용자 프로필 카드 클릭 시 모달을 열고, 선택한 사용자 데이터를 저장
   const handleUserClick = () => {
     setSelectedUser(userData);
     setShowUserModal(true);
   };
 
+  // 고양이 모달 닫기
   const handleClosePetModal = () => {
     setShowPetModal(false);
     setSelectedPet(null);
   };
 
+  // 사용자 모달 닫기
   const handleCloseUserModal = () => {
     setShowUserModal(false);
     setSelectedUser(null);
   };
 
+  // API 호출을 통해 고양이 목록을 불러오는 함수
+  const fetchPetList = (userId) => {
+    fetch(`http://localhost:8080/api/pets/member/${userId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        // 고양이 이미지가 있는 경우 Base64 URL로 변환하여 저장
+        const petsWithImages = data.map((pet) => ({
+          ...pet,
+          profileImg: pet.profileImg
+            ? `data:image/jpeg;base64,${pet.profileImg}`
+            : null,
+        }));
+        setPetData(petsWithImages);
+      })
+      .catch((error) => {
+        console.error("Error fetching pet data:", error);
+      });
+  };
+
+  // 컴포넌트가 처음 렌더링될 때 사용자 정보와 고양이 목록을 불러옴
   useEffect(() => {
-    // 현재 로그인한 사용자 정보를 localStorage에서 가져오기
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
 
     if (!loggedInUser || !loggedInUser.id) {
@@ -63,32 +88,26 @@ function ProfilePage() {
       })
       .then((data) => {
         setUserData(data);
+        fetchPetList(loggedInUser.id); // 사용자의 고양이 목록 가져오기
         setLoading(false);
       })
       .catch((error) => {
         setError(error.message);
         setLoading(false);
       });
-
-    // 고양이 데이터 가져오기 - 현재 로그인한 사용자의 고양이만 가져옴
-    fetch(`http://localhost:8080/api/pets/member/${loggedInUser.id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setPetData(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching pet data:", error);
-      });
   }, []);
 
+  // 로딩 중일 때 표시할 메시지
   if (loading) {
     return <div>Loading...</div>;
   }
 
+  // 오류가 발생했을 때 표시할 메시지
   if (error) {
     return <div>Error: {error}</div>;
   }
 
+  // 사용자 데이터가 없을 때 표시할 메시지
   if (!userData) {
     return <div>No user data available</div>;
   }
@@ -97,14 +116,11 @@ function ProfilePage() {
     <Container className="profile-container mt-4">
       <Header />
 
-      {/* User Profile Section */}
+      {/* 사용자 프로필 섹션 */}
       <div className="card-section">
         <Card onClick={handleUserClick}>
-          {" "}
-          {/* 사용자 프로필 클릭 시 모달 표시 */}
           <Card.Body>
-            <div className="info-section">
-              <h2>프로필 정보</h2>
+            <div className="info-section d-flex justify-content-between align-items-center">
               <Button
                 className="card-button"
                 variant="secondary"
@@ -113,15 +129,20 @@ function ProfilePage() {
                 편집
               </Button>
             </div>
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div className="d-flex align-items-center mt-3">
               {/* 유저 프로필 이미지 표시 */}
               <img
-                src={`http://localhost:8080${userData.profileImgUrl}`}
+                src={
+                  userData.profileImg
+                    ? `data:image/jpeg;base64,${userData.profileImg}`
+                    : null
+                }
                 alt="User Profile"
                 style={{
-                  width: "50px",
-                  height: "50px",
+                  width: "80px",
+                  height: "80px",
                   borderRadius: "50%",
+                  objectFit: "cover",
                   marginRight: "15px",
                 }}
               />
@@ -135,12 +156,12 @@ function ProfilePage() {
         </Card>
       </div>
 
-      {/* Cat Profiles Section */}
-      <div className="card-section">
+      {/* 고양이 프로필 섹션 */}
+      <div className="card-section mt-4">
         <Card>
           <Card.Body>
-            <div className="info-section">
-              <h2>고양이 프로필</h2>
+            <div className="info-section d-flex justify-content-between align-items-center">
+              <h2>우리집 냥이들</h2>
               <Button
                 className="card-button"
                 variant="primary"
@@ -149,7 +170,7 @@ function ProfilePage() {
                 편집
               </Button>
             </div>
-            <ListGroup variant="flush">
+            <ListGroup variant="flush" className="mt-3">
               {petData.map((pet) => (
                 <ListGroup.Item
                   key={pet.id}
@@ -162,12 +183,13 @@ function ProfilePage() {
                 >
                   {/* 고양이 프로필 이미지 표시 */}
                   <img
-                    src={`http://localhost:8080${pet.profileImgUrl}`}
+                    src={pet.profileImg}
                     alt="Pet Profile"
                     style={{
-                      width: "50px",
-                      height: "50px",
+                      width: "80px",
+                      height: "80px",
                       borderRadius: "50%",
+                      objectFit: "cover",
                       marginRight: "15px",
                     }}
                   />
@@ -186,24 +208,38 @@ function ProfilePage() {
         </Card>
       </div>
 
-      {/* Pet Details Modal */}
-      <Modal show={showPetModal} onHide={handleClosePetModal}>
+      {/* 고양이 상세 정보 모달 */}
+      <Modal show={showPetModal} onHide={handleClosePetModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>고양이 상세 정보</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {selectedPet && (
-            <div>
-              {/* 선택한 고양이 이미지 표시 */}
-              <img
-                src={`http://localhost:8080${selectedPet.profileImgUrl}`}
-                alt="Selected Pet"
-                style={{ width: "80px", height: "80px", borderRadius: "50%" }}
-              />
-              <p>이름: {selectedPet.petName}</p>
-              <p>종: {selectedPet.breed || "알 수 없음"}</p>
-              <p>성별: {selectedPet.gender ? "암컷" : "수컷"}</p>
-              <p>생일: {selectedPet.birthDate}</p>
+            <div className="d-flex align-items-center">
+              {/* 텍스트를 왼쪽, 이미지를 오른쪽에 배치 */}
+              <div className="pet-info text-left flex-grow-1">
+                <h3 style={{ fontWeight: "bold" }}>{selectedPet.petName}</h3>
+                <p style={{ margin: 0, color: "#888" }}>
+                  {selectedPet.breed || "알 수 없음"}
+                </p>
+                <p style={{ margin: 0 }}>
+                  성별: {selectedPet.gender ? "암컷" : "수컷"}
+                </p>
+                <p style={{ margin: 0 }}>생일: {selectedPet.birthDate}</p>
+              </div>
+              <div className="pet-image ml-3">
+                <img
+                  src={selectedPet.profileImg}
+                  alt="Selected Pet"
+                  style={{
+                    width: "120px",
+                    height: "120px",
+                    borderRadius: "10px",
+                    objectFit: "cover",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                  }}
+                />
+              </div>
             </div>
           )}
         </Modal.Body>
@@ -214,22 +250,36 @@ function ProfilePage() {
         </Modal.Footer>
       </Modal>
 
-      {/* User Details Modal */}
-      <Modal show={showUserModal} onHide={handleCloseUserModal}>
+      {/* 사용자 상세 정보 모달 */}
+      <Modal show={showUserModal} onHide={handleCloseUserModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>사용자 상세 정보</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {selectedUser && (
-            <div>
-              {/* 선택한 사용자 이미지 표시 */}
-              <img
-                src={`http://localhost:8080${selectedUser.profileImgUrl}`}
-                alt="Selected User"
-                style={{ width: "80px", height: "80px", borderRadius: "50%" }}
-              />
-              <p>이름: {selectedUser.username}</p>
-              <p>연락처: {selectedUser.contact}</p>
+            <div className="d-flex align-items-center">
+              {/* 텍스트를 왼쪽, 이미지를 오른쪽에 배치 */}
+              <div className="user-info text-left flex-grow-1">
+                <h3 style={{ fontWeight: "bold" }}>{selectedUser.username}</h3>
+                <p style={{ margin: 0 }}>연락처: {selectedUser.contact}</p>
+              </div>
+              <div className="user-image ml-3">
+                <img
+                  src={
+                    selectedUser.profileImg
+                      ? `data:image/jpeg;base64,${selectedUser.profileImg}`
+                      : null
+                  }
+                  alt="Selected User"
+                  style={{
+                    width: "120px",
+                    height: "120px",
+                    borderRadius: "10px",
+                    objectFit: "cover",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                  }}
+                />
+              </div>
             </div>
           )}
         </Modal.Body>

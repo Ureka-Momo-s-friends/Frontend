@@ -1,24 +1,41 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card, Form, Modal, Container } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Form,
+  Modal,
+  Container,
+  Row,
+  Col,
+  Image,
+} from "react-bootstrap";
 import Header from "../../components/Header";
 
 function PetProfileUpdatePage() {
-  const [petList, setPetList] = useState([]); // 전체 고양이 목록
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [petList, setPetList] = useState([]); // 전체 고양이 목록을 저장할 state
+  const [showEditModal, setShowEditModal] = useState(false); // 수정 모달 표시 상태
+  const [showAddModal, setShowAddModal] = useState(false); // 추가 모달 표시 상태
   const [selectedPet, setSelectedPet] = useState({
     id: null,
     petName: "",
     birthDate: "",
     gender: "",
-  });
+    profileImg: null,
+  }); // 수정할 고양이 정보를 저장할 state
   const [newPet, setNewPet] = useState({
     petName: "",
     birthDate: "",
     gender: "",
-  });
+    profileImg: null,
+  }); // 추가할 고양이 정보를 저장할 state
 
+  // 컴포넌트가 처음 렌더링될 때 고양이 목록을 불러오는 함수
   useEffect(() => {
+    fetchPetList();
+  }, []);
+
+  // 사용자의 고양이 목록을 불러오는 함수
+  const fetchPetList = () => {
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
 
     if (!loggedInUser || !loggedInUser.id) {
@@ -30,22 +47,31 @@ function PetProfileUpdatePage() {
     fetch(`http://localhost:8080/api/pets/member/${loggedInUser.id}`)
       .then((response) => response.json())
       .then((data) => {
-        setPetList(data);
+        // 데이터가 base64로 인코딩된 이미지를 포함하고 있는 경우 처리
+        const petsWithImages = data.map((pet) => ({
+          ...pet,
+          profileImg: pet.profileImg
+            ? `data:image/jpeg;base64,${pet.profileImg}`
+            : null,
+        }));
+        setPetList(petsWithImages);
       })
       .catch((error) => {
         console.error("Error fetching pet data:", error);
       });
-  }, []);
+  };
 
+  // 파일이 변경될 때 호출되는 핸들러
   const handleFileChange = (e, isEdit = false) => {
     const file = e.target.files[0];
     if (isEdit) {
-      setSelectedPet({ ...selectedPet, profileImgUrl: file });
+      setSelectedPet({ ...selectedPet, profileImg: file });
     } else {
-      setNewPet({ ...newPet, profileImgUrl: file });
+      setNewPet({ ...newPet, profileImg: file });
     }
   };
 
+  // 고양이 정보를 수정하고 저장하는 함수
   const handleSaveChanges = (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -56,6 +82,7 @@ function PetProfileUpdatePage() {
       return;
     }
 
+    // 성별 값을 boolean 형태로 변환
     const genderBoolean = selectedPet.gender === "암컷" ? true : false;
     const petData = {
       petName: selectedPet.petName,
@@ -64,15 +91,21 @@ function PetProfileUpdatePage() {
       member: loggedInUser.id, // 현재 로그인된 사용자의 ID
     };
 
+    // JSON 데이터를 FormData에 추가
     formData.append(
       "petData",
       new Blob([JSON.stringify(petData)], { type: "application/json" }),
     );
 
-    if (selectedPet.profileImgUrl) {
-      formData.append("profileImgUrl", selectedPet.profileImgUrl);
+    // 새로운 파일이 선택된 경우에만 파일 추가
+    if (selectedPet.profileImg && selectedPet.profileImg instanceof File) {
+      formData.append("profileImg", selectedPet.profileImg);
+      console.log("Image file added for update:", selectedPet.profileImg.name);
+    } else {
+      console.log("No new image file selected for update");
     }
 
+    // API 호출을 통해 고양이 정보 업데이트
     fetch(`http://localhost:8080/api/pets/${selectedPet.id}`, {
       method: "PUT",
       body: formData,
@@ -83,12 +116,9 @@ function PetProfileUpdatePage() {
         }
         return response.json();
       })
-      .then(() => {
-        setPetList((prevList) =>
-          prevList.map((pet) =>
-            pet.id === selectedPet.id ? { ...pet, ...petData } : pet,
-          ),
-        );
+      .then((updatedPet) => {
+        // 상태 업데이트 후 전체 목록 새로 불러오기
+        fetchPetList();
         setShowEditModal(false);
       })
       .catch((error) => {
@@ -96,51 +126,59 @@ function PetProfileUpdatePage() {
       });
   };
 
+  // 새로운 고양이를 추가하는 함수
   const handleAddPet = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
     if (!loggedInUser || !loggedInUser.id) {
       console.error("로그인된 사용자가 없습니다.");
       return;
     }
 
+    // 성별 값을 boolean 형태로 변환
     const genderBoolean = newPet.gender === "암컷" ? true : false;
+    const formData = new FormData();
     const petData = {
       petName: newPet.petName,
       birthDate: newPet.birthDate,
       gender: genderBoolean,
-      member: loggedInUser.id, // 현재 로그인된 사용자의 ID
+      memberId: loggedInUser.id, // 수정된 부분: memberId 필드
     };
 
+    // JSON 데이터를 FormData에 추가
     formData.append(
       "petData",
       new Blob([JSON.stringify(petData)], { type: "application/json" }),
     );
 
-    if (newPet.profileImgUrl && newPet.profileImgUrl instanceof File) {
-      formData.append("profileImgUrl", newPet.profileImgUrl);
+    // 새로운 이미지 파일이 선택된 경우에만 추가
+    if (newPet.profileImg && newPet.profileImg instanceof File) {
+      formData.append("profileImg", newPet.profileImg);
+      console.log("Image File added to FormData:", newPet.profileImg.name);
+    } else {
+      console.log("No image file selected");
     }
 
+    // API 호출을 통해 새로운 고양이 추가
     fetch("http://localhost:8080/api/pets", {
       method: "POST",
       body: formData,
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Failed to add pet");
+          throw new Error(`Failed to add pet: ${response.status}`);
         }
         return response.json();
       })
       .then((createdPet) => {
-        setPetList((prevList) => [...prevList, createdPet]);
+        // 상태 업데이트 후 전체 목록 새로 불러오기
+        fetchPetList();
         setShowAddModal(false);
         setNewPet({
           petName: "",
           birthDate: "",
           gender: "",
-          profileImgUrl: null,
+          profileImg: null,
         });
       })
       .catch((error) => {
@@ -148,6 +186,7 @@ function PetProfileUpdatePage() {
       });
   };
 
+  // 고양이 정보를 삭제하는 함수
   const handleDeletePet = (petId) => {
     fetch(`http://localhost:8080/api/pets/${petId}`, {
       method: "DELETE",
@@ -156,7 +195,8 @@ function PetProfileUpdatePage() {
         if (!response.ok) {
           throw new Error("Failed to delete pet");
         }
-        setPetList(petList.filter((pet) => pet.id !== petId));
+        // 상태 업데이트 후 전체 목록 새로 불러오기
+        fetchPetList();
       })
       .catch((error) => {
         console.error("Error deleting pet:", error);
@@ -166,43 +206,59 @@ function PetProfileUpdatePage() {
   return (
     <Container className="profile-container mt-4">
       <Header />
-      {petList.map((pet, index) => (
-        <div key={index} className="card-section">
-          <Card>
-            <Card.Body>
-              <div className="info-section">
-                <Button
-                  className="card-button"
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedPet({
-                      id: pet.id,
-                      petName: pet.petName,
-                      birthDate: pet.birthDate,
-                      gender: pet.gender ? "암컷" : "수컷",
-                      profileImgUrl: null,
-                    });
-                    setShowEditModal(true);
+      {petList.map((pet) => (
+        <Card key={pet.id} className="mb-3">
+          <Card.Body>
+            <Row>
+              <Col xs={3}>
+                {/* 여기서 이미지를 왼쪽에 배치 */}
+                <Image
+                  src={pet.profileImg}
+                  roundedCircle
+                  className="img-fluid"
+                  alt="Pet Profile"
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    objectFit: "cover",
                   }}
+                />
+              </Col>
+              <Col xs={9}>
+                <div className="info-section d-flex justify-content-between align-items-center">
+                  <h6>{`${pet.petName}`}</h6>
+                  <Button
+                    className="card-button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedPet({
+                        id: pet.id,
+                        petName: pet.petName,
+                        birthDate: pet.birthDate,
+                        gender: pet.gender ? "암컷" : "수컷",
+                        profileImg: null,
+                      });
+                      setShowEditModal(true);
+                    }}
+                  >
+                    수정
+                  </Button>
+                </div>
+                <p>{`${pet.breed || "종 정보 없음"} | ${pet.birthDate} | ${
+                  pet.gender ? "암컷" : "수컷"
+                }`}</p>
+                <div
+                  className="text-center mt-3"
+                  onClick={() => handleDeletePet(pet.id)}
+                  style={{ cursor: "pointer", color: "#ff0000" }}
                 >
-                  수정
-                </Button>
-              </div>
-              <h6>{`${pet.petName}`}</h6>
-              <p>{`${pet.breed} | ${pet.birthDate} | ${
-                pet.gender ? "암컷" : "수컷"
-              }`}</p>
-              <div
-                className="text-center mt-3"
-                onClick={() => handleDeletePet(pet.id)}
-                style={{ cursor: "pointer", color: "#ff0000" }}
-              >
-                삭제하기
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
+                  삭제하기
+                </div>
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
       ))}
 
       <Button

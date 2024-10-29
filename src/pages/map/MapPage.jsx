@@ -7,6 +7,10 @@ const MapPage = () => {
 
   useEffect(() => {
     const kakaoApiKey = process.env.REACT_APP_KAKAO_MAP_API_KEY;
+    if (!kakaoApiKey) {
+      console.error("Kakao API Key가 설정되지 않았습니다.");
+      return;
+    }
 
     const script = document.createElement("script");
     script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoApiKey}&libraries=services&autoload=false`;
@@ -46,7 +50,7 @@ const MapPage = () => {
             const customOverlay = new window.kakao.maps.CustomOverlay({
               position: markerPosition,
               content: overlayContent,
-              yAnchor: 1.4, // 오버레이 위치 조정
+              yAnchor: 1.5, // 오버레이 위치 조정
             });
             customOverlay.setMap(mapInstance);
           },
