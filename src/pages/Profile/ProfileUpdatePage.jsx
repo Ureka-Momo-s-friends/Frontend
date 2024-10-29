@@ -5,17 +5,25 @@ import Header from "../../components/Header";
 
 function ProfileUpdatePage() {
   const navigate = useNavigate();
+
+  // 사용자 데이터 상태 관리
   const [userData, setUserData] = useState({
     username: "",
     contact: "",
     profileImgUrl: "",
-  }); // 사용자 정보를 저장할 state
-  const [showModal, setShowModal] = useState(false); // 수정 모달을 열지 여부를 저장할 state
-  const [newName, setNewName] = useState(""); // 수정할 이름을 저장할 state
-  const [newContact, setNewContact] = useState(""); // 수정할 연락처를 저장할 state
-  const [profileImgUrl, setProfileImgUrl] = useState(null); // 수정할 프로필 이미지 파일을 저장할 state
+  });
 
-  // 컴포넌트가 처음 렌더링될 때, 사용자의 현재 정보를 가져옴
+  // 모달 상태 관리
+  const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false); // 성공 모달 상태 추가
+
+  // 프로필 정보 수정 상태 관리
+  const [newName, setNewName] = useState("");
+  const [newContact, setNewContact] = useState("");
+  const [profileImgUrl, setProfileImgUrl] = useState(null);
+
+  // 사용자 데이터 로드
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
     if (!loggedInUser || !loggedInUser.id) {
@@ -23,7 +31,6 @@ function ProfileUpdatePage() {
       return;
     }
 
-    // API 호출을 통해 사용자 데이터 가져오기
     fetch(`http://localhost:8080/api/members/${loggedInUser.id}`)
       .then((response) => {
         if (!response.ok) {
@@ -41,13 +48,13 @@ function ProfileUpdatePage() {
       });
   }, []);
 
-  // 프로필 이미지 파일이 변경되었을 때 호출되는 함수
+  // 파일 선택 시 파일 상태 설정
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setProfileImgUrl(file);
   };
 
-  // 사용자 정보를 저장할 때 호출되는 함수
+  // 프로필 정보 저장 핸들러
   const handleSaveChanges = (e) => {
     e.preventDefault();
 
@@ -57,7 +64,6 @@ function ProfileUpdatePage() {
       return;
     }
 
-    // 사용자 정보를 폼 데이터로 생성
     const formData = new FormData();
     formData.append(
       "userData",
@@ -73,12 +79,10 @@ function ProfileUpdatePage() {
       ),
     );
 
-    // 프로필 이미지 파일이 있는 경우 추가
     if (profileImgUrl) {
       formData.append("profileImg", profileImgUrl);
     }
 
-    // API를 통해 사용자 정보를 업데이트
     fetch(`http://localhost:8080/api/members/${loggedInUser.id}`, {
       method: "PUT",
       body: formData,
@@ -91,8 +95,6 @@ function ProfileUpdatePage() {
       })
       .then((data) => {
         console.log("Updated user data:", data);
-
-        // 업데이트된 사용자 정보를 다시 가져와 상태 업데이트
         fetch(`http://localhost:8080/api/members/${loggedInUser.id}`)
           .then((response) => response.json())
           .then((updatedData) => {
@@ -103,7 +105,6 @@ function ProfileUpdatePage() {
               profileImg: updatedData.profileImg,
             });
 
-            // 로컬 스토리지에도 업데이트된 사용자 정보 저장
             localStorage.setItem("user", JSON.stringify(updatedData));
           });
 
@@ -114,11 +115,39 @@ function ProfileUpdatePage() {
       });
   };
 
+  // 계정 삭제 핸들러
+  const handleDeleteAccount = () => {
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+    if (!loggedInUser || !loggedInUser.id) {
+      console.error("로그인된 사용자가 없습니다.");
+      return;
+    }
+
+    fetch(`http://localhost:8080/api/members/${loggedInUser.id}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to delete account: ${response.status}`);
+        }
+        localStorage.removeItem("user");
+        setShowDeleteModal(false); // 삭제 모달 닫기
+        setShowSuccessModal(true); // 성공 모달 열기
+      })
+      .catch((error) => {
+        console.error("Error deleting account:", error);
+      });
+  };
+
+  // 성공 모달 확인 버튼 클릭 시 홈으로 이동
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false);
+    navigate("/"); // 홈으로 이동
+  };
+
   return (
     <Container className="profile-container mt-4">
       <Header />
-
-      {/* 사용자 프로필 카드 섹션 */}
       <div className="card-section">
         <Card>
           <Card.Body>
@@ -128,13 +157,12 @@ function ProfileUpdatePage() {
                 className="card-button"
                 variant="secondary"
                 size="sm"
-                onClick={() => setShowModal(true)} // 클릭 시 모달 열기
+                onClick={() => setShowModal(true)}
               >
                 수정
               </Button>
             </div>
             <div className="text-center mt-3">
-              {/* 프로필 이미지 표시 */}
               <Image
                 src={
                   userData.profileImg
@@ -148,17 +176,42 @@ function ProfileUpdatePage() {
             </div>
             <p className="mt-3">이름: {userData.username}</p>
             <p>전화번호: {userData.contact}</p>
+            <div
+              className="text-center mt-3"
+              onClick={() => setShowDeleteModal(true)}
+              style={{ cursor: "pointer", color: "#ff0000" }}
+            >
+              탈퇴하기
+            </div>
           </Card.Body>
         </Card>
       </div>
 
-      {/* 프로필 수정 모달 */}
+      {/* 삭제 모달 */}
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>계정 삭제</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
+          {/* 이메일 또는 구글 인증 입력 필드 추가 가능 */}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            취소
+          </Button>
+          <Button variant="danger" onClick={handleDeleteAccount}>
+            계정 삭제
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* 수정 모달 */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>프로필 수정</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {/* 프로필 수정 폼 */}
           <Form onSubmit={handleSaveChanges}>
             <Form.Group controlId="formName">
               <Form.Label>이름</Form.Label>
@@ -185,6 +238,19 @@ function ProfileUpdatePage() {
             </Button>
           </Form>
         </Modal.Body>
+      </Modal>
+
+      {/* 성공 모달 */}
+      <Modal show={showSuccessModal} onHide={handleSuccessModalClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>탈퇴 완료</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>계정이 성공적으로 삭제되었습니다.</Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleSuccessModalClose}>
+            확인
+          </Button>
+        </Modal.Footer>
       </Modal>
     </Container>
   );
