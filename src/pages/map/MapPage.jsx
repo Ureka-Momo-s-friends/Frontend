@@ -6,30 +6,25 @@ const MapPage = () => {
   const [isHovered1, setIsHovered1] = useState(false);
 
   useEffect(() => {
-    // .env 파일에서 API 키 가져오기
     const kakaoApiKey = process.env.REACT_APP_KAKAO_MAP_API_KEY;
 
-    // 카카오맵 API 스크립트를 동적으로 추가
     const script = document.createElement("script");
     script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoApiKey}&libraries=services&autoload=false`;
     script.async = true;
 
     script.onload = () => {
-      // 카카오맵 로드 후 위치 정보 가져오기
       window.kakao.maps.load(() => {
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const userLat = position.coords.latitude;
             const userLng = position.coords.longitude;
 
-            // 지도의 컨테이너와 옵션 설정
             const container = document.getElementById("map");
             const options = {
               center: new window.kakao.maps.LatLng(userLat, userLng),
               level: 3,
             };
 
-            // 지도 생성 및 초기 설정
             const mapInstance = new window.kakao.maps.Map(container, options);
             setMap(mapInstance);
 
@@ -43,19 +38,20 @@ const MapPage = () => {
               map: mapInstance,
             });
 
-            // 마커 위에 인포윈도우 표시
-            const infowindowContent = `
-              <div style="width: 147px; padding: 7px; text-align: center; font-size: 12px; background: #fff; border: 1px solid #ccc; border-radius: 5px;">
-                <small class="text-muted">현재 위치</small>
+            // 마커 위에 커스텀 오버레이 표시
+            const overlayContent = `
+              <div style="position: relative; bottom: 30px; width: 100px; padding: 5px; text-align: center; font-size: 12px; background: #fff; border: 1px solid #ccc; border-radius: 5px;">
+                <small>현재 위치</small>
               </div>`;
-            const infowindow = new window.kakao.maps.InfoWindow({
-              content: infowindowContent,
+            const customOverlay = new window.kakao.maps.CustomOverlay({
+              position: markerPosition,
+              content: overlayContent,
+              yAnchor: 1.4, // 오버레이 위치 조정
             });
-            infowindow.open(mapInstance, marker);
+            customOverlay.setMap(mapInstance);
           },
           (error) => {
             console.error("Geolocation error:", error);
-            // 위치 정보 실패 시 디폴트 위치 설정
             const defaultPosition = new window.kakao.maps.LatLng(
               33.450701,
               126.570667,
@@ -74,13 +70,11 @@ const MapPage = () => {
 
     document.head.appendChild(script);
 
-    // 스크립트 제거
     return () => {
       document.head.removeChild(script);
     };
   }, []);
 
-  // 외부 보호소 목록으로 이동
   const goToShelterList = () => {
     window.open(
       "https://www.animal.go.kr/front/awtis/institution/institutionList.do?menuNo=1000000059",
@@ -88,7 +82,6 @@ const MapPage = () => {
     );
   };
 
-  // 스타일 객체
   const styles = {
     mapPage: {
       width: "90%",
@@ -169,7 +162,6 @@ const MapPage = () => {
 
       <div id="map" style={styles.mapContainer}></div>
 
-      {/* "내 길냥이 도감 보기" 버튼과 전체 보호소 목록 버튼 */}
       <div style={styles.buttonsContainer}>
         <button
           style={styles.footerButton1}
@@ -183,7 +175,6 @@ const MapPage = () => {
         </button>
       </div>
 
-      {/* Bottombar로 푸터 부분 교체 */}
       <Bottombar />
     </div>
   );
