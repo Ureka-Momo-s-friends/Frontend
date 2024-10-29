@@ -13,7 +13,7 @@ function ProfileUpdatePage() {
   const [showModal, setShowModal] = useState(false);
   const [newName, setNewName] = useState("");
   const [newContact, setNewContact] = useState("");
-  const [profileImgUrl, setProfileImgUrl] = useState(null); // 프로필 이미지 상태 추가
+  const [profileImgUrl, setProfileImgUrl] = useState(null);
 
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
@@ -40,7 +40,8 @@ function ProfileUpdatePage() {
   }, []);
 
   const handleFileChange = (e) => {
-    setProfileImgUrl(e.target.files[0]); // 선택된 파일 설정
+    const file = e.target.files[0];
+    setProfileImgUrl(file);
   };
 
   const handleSaveChanges = (e) => {
@@ -68,7 +69,7 @@ function ProfileUpdatePage() {
     );
 
     if (profileImgUrl) {
-      formData.append("profileImgUrl", profileImgUrl);
+      formData.append("profileImg", profileImgUrl);
     }
 
     fetch(`http://localhost:8080/api/members/${loggedInUser.id}`, {
@@ -87,7 +88,7 @@ function ProfileUpdatePage() {
           ...userData,
           username: newName,
           contact: newContact,
-          profileImgUrl: data.profileImgUrl, // 서버에서 반환된 새로운 이미지 경로 반영
+          profileImg: data.profileImg,
         });
         setShowModal(false);
       })
@@ -104,13 +105,22 @@ function ProfileUpdatePage() {
           <Card.Body>
             <div className="info-section d-flex justify-content-between align-items-center">
               <h2>프로필 수정</h2>
-              <Button variant="primary" onClick={() => setShowModal(true)}>
+              <Button
+                className="card-button"
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowModal(true)} // 클릭 시 모달 열기
+              >
                 수정
               </Button>
             </div>
             <div className="text-center mt-3">
               <Image
-                src={`http://localhost:8080${userData.profileImgUrl}`}
+                src={
+                  userData.profileImg
+                    ? `data:image/jpeg;base64,${userData.profileImg}`
+                    : null
+                }
                 alt="User Profile"
                 roundedCircle
                 style={{ width: "100px", height: "100px", objectFit: "cover" }}
