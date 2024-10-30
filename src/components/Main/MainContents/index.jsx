@@ -54,16 +54,6 @@ const MainContents = () => {
           </p>
         </S.Category>
       </S.CategoryWrapper>
-      <S.MainWrapper>
-        <S.MapBox>map</S.MapBox>
-        <S.BannerWrapper>
-          <img src="img/banner/banner1.jpg" alt="banner1" />
-          <img src="img/banner/banner2.jpg" alt="banner2" />
-          <img src="img/banner/banner3.jpg" alt="banner3" />
-          <img src="img/banner/banner4.jpg" alt="banner4" />
-          <img src="img/banner/banner5.jpg" alt="banner5" />
-        </S.BannerWrapper>
-      </S.MainWrapper>
     </S.Layer>
   );
 };

@@ -1,38 +1,19 @@
 import React from "react";
-import styled from "@emotion/styled";
+import * as S from "./style"; // 스타일 임포트
 import Header from "components/Main/Header";
 import MainContents from "components/Main/MainContents";
 import Bottombar from "components/Main/Bottombar";
-import Login from "../Login";
-import { useNavigate } from "react-router-dom";
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 600px;
-  min-width: 320px;
-  height: 100%;
-  margin: 0 auto;
-`;
 
 function HomePage() {
-  const navigate = useNavigate();
-
-  const goToProfilePage = () => {
-    navigate("/profile"); // ProfilePage로 이동
-  };
-
   return (
-    <Wrapper>
+    <S.Wrapper>
       <Header />
       <section>
-        <Login></Login>
+        {/* 메인 콘텐츠 */}
+        <MainContents />
       </section>
-      <MainContents />
       <Bottombar />
-    </Wrapper>
+    </S.Wrapper>
   );
 }
 

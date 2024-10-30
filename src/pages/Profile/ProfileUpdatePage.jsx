@@ -240,7 +240,7 @@ function ProfileUpdatePage() {
         </Modal.Body>
       </Modal>
 
-      {/* 성공 모달 */}
+      {/* 탈퇴 성공 모달 */}
       <Modal show={showSuccessModal} onHide={handleSuccessModalClose}>
         <Modal.Header closeButton>
           <Modal.Title>탈퇴 완료</Modal.Title>
