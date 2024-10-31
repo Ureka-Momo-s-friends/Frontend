@@ -96,7 +96,7 @@ const MapPage = () => {
                     const overlayContent = `
                       <div style="padding:5px; background:#fff; border:1px solid #ccc; border-radius:5px;">
                         <img src="${cat.catImgUrl}" alt="Cat Image" style="width:50px; height:50px; border-radius:50%;" />
-                        <div style="text-align: center; margin-top: 5px;">${cat.id}</div>
+                        <div style="text-align: center; margin-top: 5px;"></div>
                       </div>`;
                     const customOverlay = new window.kakao.maps.CustomOverlay({
                       position: catPosition,
