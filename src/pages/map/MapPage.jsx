@@ -32,7 +32,6 @@ const MapPage = () => {
             const mapInstance = new window.kakao.maps.Map(container, options);
             setMap(mapInstance);
 
-            // 현재 위치에 마커 추가
             const markerPosition = new window.kakao.maps.LatLng(
               userLat,
               userLng,
@@ -53,15 +52,13 @@ const MapPage = () => {
             });
             customOverlay.setMap(mapInstance);
 
-            // 보호소 데이터 로드 및 표시
             fetch("/shelter.json")
               .then((response) => response.json())
               .then((data) => {
-                placeMarkersWithDelay(data, mapInstance);
+                placeClosestShelters(data, mapInstance, userLat, userLng);
               })
               .catch((error) => console.error("Error loading JSON:", error));
 
-            // 길냥이 데이터 로드 및 지도에 표시
             fetch("http://localhost:8080/api/strayCats?memberId=1", {
               method: "GET",
               headers: {
@@ -77,13 +74,11 @@ const MapPage = () => {
                       cat.lon,
                     );
 
-                    // 길냥이 마커 생성
                     const marker = new window.kakao.maps.Marker({
                       position: catPosition,
                       map: mapInstance,
                     });
 
-                    // 길냥이 정보 오버레이 설정
                     const overlayContent = `
                       <div style="padding:5px; background:#fff; border:1px solid #ccc; border-radius:5px;">
                         <img src="${cat.catImgUrl}" alt="Cat Image" style="width:50px; height:50px; border-radius:50%;" />
@@ -95,7 +90,6 @@ const MapPage = () => {
                       yAnchor: 1.2,
                     });
 
-                    // 마커 클릭 시 오버레이 표시/숨김 토글
                     window.kakao.maps.event.addListener(marker, "click", () => {
                       customOverlay.setMap(
                         customOverlay.getMap() ? null : mapInstance,
@@ -112,17 +106,6 @@ const MapPage = () => {
           },
           (error) => {
             console.error("Geolocation error:", error);
-            const defaultPosition = new window.kakao.maps.LatLng(
-              33.450701,
-              126.570667,
-            );
-            const container = document.getElementById("map");
-            const options = {
-              center: defaultPosition,
-              level: 3,
-            };
-            const mapInstance = new window.kakao.maps.Map(container, options);
-            setMap(mapInstance);
           },
         );
       });
@@ -135,53 +118,89 @@ const MapPage = () => {
     };
   }, []);
 
-  // 지연을 위한 비동기 함수
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const getDistance = (lat1, lng1, lat2, lng2) => {
+    const R = 6371e3;
+    const φ1 = (lat1 * Math.PI) / 180;
+    const φ2 = (lat2 * Math.PI) / 180;
+    const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+    const Δλ = ((lng2 - lng1) * Math.PI) / 180;
 
-  // 보호소 데이터 마커에 지연 추가
-  const placeMarkersWithDelay = async (shelters, mapInstance) => {
+    const a =
+      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
+  };
+
+  const placeClosestShelters = async (
+    shelters,
+    mapInstance,
+    userLat,
+    userLng,
+  ) => {
     const geocoder = new window.kakao.maps.services.Geocoder();
 
-    for (let i = 0; i < shelters.length; i++) {
-      const shelter = shelters[i];
-      await delay(200);
-
-      geocoder.addressSearch(shelter.주소, (result, status) => {
-        if (status === window.kakao.maps.services.Status.OK) {
-          const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
-
-          const imageSrc = "/img/markerimg/marker-shelter.png";
-          const imageSize = new window.kakao.maps.Size(43, 56);
-          const imageOption = { offset: new window.kakao.maps.Point(16, 32) };
-          const markerImage = new window.kakao.maps.MarkerImage(
-            imageSrc,
-            imageSize,
-            imageOption,
-          );
-
-          const marker = new window.kakao.maps.Marker({
-            map: mapInstance,
-            position: coords,
-            image: markerImage,
+    const shelterDistances = await Promise.all(
+      shelters.map(async (shelter) => {
+        return new Promise((resolve) => {
+          geocoder.addressSearch(shelter.주소, (result, status) => {
+            if (status === window.kakao.maps.services.Status.OK) {
+              const shelterLat = result[0].y;
+              const shelterLng = result[0].x;
+              const distance = getDistance(
+                userLat,
+                userLng,
+                shelterLat,
+                shelterLng,
+              );
+              resolve({ shelter, distance, lat: shelterLat, lng: shelterLng });
+            } else {
+              resolve(null);
+            }
           });
+        });
+      }),
+    );
 
-          const overlayContent = `
-            <div style="position: relative; bottom: 30px; width: 150px; padding: 5px; text-align: center; font-size: 12px; background: #fff; border: 1px solid #ccc; border-radius: 5px;">
-              <small>${shelter.보호센터명}<br>${shelter.전화번호}</small>
-            </div>`;
-          const customOverlay = new window.kakao.maps.CustomOverlay({
-            position: coords,
-            content: overlayContent,
-            yAnchor: 1.2,
-            map: null,
-          });
+    const closestShelters = shelterDistances
+      .filter((item) => item)
+      .sort((a, b) => a.distance - b.distance)
+      .slice(0, 5);
 
-          window.kakao.maps.event.addListener(marker, "click", () => {
-            customOverlay.setMap(customOverlay.getMap() ? null : mapInstance);
-          });
-        }
+    closestShelters.forEach(({ shelter, lat, lng }) => {
+      const coords = new window.kakao.maps.LatLng(lat, lng);
+
+      const imageSrc = "/img/markerimg/marker-shelter.png";
+      const imageSize = new window.kakao.maps.Size(43, 56);
+      const imageOption = { offset: new window.kakao.maps.Point(16, 32) };
+      const markerImage = new window.kakao.maps.MarkerImage(
+        imageSrc,
+        imageSize,
+        imageOption,
+      );
+
+      const marker = new window.kakao.maps.Marker({
+        map: mapInstance,
+        position: coords,
+        image: markerImage,
       });
-    }
+
+      const overlayContent = `
+        <div style="position: relative; bottom: 30px; width: 150px; padding: 5px; text-align: center; font-size: 12px; background: #fff; border: 1px solid #ccc; border-radius: 5px;">
+          <small>${shelter.보호센터명}<br>${shelter.전화번호}</small>
+        </div>`;
+      const customOverlay = new window.kakao.maps.CustomOverlay({
+        position: coords,
+        content: overlayContent,
+        yAnchor: 1.2,
+        map: null,
+      });
+
+      window.kakao.maps.event.addListener(marker, "click", () => {
+        customOverlay.setMap(customOverlay.getMap() ? null : mapInstance);
+      });
+    });
   };
 
   const goToShelterList = () => {
