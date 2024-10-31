@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import * as S from "./style";
 import { useNavigate } from "react-router-dom";
 import Login from "../../Login";
-import { SearchIcon, BackArrowIcon } from "assets/svgs";
+import { BackArrowIcon } from "assets/svgs";
 import { Modal, Form, Button } from "react-bootstrap";
 
 const Header = ({ isBack }) => {
@@ -97,15 +97,13 @@ const Header = ({ isBack }) => {
   return (
     <S.Layer>
       {isBack && <BackArrowIcon onClick={() => navigate("/")} />}
+      <img
+        src="/img/mm.png"
+        alt="로고"
+        height={"56px"}
+        onClick={() => navigate("/")}
+      />
       <S.HeaderTop>
-        <S.Logo>
-          <img
-            src="img/mm.png"
-            alt="로고"
-            height={"56px"}
-            onClick={() => navigate("/")}
-          />
-        </S.Logo>
         <S.ProfileIcon onClick={handleProfileClick} ref={dropdownRef}>
           {user && user.profileImg ? (
             <img
@@ -140,14 +138,6 @@ const Header = ({ isBack }) => {
           )}
         </S.ProfileIcon>
       </S.HeaderTop>
-      <S.HeaderBottom>
-        <S.SearchBox>
-          <input type="text" placeholder="찾고 싶은 상품을 검색해 보세요!" />
-          <S.SearchButton>
-            <SearchIcon />
-          </S.SearchButton>
-        </S.SearchBox>
-      </S.HeaderBottom>
 
       <Modal
         show={showModal}
@@ -190,4 +180,3 @@ const Header = ({ isBack }) => {
 };
 
 export default Header;
-
