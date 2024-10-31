@@ -228,7 +228,6 @@ const MapPage = () => {
       flex: 1,
       width: "100%",
       height: "60vh",
-      cursor: "url(/img/cat-paw.png), auto",
     },
     buttonsContainer: {
       display: "flex",
