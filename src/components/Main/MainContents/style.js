@@ -12,28 +12,7 @@ export const MainWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 32px;
-`;
-
-export const MapBox = styled.div`
-  width: 70%;
-  height: 344px;
-  border: 1px solid black;
-`;
-
-export const BannerWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  img {
-    width: 100%;
-  }
-`;
-
-export const Banner = styled.div`
-  width: 392px;
-  height: 197px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  margin-bottom: 56px;
 `;
 
 export const CategoryWrapper = styled.div`
@@ -56,6 +35,7 @@ export const Category = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 4px;
+  cursor: pointer;
   div {
     width: 80px;
     height: 80px;
