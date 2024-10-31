@@ -1,13 +1,27 @@
 import styled from "@emotion/styled";
 
 export const Layer = styled.div`
+  max-width: 600px;
   width: 100%;
   position: sticky;
   top: 0;
-  background: #fff;
   display: flex;
+  justify-content: center;
   flex-direction: column; /* 세로 정렬 */
   align-items: center;
+  z-index: 10;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 16px;
+
+  svg {
+    position: absolute;
+    cursor: pointer;
+    left: 16px;
+  }
+  img {
+    cursor: pointer;
+  }
 `;
 
 export const HeaderTop = styled.div`
@@ -98,5 +112,49 @@ export const DropdownItem = styled.button`
   white-space: nowrap; /* 텍스트가 한 줄로 표시되도록 */
   &:hover {
     background: #555; /* 호버시 배경 색상 변경 */
+  }
+`;
+
+export const ProfileIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #555;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-left: 16px;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+`;
+
+export const DropdownMenu = styled.div`
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: #333;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  z-index: 10;
+`;
+
+export const DropdownItem = styled.button`
+  padding: 12px 16px;
+  cursor: pointer;
+  color: white;
+  background: none;
+  border: none;
+  text-align: center;
+  width: 100%;
+  white-space: nowrap;
+
+  &:hover {
+    background: #555;
   }
 `;

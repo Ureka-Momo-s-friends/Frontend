@@ -6,14 +6,20 @@ import Bottombar from "components/Main/Bottombar";
 
 function HomePage() {
   return (
-    <S.Wrapper>
+    <S.Layout>
+      {/* 헤더 추가 */}
       <Header />
+
+      {/* 첫 번째 섹션: 로그인 및 메인 콘텐츠 */}
       <section>
+        <Login />
         {/* 메인 콘텐츠 */}
         <MainContents />
       </section>
+
+      {/* 바텀바 추가 */}
       <Bottombar />
-    </S.Wrapper>
+    </S.Layout>
   );
 }
 

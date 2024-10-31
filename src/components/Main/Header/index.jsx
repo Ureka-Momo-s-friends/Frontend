@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as S from "./style";
 import { useNavigate } from "react-router-dom";
-import Login from "../../Login"; // Login 컴포넌트 임포트
-import { SearchIcon } from "assets/svgs";
+import Login from "../../Login";
+import { SearchIcon, BackArrowIcon } from "assets/svgs";
 import { Modal, Form, Button } from "react-bootstrap";
 
-function Header() {
+const Header = ({ isBack }) => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [showModal, setShowModal] = useState(false); // 모달 상태 추가
+  const [showModal, setShowModal] = useState(false);
   const [newName, setNewName] = useState("");
   const [newContact, setNewContact] = useState("");
   const [newProfileImg, setNewProfileImg] = useState(null);
@@ -96,9 +96,15 @@ function Header() {
 
   return (
     <S.Layer>
+      {isBack && <BackArrowIcon onClick={() => navigate("/")} />}
       <S.HeaderTop>
         <S.Logo>
-          <img src="img/mm.png" alt="로고" height={"56px"} />
+          <img
+            src="img/mm.png"
+            alt="로고"
+            height={"56px"}
+            onClick={() => navigate("/")}
+          />
         </S.Logo>
         <S.ProfileIcon onClick={handleProfileClick} ref={dropdownRef}>
           {user && user.profileImg ? (
@@ -143,7 +149,6 @@ function Header() {
         </S.SearchBox>
       </S.HeaderBottom>
 
-      {/* 신규 유저 모달 */}
       <Modal
         show={showModal}
         onHide={() => setShowModal(false)}
@@ -182,6 +187,7 @@ function Header() {
       </Modal>
     </S.Layer>
   );
-}
+};
 
 export default Header;
+
