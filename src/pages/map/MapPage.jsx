@@ -94,7 +94,7 @@ const MapPage = () => {
       width: "90%",
       maxWidth: "600px",
       margin: "0 auto",
-      minHeight: "100vh",
+      height: "100%",
       display: "flex",
       flexDirection: "column",
       justifyContent: "space-between",
@@ -132,7 +132,7 @@ const MapPage = () => {
       display: "flex",
       justifyContent: "space-around",
       alignItems: "center",
-      margin: "20px 0",
+      margin: "20px 0 76px",
       padding: "0 20px",
     },
     footerButton1: {
