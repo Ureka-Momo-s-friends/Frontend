@@ -150,7 +150,7 @@ const MapPage = () => {
         if (status === window.kakao.maps.services.Status.OK) {
           const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
 
-          const imageSrc = "/img/markerimg/sheltermarker.png";
+          const imageSrc = "/img/markerimg/marker-shelter.png";
           const imageSize = new window.kakao.maps.Size(43, 56);
           const imageOption = { offset: new window.kakao.maps.Point(16, 32) };
           const markerImage = new window.kakao.maps.MarkerImage(
