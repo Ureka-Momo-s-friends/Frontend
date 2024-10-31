@@ -60,6 +60,7 @@ function Header() {
         googleId: loggedInUser.googleId,
       }),
     );
+
     if (newProfileImg) {
       formData.append("profileImg", newProfileImg);
     }
@@ -75,22 +76,15 @@ function Header() {
         return response.json();
       })
       .then((data) => {
-        // 서버에서 반환된 데이터 확인
-        console.log("Server response:", data);
-
-        // 데이터를 가져온 후 이미지를 Base64 형식으로 변환
         const profileImageSrc = data.profileImg
           ? `data:image/jpeg;base64,${data.profileImg}`
           : null;
-
-        console.log("Profile image src:", profileImageSrc);
 
         const userWithProfileImg = {
           ...data,
           profileImg: profileImageSrc,
         };
 
-        // 업데이트된 유저 정보를 상태와 로컬 스토리지에 저장
         setUser(userWithProfileImg);
         localStorage.setItem("user", JSON.stringify(userWithProfileImg));
         setShowModal(false);
