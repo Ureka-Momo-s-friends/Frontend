@@ -15,19 +15,18 @@ const Bottombar = () => {
     <S.Layer>
       <MenuItem link="/MapPage">
         <CatIcon />
-        <p>길냥이</p>
+        길냥이
       </MenuItem>
       <MenuItem link="/">
-        <HomeIcon />
-        <p>홈</p>
+        <HomeIcon />홈
       </MenuItem>
       <MenuItem link="/cart">
         <CartIcon />
-        <p>장바구니</p>
+        장바구니
       </MenuItem>
       <MenuItem link="/profile">
         <UserIcon />
-        <p>마이</p>
+        마이
       </MenuItem>
     </S.Layer>
   );

@@ -1,14 +1,17 @@
 import { Global, css } from "@emotion/react";
 
 const baseStyle = css`
-  * {
-    font-family: "Kodchasan-Light", "NanumSquareRoundExtraBold", "Sans-serif";
+  html,
+  body,
+  #root {
+    height: 100%;
   }
 
   * {
     margin: 0;
     padding: 0;
     border: 0;
+    font-family: "Kodchasan-Light", "NanumSquareRoundExtraBold", "Sans-serif";
   }
 
   input {
@@ -23,6 +26,13 @@ const baseStyle = css`
   }
   label {
     cursor: pointer;
+  }
+  img {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
   }
 `;
 

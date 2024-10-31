@@ -1,32 +1,16 @@
 import styled from "@emotion/styled";
 
-export const Layer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-export const MainWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 32px;
-  margin-bottom: 56px;
-`;
-
 export const CategoryWrapper = styled.div`
-  width: 73%;
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 32px;
   margin: 24px 0;
+  padding: 0 16px;
 
-  @media (max-width: 600px) {
-    & > div {
-      flex-basis: calc(50% - 32px);
-    }
+  & > div:nth-of-type(${(props) => props.activeid + 1}) {
+    font-weight: 900;
   }
 `;
 
@@ -46,7 +30,7 @@ export const Category = styled.div`
     justify-content: center;
     align-items: center;
   }
-  p {
+  span {
     text-align: center;
   }
 `;
