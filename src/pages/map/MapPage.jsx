@@ -101,7 +101,7 @@ const MapPage = () => {
                     const customOverlay = new window.kakao.maps.CustomOverlay({
                       position: catPosition,
                       content: overlayContent,
-                      yAnchor: 1.2,
+                      yAnchor: 1.5,
                     });
 
                     window.kakao.maps.event.addListener(marker, "click", () => {
