@@ -59,6 +59,7 @@ const MapPage = () => {
               })
               .catch((error) => console.error("Error loading JSON:", error));
 
+            // 길냥이 데이터 로드 및 마커 표시
             fetch("http://localhost:8080/api/strayCats?memberId=1", {
               method: "GET",
               headers: {
@@ -74,8 +75,21 @@ const MapPage = () => {
                       cat.lon,
                     );
 
+                    // 커스텀 마커 이미지 설정
+                    const markerImageSrc = "/img/markerimg/marker-cat.png"; // 커스텀 이미지 경로
+                    const markerImageSize = new window.kakao.maps.Size(43, 56); // 이미지 크기
+                    const markerImageOption = {
+                      offset: new window.kakao.maps.Point(20, 40),
+                    }; // 마커 위치 오프셋
+                    const markerImage = new window.kakao.maps.MarkerImage(
+                      markerImageSrc,
+                      markerImageSize,
+                      markerImageOption,
+                    );
+
                     const marker = new window.kakao.maps.Marker({
                       position: catPosition,
+                      image: markerImage, // 커스텀 이미지 적용
                       map: mapInstance,
                     });
 
