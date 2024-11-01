@@ -1,14 +1,22 @@
 import React, { useState } from "react";
 import * as S from "./style";
 import { XIcon } from "assets/svgs";
+import { useNavigate } from "react-router-dom";
 
 const BottomSheet = ({ onClose, productName, price }) => {
   const [quantity, setQuantity] = useState(1);
   const totalPrice = price * quantity;
+  const navigate = useNavigate(); //결제창으로
 
   const increaseQuantity = () => setQuantity(quantity + 1);
   const decreaseQuantity = () => {
     if (quantity > 1) setQuantity(quantity - 1);
+  };
+
+  const handleCartClick = () => {
+    navigate("/payment", {
+      state: { productName, totalPrice, quantity },
+    });
   };
 
   return (
@@ -29,7 +37,7 @@ const BottomSheet = ({ onClose, productName, price }) => {
         <p>총 상품 금액: {totalPrice.toLocaleString()}원</p>
       </S.PriceInfo>
       <S.BtnWrapper>
-        <S.Button>장바구니</S.Button>
+        <S.Button onClick={handleCartClick}>장바구니</S.Button>
         <S.Button>바로 구매</S.Button>
       </S.BtnWrapper>
     </S.BottomSheet>
