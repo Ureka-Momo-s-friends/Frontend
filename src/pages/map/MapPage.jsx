@@ -7,12 +7,11 @@ const MapPage = () => {
   const [map, setMap] = useState(null);
   const [isHovered1, setIsHovered1] = useState(false);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
-  const [catPhotos, setCatPhotos] = useState([]);
+  const [strayCats, setStrayCats] = useState([]);
+  const [userLatLng, setUserLatLng] = useState(null);
 
   const handleShowOffcanvas = () => setShowOffcanvas(true);
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
-  const [strayCats, setStrayCats] = useState([]);
-  const [userLatLng, setUserLatLng] = useState(null);
 
   useEffect(() => {
     const kakaoApiKey = process.env.REACT_APP_KAKAO_MAP_API_KEY;
@@ -338,11 +337,11 @@ const MapPage = () => {
           <Offcanvas.Title>내 길냥이 도감</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          {catPhotos.length > 0 ? (
-            catPhotos.map((photo, index) => (
+          {strayCats.length > 0 ? (
+            strayCats.map((cat, index) => (
               <img
                 key={index}
-                src={photo}
+                src={cat.catImgUrl}
                 alt={`Cat ${index + 1}`}
                 style={{
                   width: "100%",
