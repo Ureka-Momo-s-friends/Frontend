@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Bottombar from "components/Main/Bottombar";
+import { Offcanvas } from "react-bootstrap";
 import Cam from "./Cam";
 
 const MapPage = () => {
   const [map, setMap] = useState(null);
   const [isHovered1, setIsHovered1] = useState(false);
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
+  const [catPhotos, setCatPhotos] = useState([]);
+
+  const handleShowOffcanvas = () => setShowOffcanvas(true);
+  const handleCloseOffcanvas = () => setShowOffcanvas(false);
   const [strayCats, setStrayCats] = useState([]);
   const [userLatLng, setUserLatLng] = useState(null);
 
@@ -45,17 +51,6 @@ const MapPage = () => {
               position: markerPosition,
               map: mapInstance,
             });
-
-            const overlayContent = `
-              <div style="position: relative; bottom: 30px; width: 100px; padding: 5px; text-align: center; font-size: 12px; background: #fff; border: 1px solid #ccc; border-radius: 5px;">
-                <small>현재 위치</small>
-              </div>`;
-            const customOverlay = new window.kakao.maps.CustomOverlay({
-              position: markerPosition,
-              content: overlayContent,
-              yAnchor: 1.5,
-            });
-            customOverlay.setMap(mapInstance);
 
             fetch("/shelter.json")
               .then((response) => response.json())
@@ -321,6 +316,7 @@ const MapPage = () => {
       <div style={styles.buttonsContainer}>
         <button
           style={styles.footerButton1}
+          onClick={handleShowOffcanvas}
           onMouseEnter={() => setIsHovered1(true)}
           onMouseLeave={() => setIsHovered1(false)}
         >
@@ -332,6 +328,34 @@ const MapPage = () => {
       </div>
 
       <Bottombar />
+
+      <Offcanvas
+        show={showOffcanvas}
+        onHide={handleCloseOffcanvas}
+        placement="end"
+      >
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>내 길냥이 도감</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          {catPhotos.length > 0 ? (
+            catPhotos.map((photo, index) => (
+              <img
+                key={index}
+                src={photo}
+                alt={`Cat ${index + 1}`}
+                style={{
+                  width: "100%",
+                  marginBottom: "10px",
+                  borderRadius: "8px",
+                }}
+              />
+            ))
+          ) : (
+            <p>고양이 사진을 불러오는 중입니다...</p>
+          )}
+        </Offcanvas.Body>
+      </Offcanvas>
     </div>
   );
 };
