@@ -7,7 +7,7 @@ import ProductList from "components/Product/ProductList";
 const MainContents = () => {
   const [products, setProducts] = useState([]);
   const [categoryId, setCategoryId] = useState(0);
-  const categorys = ["", "사료", "캔_간식", "모래_탈취제", "화장실_매트"];
+  const categorys = ["", "사료", "캔_간식", "모래_탈취제", "스크래쳐_캣타워"];
 
   useEffect(() => {
     const fetchProducts = async () => {
