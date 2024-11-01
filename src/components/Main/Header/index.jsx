@@ -96,7 +96,7 @@ const Header = ({ isBack }) => {
 
   return (
     <S.Layer>
-      {isBack && <BackArrowIcon onClick={() => navigate("/")} />}
+      {isBack && <BackArrowIcon onClick={() => navigate(-1)} />}
       <img
         src="/img/mm.png"
         alt="로고"
