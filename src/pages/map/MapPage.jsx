@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Bottombar from "components/Main/Bottombar";
+import { Offcanvas } from "react-bootstrap";
 
 const MapPage = () => {
   const [map, setMap] = useState(null);
   const [isHovered1, setIsHovered1] = useState(false);
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
+  const [catPhotos, setCatPhotos] = useState([]);
+
+  const handleShowOffcanvas = () => setShowOffcanvas(true);
+  const handleCloseOffcanvas = () => setShowOffcanvas(false);
 
   useEffect(() => {
     const kakaoApiKey = process.env.REACT_APP_KAKAO_MAP_API_KEY;
@@ -41,17 +47,6 @@ const MapPage = () => {
               map: mapInstance,
             });
 
-            const overlayContent = `
-              <div style="position: relative; bottom: 30px; width: 100px; padding: 5px; text-align: center; font-size: 12px; background: #fff; border: 1px solid #ccc; border-radius: 5px;">
-                <small>현재 위치</small>
-              </div>`;
-            const customOverlay = new window.kakao.maps.CustomOverlay({
-              position: markerPosition,
-              content: overlayContent,
-              yAnchor: 1.5,
-            });
-            customOverlay.setMap(mapInstance);
-
             fetch("/shelter.json")
               .then((response) => response.json())
               .then((data) => {
@@ -59,7 +54,6 @@ const MapPage = () => {
               })
               .catch((error) => console.error("Error loading JSON:", error));
 
-            // 길냥이 데이터 로드 및 마커 표시
             fetch("http://localhost:8080/api/strayCats?memberId=1", {
               method: "GET",
               headers: {
@@ -69,18 +63,17 @@ const MapPage = () => {
               .then((response) => response.json())
               .then((cats) => {
                 if (Array.isArray(cats)) {
+                  setCatPhotos(cats.map((cat) => cat.catImgUrl)); // 고양이 사진 데이터 저장
                   cats.forEach((cat) => {
                     const catPosition = new window.kakao.maps.LatLng(
                       cat.lat,
                       cat.lon,
                     );
-
-                    // 커스텀 마커 이미지 설정
-                    const markerImageSrc = "/img/markerimg/marker-cat.png"; // 커스텀 이미지 경로
-                    const markerImageSize = new window.kakao.maps.Size(43, 56); // 이미지 크기
+                    const markerImageSrc = "/img/markerimg/marker-cat.png";
+                    const markerImageSize = new window.kakao.maps.Size(43, 56);
                     const markerImageOption = {
                       offset: new window.kakao.maps.Point(20, 40),
-                    }; // 마커 위치 오프셋
+                    };
                     const markerImage = new window.kakao.maps.MarkerImage(
                       markerImageSrc,
                       markerImageSize,
@@ -89,13 +82,13 @@ const MapPage = () => {
 
                     const marker = new window.kakao.maps.Marker({
                       position: catPosition,
-                      image: markerImage, // 커스텀 이미지 적용
+                      image: markerImage,
                       map: mapInstance,
                     });
 
                     const overlayContent = `
                       <div style="padding:5px; background:#fff; border:1px solid #ccc; border-radius:5px;">
-                        <img src="${cat.catImgUrl}" alt="Cat Image" style="width:50px; height:50px; border-radius:50%;" />
+                        <img src="${cat.catImgUrl}" alt="Cat Image" style="width:70px; height:70px; border-radius:50%;" />
                         <div style="text-align: center; margin-top: 5px;"></div>
                       </div>`;
                     const customOverlay = new window.kakao.maps.CustomOverlay({
@@ -306,6 +299,7 @@ const MapPage = () => {
       <div style={styles.buttonsContainer}>
         <button
           style={styles.footerButton1}
+          onClick={handleShowOffcanvas}
           onMouseEnter={() => setIsHovered1(true)}
           onMouseLeave={() => setIsHovered1(false)}
         >
@@ -317,6 +311,34 @@ const MapPage = () => {
       </div>
 
       <Bottombar />
+
+      <Offcanvas
+        show={showOffcanvas}
+        onHide={handleCloseOffcanvas}
+        placement="end"
+      >
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>내 길냥이 도감</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          {catPhotos.length > 0 ? (
+            catPhotos.map((photo, index) => (
+              <img
+                key={index}
+                src={photo}
+                alt={`Cat ${index + 1}`}
+                style={{
+                  width: "100%",
+                  marginBottom: "10px",
+                  borderRadius: "8px",
+                }}
+              />
+            ))
+          ) : (
+            <p>고양이 사진을 불러오는 중입니다...</p>
+          )}
+        </Offcanvas.Body>
+      </Offcanvas>
     </div>
   );
 };
