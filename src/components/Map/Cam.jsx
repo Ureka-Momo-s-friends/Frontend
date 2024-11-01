@@ -3,6 +3,8 @@ import React, { useRef } from "react";
 function Cam({ addStrayCat, userLatLng }) {
   const fileInputRef = useRef(null);
   const camImgSrc = "/img/cam-button.png";
+  const loggedInUser = JSON.parse(localStorage.getItem("user"));
+  const userId = loggedInUser ? loggedInUser.id : null;
 
   // 이미지 버튼 클릭 시 파일 입력창 트리거
   const handleButtonClick = () => {
@@ -21,7 +23,7 @@ function Cam({ addStrayCat, userLatLng }) {
         formData.append("catImg", file); // 이미지 추가
         formData.append("lat", userLatLng.lat);
         formData.append("lon", userLatLng.lng);
-        formData.append("memberId", "1");
+        formData.append("memberId", userId);
 
         const apiResponse = await fetch("http://localhost:8080/api/strayCats", {
           method: "POST",

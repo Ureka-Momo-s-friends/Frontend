@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Bottombar from "components/Main/Bottombar";
 import { Offcanvas } from "react-bootstrap";
-import Cam from "./Cam";
+import Cam from "../../components/Map/Cam";
 
 const MapPage = () => {
+  const loggedInUser = JSON.parse(localStorage.getItem("user"));
+  const userId = loggedInUser ? loggedInUser.id : null;
+
   const [map, setMap] = useState(null);
   const [isHovered1, setIsHovered1] = useState(false);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
@@ -118,7 +121,7 @@ const MapPage = () => {
 
   // 길냥이 데이터 fetch 함수 분리
   const fetchStrayCats = (mapInstance) => {
-    fetch("http://localhost:8080/api/strayCats?memberId=1", {
+    fetch(`http://localhost:8080/api/strayCats?memberId=${userId}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     })
