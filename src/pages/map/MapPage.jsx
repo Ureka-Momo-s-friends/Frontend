@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Bottombar from "components/Main/Bottombar";
+import Cam from "./Cam";
 
 const MapPage = () => {
   const [map, setMap] = useState(null);
   const [isHovered1, setIsHovered1] = useState(false);
+  const [strayCats, setStrayCats] = useState([]);
+  const [userLatLng, setUserLatLng] = useState(null);
 
   useEffect(() => {
     const kakaoApiKey = process.env.REACT_APP_KAKAO_MAP_API_KEY;
@@ -22,6 +25,8 @@ const MapPage = () => {
           (position) => {
             const userLat = position.coords.latitude;
             const userLng = position.coords.longitude;
+
+            setUserLatLng({ lat: userLat, lng: userLng });
 
             const container = document.getElementById("map");
             const options = {
@@ -58,65 +63,7 @@ const MapPage = () => {
                 placeClosestShelters(data, mapInstance, userLat, userLng);
               })
               .catch((error) => console.error("Error loading JSON:", error));
-
-            // 길냥이 데이터 로드 및 마커 표시
-            fetch("http://localhost:8080/api/strayCats?memberId=1", {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            })
-              .then((response) => response.json())
-              .then((cats) => {
-                if (Array.isArray(cats)) {
-                  cats.forEach((cat) => {
-                    const catPosition = new window.kakao.maps.LatLng(
-                      cat.lat,
-                      cat.lon,
-                    );
-
-                    // 커스텀 마커 이미지 설정
-                    const markerImageSrc = "/img/markerimg/marker-cat.png"; // 커스텀 이미지 경로
-                    const markerImageSize = new window.kakao.maps.Size(43, 56); // 이미지 크기
-                    const markerImageOption = {
-                      offset: new window.kakao.maps.Point(20, 40),
-                    }; // 마커 위치 오프셋
-                    const markerImage = new window.kakao.maps.MarkerImage(
-                      markerImageSrc,
-                      markerImageSize,
-                      markerImageOption,
-                    );
-
-                    const marker = new window.kakao.maps.Marker({
-                      position: catPosition,
-                      image: markerImage, // 커스텀 이미지 적용
-                      map: mapInstance,
-                    });
-
-                    const overlayContent = `
-                      <div style="padding:5px; background:#fff; border:1px solid #ccc; border-radius:5px;">
-                        <img src="${cat.catImgUrl}" alt="Cat Image" style="width:50px; height:50px; border-radius:50%;" />
-                        <div style="text-align: center; margin-top: 5px;"></div>
-                      </div>`;
-                    const customOverlay = new window.kakao.maps.CustomOverlay({
-                      position: catPosition,
-                      content: overlayContent,
-                      yAnchor: 1.5,
-                    });
-
-                    window.kakao.maps.event.addListener(marker, "click", () => {
-                      customOverlay.setMap(
-                        customOverlay.getMap() ? null : mapInstance,
-                      );
-                    });
-                  });
-                } else {
-                  console.error("Expected an array, but received:", cats);
-                }
-              })
-              .catch((error) =>
-                console.error("Error fetching stray cat data:", error),
-              );
+            fetchStrayCats(mapInstance);
           },
           (error) => {
             console.error("Geolocation error:", error);
@@ -131,6 +78,66 @@ const MapPage = () => {
       document.head.removeChild(script);
     };
   }, []);
+
+  // strayCats 변경 시마다 마커 업데이트
+  useEffect(() => {
+    if (map) {
+      strayCats.forEach((cat) => {
+        const catPosition = new window.kakao.maps.LatLng(cat.lat, cat.lon);
+        const markerImageSrc = "/img/markerimg/marker-cat.png";
+        const markerImageSize = new window.kakao.maps.Size(43, 56);
+        const markerImageOption = {
+          offset: new window.kakao.maps.Point(20, 40),
+        };
+        const markerImage = new window.kakao.maps.MarkerImage(
+          markerImageSrc,
+          markerImageSize,
+          markerImageOption,
+        );
+
+        const marker = new window.kakao.maps.Marker({
+          position: catPosition,
+          image: markerImage,
+          map,
+        });
+
+        const overlayContent = `
+          <div style="padding:5px; background:#fff; border:1px solid #ccc; border-radius:5px;">
+            <img src="${cat.catImgUrl}" alt="Cat Image" style="width:50px; height:50px; border-radius:50%;" />
+          </div>`;
+        const customOverlay = new window.kakao.maps.CustomOverlay({
+          position: catPosition,
+          content: overlayContent,
+          yAnchor: 1.5,
+        });
+
+        window.kakao.maps.event.addListener(marker, "click", () => {
+          customOverlay.setMap(customOverlay.getMap() ? null : map);
+        });
+      });
+    }
+  }, [map, strayCats]);
+
+  const addStrayCat = (newStrayCat) => {
+    setStrayCats([...strayCats, newStrayCat]);
+  };
+
+  // 길냥이 데이터 fetch 함수 분리
+  const fetchStrayCats = (mapInstance) => {
+    fetch("http://localhost:8080/api/strayCats?memberId=1", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => response.json())
+      .then((cats) => {
+        if (Array.isArray(cats)) {
+          setStrayCats(cats);
+        } else {
+          console.error("Expected an array, but received:", cats);
+        }
+      })
+      .catch((error) => console.error("Error fetching stray cat data:", error));
+  };
 
   const getDistance = (lat1, lng1, lat2, lng2) => {
     const R = 6371e3;
@@ -290,6 +297,12 @@ const MapPage = () => {
       color: "#ffffff",
       borderRadius: "5px",
     },
+    mapContainer: {
+      position: "relative", // 추가
+      flex: 1,
+      width: "100%",
+      height: "60vh",
+    },
   };
 
   return (
@@ -301,7 +314,9 @@ const MapPage = () => {
         <h1 style={styles.headerTitle}>길냥이 찾기</h1>
       </header>
 
-      <div id="map" style={styles.mapContainer}></div>
+      <div id="map" style={styles.mapContainer}>
+        <Cam addStrayCat={addStrayCat} userLatLng={userLatLng} />
+      </div>
 
       <div style={styles.buttonsContainer}>
         <button
