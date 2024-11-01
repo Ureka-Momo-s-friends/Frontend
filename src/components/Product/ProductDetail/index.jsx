@@ -1,13 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import * as S from "./style";
 import { useParams } from "react-router-dom";
-import products from "assets/products.json";
 import Header from "components/Main/Header";
 import BuyAndCart from "../BuyAndCart";
 
 const ProductDetail = () => {
   const { productId } = useParams();
-  const product = products[productId - 1];
+  const [product, setProduct] = useState();
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/products/${productId}`,
+        );
+
+        if (!response.ok) {
+          throw new Error("데이터를 가져오는 데 실패했습니다.");
+        }
+        const data = await response.json();
+        setProduct(data);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchProducts();
+  }, [productId]);
 
   return (
     <S.Layer>
