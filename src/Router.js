@@ -6,6 +6,7 @@ import PetProfileUpdatePage from "./pages/Profile/PetProfileUpdatePage";
 import "./ProfilePage.css";
 import PaymentPage from "pages/Pay/PaymentPage";
 import PaymentSuccess from "pages/Pay/PaymentSuccess";
+import CartPage from "pages/Cart/CartPage";
 
 const Router = () => {
   return (
@@ -16,6 +17,7 @@ const Router = () => {
       <Route path="/profileupdate" element={<ProfileUpdatePage />} />
       <Route path="/petprofileupdate" element={<PetProfileUpdatePage />} />
       <Route path="/product/:productId" element={<ProductDetailPage />} />
+      <Route path="/cart" element={<CartPage />} />
       <Route path="/payment" element={<PaymentPage />} />
       <Route path="/success" element={<PaymentSuccess />} />
     </Routes>

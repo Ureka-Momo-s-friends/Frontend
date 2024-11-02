@@ -1,39 +1,32 @@
 import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { loadTossPayments } from "@tosspayments/sdk";
 
 const PaymentPage = () => {
-  useEffect(() => {
-    // SDK 초기화
-    const clientKey = "test_ck_N5OWRapdA8dbwLJy01BVo1zEqZKL";
+  const location = useLocation();
+  const { cartItems, totalPrice } = location.state || {
+    cartItems: [],
+    totalPrice: 0,
+  };
 
+  useEffect(() => {
+    const clientKey = process.env.REACT_APP_TOSS_CLIENT_KEY;
     loadTossPayments(clientKey).then((tossPayments) => {
-      window.requestPayment = () => {
-        tossPayments.requestPayment("VIRTUAL_ACCOUNT", {
-          amount: 50000,
-          orderId: "j9MY0wNUn7G2Z1AisevQH",
-          orderName: "토스 티셔츠 외 2건",
-          successUrl: window.location.origin + "/success",
-          failUrl: window.location.origin + "/fail",
-          customerEmail: "customer123@gmail.com",
-          customerName: "김토스",
-          customerMobilePhone: "01012341234",
-          virtualAccount: {
-            cashReceipt: {
-              type: "소득공제",
-            },
-            useEscrow: false,
-            validHours: 24,
-          },
-        });
-      };
+      // 페이지가 로드될 때 자동으로 결제 요청 실행
+      tossPayments.requestPayment("카드", {
+        amount: totalPrice,
+        orderId: "order-id-" + new Date().getTime(), // 고유 주문 ID 생성
+        orderName: cartItems.map((item) => item.productName).join(", "),
+        successUrl: window.location.origin + "/success",
+        failUrl: window.location.origin + "/fail",
+      });
     });
-  }, []);
+  }, [cartItems, totalPrice]);
 
   return (
     <div>
-      <button className="button" onClick={() => window.requestPayment()}>
-        결제하기
-      </button>
+      <h1>결제 진행 중...</h1>
+      <p>잠시만 기다려 주세요.</p>
     </div>
   );
 };

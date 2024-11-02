@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const BottomSheet = ({ onClose, productName, price }) => {
   const [quantity, setQuantity] = useState(1);
   const totalPrice = price * quantity;
-  const navigate = useNavigate(); //결제창으로
+  const navigate = useNavigate();
 
   const increaseQuantity = () => setQuantity(quantity + 1);
   const decreaseQuantity = () => {
@@ -14,9 +14,23 @@ const BottomSheet = ({ onClose, productName, price }) => {
   };
 
   const handleCartClick = () => {
-    navigate("/payment", {
-      state: { productName, totalPrice, quantity },
-    });
+    // 장바구니에 상품 추가
+    const cartItem = {
+      productName,
+      price,
+      quantity,
+      totalPrice,
+    };
+
+    // 로컬 스토리지에 장바구니 데이터 저장
+    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
+    existingCart.push(cartItem);
+    localStorage.setItem("cart", JSON.stringify(existingCart));
+
+    alert(`${productName}이(가) 장바구니에 추가되었습니다.`);
+
+    // 장바구니 페이지로 이동
+    navigate("/cart");
   };
 
   return (
