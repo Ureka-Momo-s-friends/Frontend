@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
-  const navigate = useNavigate(); // navigate 훅 추가
+  const navigate = useNavigate();
 
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -14,6 +14,25 @@ const CartPage = () => {
     const updatedCartItems = cartItems.filter((_, i) => i !== index);
     setCartItems(updatedCartItems);
     localStorage.setItem("cart", JSON.stringify(updatedCartItems));
+
+    const itemToRemove = cartItems[index];
+
+    fetch(`http://localhost:8080/api/carts/${itemToRemove.productId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("장바구니 항목 삭제 실패");
+        }
+        alert("장바구니에서 항목이 삭제되었습니다.");
+      })
+      .catch((error) => {
+        console.error("장바구니 항목 삭제 중 오류 발생:", error);
+        alert("장바구니 항목 삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
+      });
   };
 
   const totalPrice = cartItems.reduce(
@@ -21,9 +40,12 @@ const CartPage = () => {
     0,
   );
 
-  const handleCheckout = () => {
-    // 결제 페이지로 이동하면서 장바구니 데이터를 전달
-    navigate("/payment", { state: { cartItems, totalPrice } });
+  const handleProceedToPayment = () => {
+    if (cartItems.length > 0) {
+      navigate("/payment", { state: { cartItems, totalPrice } });
+    } else {
+      alert("장바구니가 비어 있습니다.");
+    }
   };
 
   return (
@@ -42,7 +64,9 @@ const CartPage = () => {
         ))
       )}
       <p>총 결제 금액: {totalPrice.toLocaleString()}원</p>
-      <button onClick={handleCheckout}>결제하기</button>
+      {cartItems.length > 0 && (
+        <button onClick={handleProceedToPayment}>결제하기</button>
+      )}
     </div>
   );
 };
