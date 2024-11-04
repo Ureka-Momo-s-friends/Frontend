@@ -52,7 +52,6 @@ const BottomSheet = ({ onClose, productName, price }) => {
       </S.PriceInfo>
       <S.BtnWrapper>
         <S.Button onClick={handleCartClick}>장바구니</S.Button>
-        <S.Button>바로 구매</S.Button>
       </S.BtnWrapper>
     </S.BottomSheet>
   );
