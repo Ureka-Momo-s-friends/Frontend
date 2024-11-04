@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaHome } from "react-icons/fa";
-import "../Header.css"; // Header 스타일
+import "./Header.css"; // Header 스타일
 
-function Header() {
+function ProfileHeader() {
   const navigate = useNavigate();
 
   return (
@@ -18,4 +18,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default ProfileHeader;
