@@ -1,10 +1,13 @@
 import { Routes, Route } from "react-router-dom";
-import { HomePage, MapPage, ProductDetailPage } from "./pages";
-import ProfilePage from "./pages/Profile/ProfilePage";
-import ProfileUpdatePage from "./pages/Profile/ProfileUpdatePage";
-import PetProfileUpdatePage from "./pages/Profile/PetProfileUpdatePage";
-import "./ProfilePage.css";
-import ProductSearchPage from "pages/main/ProductSearchPage";
+import {
+  HomePage,
+  MapPage,
+  ProductDetailPage,
+  ProfilePage,
+  ProfileUpdatePage,
+  ProfilePetUpdatePage,
+  ProductSearchPage,
+} from "./pages";
 import PaymentPage from "pages/Pay/PaymentPage";
 import PaymentSuccess from "pages/Pay/PaymentSuccess";
 import CartPage from "pages/Cart/CartPage";
@@ -16,8 +19,8 @@ const Router = () => {
       <Route path="/" element={<HomePage />} />
       <Route path="/mappage" element={<MapPage />} />
       <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/profileupdate" element={<ProfileUpdatePage />} />
-      <Route path="/petprofileupdate" element={<PetProfileUpdatePage />} />
+      <Route path="/profile/update" element={<ProfileUpdatePage />} />
+      <Route path="/profile/petupdate" element={<ProfilePetUpdatePage />} />
       <Route path="/product/:productId" element={<ProductDetailPage />} />
       <Route path="/search" element={<ProductSearchPage />} />
       <Route path="/cart" element={<CartPage />} />
