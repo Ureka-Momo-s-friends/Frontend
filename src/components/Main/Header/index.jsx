@@ -105,9 +105,11 @@ const Header = ({ isBack }) => {
       />
       <S.HeaderTop>
         <S.ProfileIcon onClick={handleProfileClick} ref={dropdownRef}>
-          {user && user.profileImg ? (
+          {user ? (
             <img
-              src={user.profileImg}
+              src={
+                user.profileImg ? user.profileImg : "/img/default-avatar.png"
+              }
               alt="프로필"
               style={{
                 width: "40px",
@@ -116,8 +118,6 @@ const Header = ({ isBack }) => {
                 objectFit: "cover",
               }}
             />
-          ) : user ? (
-            <span>👤</span>
           ) : (
             "Login"
           )}

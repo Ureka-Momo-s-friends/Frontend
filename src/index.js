@@ -5,6 +5,7 @@ import reportWebVitals from "./reportWebVitals";
 import { RecoilRoot } from "recoil";
 import GlobalStyle from "./styles/GlobalStyle";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 // .env 파일에서 clientId 불러오기
 const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
