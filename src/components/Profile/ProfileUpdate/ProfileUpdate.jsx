@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Card, Form, Modal } from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 import * as S from "../style";
 
 function ProfileUpdate() {
@@ -164,7 +164,7 @@ function ProfileUpdate() {
                 src={
                   userData.profileImg
                     ? `data:image/jpeg;base64,${userData.profileImg}`
-                    : null
+                    : "/img/default-avatar.png"
                 }
                 alt="User Profile"
               />

@@ -104,7 +104,7 @@ function ProfileContent() {
               src={
                 userData.profileImg
                   ? `data:image/jpeg;base64,${userData.profileImg}`
-                  : null
+                  : "/img/default-avatar.png"
               }
               alt="User Profile"
             />
@@ -138,7 +138,10 @@ function ProfileContent() {
                   alignItems: "center",
                 }}
               >
-                <S.PetProfileImage src={pet.profileImg} alt="Pet Profile" />
+                <S.PetProfileImage
+                  src={pet.profileImg ? pet.profileImg : "/img/default-cat.png"}
+                  alt="Pet Profile"
+                />
                 <div>
                   <p style={{ margin: 0, fontWeight: "bold" }}>{pet.petName}</p>
                 </div>
@@ -178,7 +181,14 @@ function ProfileContent() {
                 <p style={{ margin: 0 }}>생일: {selectedPet.birthDate}</p>
               </div>
               <div className="pet-image ml-3">
-                <S.ModalImage src={selectedPet.profileImg} alt="Selected Pet" />
+                <S.ModalImage
+                  src={
+                    selectedPet.profileImg
+                      ? selectedPet.profileImg
+                      : "/img/default-cat.png"
+                  }
+                  alt="Selected Pet"
+                />
               </div>
             </div>
           )}
@@ -206,7 +216,7 @@ function ProfileContent() {
                   src={
                     selectedUser.profileImg
                       ? `data:image/jpeg;base64,${selectedUser.profileImg}`
-                      : null
+                      : "/img/default-avatar.png"
                   }
                   alt="Selected User"
                 />

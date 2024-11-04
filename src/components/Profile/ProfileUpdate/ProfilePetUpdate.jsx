@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card, Form, Modal, Row, Col } from "react-bootstrap";
+import { Button, Form, Modal, Row, Col } from "react-bootstrap";
 import * as S from "../style";
 
 function ProfilePetUpdate() {
@@ -207,7 +207,9 @@ function ProfilePetUpdate() {
                 <Col xs={3}>
                   {/* 여기서 이미지를 왼쪽에 배치 */}
                   <S.PetProfileImage
-                    src={pet.profileImg}
+                    src={
+                      pet.profileImg ? pet.profileImg : "/img/default-cat.png"
+                    }
                     alt="Pet Profile"
                     className="img-fluid"
                   />
