@@ -4,6 +4,7 @@ import ProfilePage from "./pages/Profile/ProfilePage";
 import ProfileUpdatePage from "./pages/Profile/ProfileUpdatePage";
 import PetProfileUpdatePage from "./pages/Profile/PetProfileUpdatePage";
 import "./ProfilePage.css";
+import ProductSearchPage from "pages/main/ProductSearchPage";
 
 const Router = () => {
   return (
@@ -14,6 +15,7 @@ const Router = () => {
       <Route path="/profileupdate" element={<ProfileUpdatePage />} />
       <Route path="/petprofileupdate" element={<PetProfileUpdatePage />} />
       <Route path="/product/:productId" element={<ProductDetailPage />} />
+      <Route path="/search" element={<ProductSearchPage />} />
     </Routes>
   );
 };
