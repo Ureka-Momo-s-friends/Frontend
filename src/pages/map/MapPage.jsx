@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Bottombar from "components/Main/Bottombar";
-import { Offcanvas } from "react-bootstrap";
+import { Offcanvas, Popover, OverlayTrigger } from "react-bootstrap";
 import Cam from "../../components/Map/Cam";
-
+import BottomSheet from "../../components/Map/MapBottomSheet";
 const MapPage = () => {
   const loggedInUser = JSON.parse(localStorage.getItem("user"));
   const userId = loggedInUser ? loggedInUser.id : null;
@@ -12,9 +12,16 @@ const MapPage = () => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [strayCats, setStrayCats] = useState([]);
   const [userLatLng, setUserLatLng] = useState(null);
-
-  const handleShowOffcanvas = () => setShowOffcanvas(true);
+  const [showBottomSheet, setShowBottomSheet] = useState(false); // 바텀 시트 상태 추가
+  const handleShowOffcanvas = () => {
+    if (userId) {
+      setShowOffcanvas(true);
+    } else {
+      setShowBottomSheet(true); // 비로그인 시 바텀 시트 표시
+    }
+  };
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
+  const closeBottomSheet = () => setShowBottomSheet(false); // 바텀 시트 닫기
 
   useEffect(() => {
     const kakaoApiKey = process.env.REACT_APP_KAKAO_MAP_API_KEY;
@@ -76,7 +83,6 @@ const MapPage = () => {
     };
   }, []);
 
-  // strayCats 변경 시마다 마커 업데이트
   useEffect(() => {
     if (map) {
       strayCats.forEach((cat) => {
@@ -119,7 +125,6 @@ const MapPage = () => {
     setStrayCats([...strayCats, newStrayCat]);
   };
 
-  // 길냥이 데이터 fetch 함수 분리
   const fetchStrayCats = (mapInstance) => {
     fetch(`http://localhost:8080/api/strayCats?memberId=${userId}`, {
       method: "GET",
@@ -295,7 +300,7 @@ const MapPage = () => {
       borderRadius: "5px",
     },
     mapContainer: {
-      position: "relative", // 추가
+      position: "relative",
       flex: 1,
       width: "100%",
       height: "60vh",
@@ -316,14 +321,20 @@ const MapPage = () => {
       </div>
 
       <div style={styles.buttonsContainer}>
-        <button
-          style={styles.footerButton1}
-          onClick={handleShowOffcanvas}
-          onMouseEnter={() => setIsHovered1(true)}
-          onMouseLeave={() => setIsHovered1(false)}
+        <OverlayTrigger
+          trigger="click"
+          placement="top"
+          overlay={!userId ? <></> : <></>}
         >
-          내 길냥이 도감 보기
-        </button>
+          <button
+            style={styles.footerButton1}
+            onClick={handleShowOffcanvas}
+            onMouseEnter={() => setIsHovered1(true)}
+            onMouseLeave={() => setIsHovered1(false)}
+          >
+            내 길냥이 도감 보기
+          </button>
+        </OverlayTrigger>
         <button style={styles.allSheltersButton} onClick={goToShelterList}>
           전체 보호소 목록
         </button>
@@ -358,6 +369,14 @@ const MapPage = () => {
           )}
         </Offcanvas.Body>
       </Offcanvas>
+
+      {/* 바텀 시트 표시 조건 */}
+      {showBottomSheet && (
+        <BottomSheet
+          message="홈페이지 우측 상단에서 로그인을 해주세요!"
+          onClose={closeBottomSheet}
+        />
+      )}
     </div>
   );
 };

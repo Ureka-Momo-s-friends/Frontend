@@ -1,4 +1,5 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import BottomSheet from "./MapBottomSheet"; // 바텀 시트 컴포넌트 가져오기
 
 function Cam({ addStrayCat, userLatLng }) {
   const fileInputRef = useRef(null);
@@ -6,10 +7,16 @@ function Cam({ addStrayCat, userLatLng }) {
   const loggedInUser = JSON.parse(localStorage.getItem("user"));
   const userId = loggedInUser ? loggedInUser.id : null;
 
+  const [showBottomSheet, setShowBottomSheet] = useState(false); // 바텀 시트 상태 추가
+
   // 이미지 버튼 클릭 시 파일 입력창 트리거
   const handleButtonClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
+    if (userId) {
+      if (fileInputRef.current) {
+        fileInputRef.current.click();
+      }
+    } else {
+      setShowBottomSheet(true); // 비로그인 시 바텀 시트 표시
     }
   };
 
@@ -48,6 +55,8 @@ function Cam({ addStrayCat, userLatLng }) {
     }
   };
 
+  const closeBottomSheet = () => setShowBottomSheet(false); // 바텀 시트 닫기 함수
+
   return (
     <div
       style={{
@@ -84,6 +93,14 @@ function Cam({ addStrayCat, userLatLng }) {
           }}
         />
       </button>
+
+      {/* 바텀 시트 표시 조건 */}
+      {showBottomSheet && (
+        <BottomSheet
+          message="로그인이 필요합니다!"
+          onClose={closeBottomSheet}
+        />
+      )}
     </div>
   );
 }
