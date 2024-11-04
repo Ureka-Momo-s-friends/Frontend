@@ -26,6 +26,7 @@ function PetProfileUpdatePage() {
   const [selectedPet, setSelectedPet] = useState({
     id: null,
     petName: "",
+    breed: "",
     birthDate: "",
     gender: "",
     profileImg: null,
@@ -33,6 +34,7 @@ function PetProfileUpdatePage() {
   const [newPet, setNewPet] = useState({
     petName: "",
     birthDate: "",
+    breed: "",
     gender: "",
     profileImg: null,
   }); // 추가할 고양이 정보를 저장할 state
@@ -94,6 +96,7 @@ function PetProfileUpdatePage() {
     const genderBoolean = selectedPet.gender === "암컷" ? true : false;
     const petData = {
       petName: selectedPet.petName,
+      petBreed: selectedPet.petBreed,
       birthDate: selectedPet.birthDate,
       gender: genderBoolean,
       member: loggedInUser.id, // 현재 로그인된 사용자의 ID
@@ -288,6 +291,16 @@ function PetProfileUpdatePage() {
                 }
               />
             </Form.Group>
+            <Form.Group controlId="formPetBreed">
+              <Form.Label>종</Form.Label>
+              <Form.Control
+                type="text"
+                value={selectedPet.petBreed}
+                onChange={(e) =>
+                  setSelectedPet({ ...selectedPet, petBreed: e.target.value })
+                }
+              />
+            </Form.Group>
             <Form.Group controlId="formBirthDate" className="mt-3">
               <Form.Label>생일</Form.Label>
               <Form.Control
@@ -339,6 +352,16 @@ function PetProfileUpdatePage() {
                 value={newPet.petName}
                 onChange={(e) =>
                   setNewPet({ ...newPet, petName: e.target.value })
+                }
+              />
+            </Form.Group>
+            <Form.Group controlId="formNewPetBreed">
+              <Form.Label>종</Form.Label>
+              <Form.Control
+                type="text"
+                value={newPet.petBreed}
+                onChange={(e) =>
+                  setNewPet({ ...newPet, petBreed: e.target.value })
                 }
               />
             </Form.Group>

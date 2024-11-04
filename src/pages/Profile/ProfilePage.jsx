@@ -4,6 +4,7 @@ import { Button, ListGroup, Modal } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Header from "../../components/Header";
 import * as S from "./style"; // 스타일 모듈 임포트
+import { FaReceipt } from "react-icons/fa"; // 영수증 이모티콘 추가
 
 function ProfilePage() {
   const navigate = useNavigate();
@@ -129,7 +130,10 @@ function ProfilePage() {
       <S.CardSection>
         <S.StyledCard>
           <div className="info-section d-flex justify-content-between align-items-center">
-            <h4>우리집 냥이들</h4>
+            <h5 style={{ fontSize: "16px", fontWeight: "bold", margin: 0 }}>
+              우리집 냥이들
+            </h5>{" "}
+            {/* 텍스트 크기 조정 */}
             <S.CardButton onClick={handlePetProfileEdit}>편집</S.CardButton>
           </div>
           <ListGroup variant="flush" className="mt-3">
@@ -146,13 +150,22 @@ function ProfilePage() {
                 <S.PetProfileImage src={pet.profileImg} alt="Pet Profile" />
                 <div>
                   <p style={{ margin: 0, fontWeight: "bold" }}>{pet.petName}</p>
-                  <p style={{ margin: 0, color: "#888" }}>
-                    {pet.breed || "알 수 없음"}
-                  </p>
                 </div>
               </ListGroup.Item>
             ))}
           </ListGroup>
+        </S.StyledCard>
+      </S.CardSection>
+
+      {/* 주문 내역 카드 추가 */}
+      <S.CardSection>
+        <S.StyledCard onClick={() => navigate("/history")}>
+          <div className="d-flex align-items-center">
+            <FaReceipt size={40} color="#555" style={{ marginRight: "15px" }} />
+            <div>
+              <p style={{ margin: 0, fontWeight: "bold" }}>주문 내역</p>
+            </div>
+          </div>
         </S.StyledCard>
       </S.CardSection>
 

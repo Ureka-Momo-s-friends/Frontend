@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import * as S from "./style"; // 스타일을 위한 임포트
 
 const PaymentSuccess = () => {
@@ -51,6 +50,33 @@ const PaymentSuccess = () => {
     navigate("/");
   };
 
+  const handleGoHistory = () => {
+    navigate("/history");
+  };
+
+  // 결제 취소 처리 함수
+  const handleCancelPayment = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/pays/cancel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ paymentKey: paymentKey }),
+      });
+
+      if (response.ok) {
+        alert("결제가 취소되었습니다.");
+        navigate("/history"); // 결제 내역 페이지로 이동
+      } else {
+        const errorText = await response.text();
+        alert(`결제 취소 실패: ${errorText}`);
+      }
+    } catch (error) {
+      console.error("결제 취소 요청 중 오류:", error);
+    }
+  };
+
   return (
     <S.Wrapper>
       <S.ModalContent>
@@ -58,6 +84,8 @@ const PaymentSuccess = () => {
         <p>결제가 성공적으로 완료되었습니다.</p>
         <p>결제 금액: {amount}원</p>
         <S.LoginButton onClick={handleGoHome}>홈으로 이동</S.LoginButton>
+        <S.LoginButton onClick={handleGoHistory}>결제 내역</S.LoginButton>
+        <S.LoginButton onClick={handleCancelPayment}>결제 취소</S.LoginButton>
       </S.ModalContent>
     </S.Wrapper>
   );

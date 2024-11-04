@@ -7,6 +7,7 @@ import "./ProfilePage.css";
 import PaymentPage from "pages/Pay/PaymentPage";
 import PaymentSuccess from "pages/Pay/PaymentSuccess";
 import CartPage from "pages/Cart/CartPage";
+import PaymentHistory from "pages/Pay/PaymentHistory";
 
 const Router = () => {
   return (
@@ -20,6 +21,7 @@ const Router = () => {
       <Route path="/cart" element={<CartPage />} />
       <Route path="/payment" element={<PaymentPage />} />
       <Route path="/success" element={<PaymentSuccess />} />
+      <Route path="/history" element={<PaymentHistory />} />
     </Routes>
   );
 };
