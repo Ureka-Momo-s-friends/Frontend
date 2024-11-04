@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Card, Form, Modal, Container, Image } from "react-bootstrap";
+import { Button, Card, Form, Modal } from "react-bootstrap";
 import Header from "../../components/Header";
 import {
   ProfileContainer,
@@ -105,14 +105,17 @@ function ProfileUpdatePage() {
         fetch(`http://localhost:8080/api/members/${loggedInUser.id}`)
           .then((response) => response.json())
           .then((updatedData) => {
+            const updatedUserData = {
+              ...updatedData,
+              profileImg: `data:image/jpeg;base64,${updatedData.profileImg}`,
+            };
             setUserData({
               ...userData,
               username: updatedData.username,
               contact: updatedData.contact,
               profileImg: updatedData.profileImg,
             });
-
-            localStorage.setItem("user", JSON.stringify(updatedData));
+            localStorage.setItem("user", JSON.stringify(updatedUserData));
           });
 
         setShowModal(false);
