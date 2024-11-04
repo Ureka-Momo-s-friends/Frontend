@@ -116,8 +116,10 @@ const Header = ({ isBack }) => {
                 objectFit: "cover",
               }}
             />
-          ) : (
+          ) : user ? (
             <span>👤</span>
+          ) : (
+            "Login"
           )}
           {isDropdownOpen && (
             <S.DropdownMenu>
