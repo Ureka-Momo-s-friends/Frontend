@@ -5,6 +5,10 @@ import ProfileUpdatePage from "./pages/Profile/ProfileUpdatePage";
 import PetProfileUpdatePage from "./pages/Profile/PetProfileUpdatePage";
 import "./ProfilePage.css";
 import ProductSearchPage from "pages/main/ProductSearchPage";
+import PaymentPage from "pages/Pay/PaymentPage";
+import PaymentSuccess from "pages/Pay/PaymentSuccess";
+import CartPage from "pages/Cart/CartPage";
+import PaymentHistory from "pages/Pay/PaymentHistory";
 
 const Router = () => {
   return (
@@ -16,6 +20,10 @@ const Router = () => {
       <Route path="/petprofileupdate" element={<PetProfileUpdatePage />} />
       <Route path="/product/:productId" element={<ProductDetailPage />} />
       <Route path="/search" element={<ProductSearchPage />} />
+      <Route path="/cart" element={<CartPage />} />
+      <Route path="/payment" element={<PaymentPage />} />
+      <Route path="/success" element={<PaymentSuccess />} />
+      <Route path="/history" element={<PaymentHistory />} />
     </Routes>
   );
 };
