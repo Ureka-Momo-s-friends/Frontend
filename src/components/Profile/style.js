@@ -2,18 +2,18 @@ import styled from "@emotion/styled";
 
 // 프로필 페이지 전체 컨테이너 스타일
 export const ProfileContainer = styled.div`
-  background-color: #f5f5f5; /* 밝은 회색 배경 */
+  background-color: #f5f5f5;
   padding: 20px;
-  border-radius: 10px;
-  max-width: 600px;
+  width: 100%;
+  height: 100%;
   margin: 0 auto;
-  min-height: 100vh; /* 화면 전체 높이를 채움 */
   display: flex;
   flex-direction: column;
 `;
 
 // 카드 섹션 스타일
 export const CardSection = styled.div`
+  width: 100%;
   margin-bottom: 20px;
   position: relative;
 `;
@@ -25,6 +25,12 @@ export const StyledCard = styled.div`
   border: none;
   border-radius: 10px;
   padding: 15px;
+`;
+
+export const Card = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: start;
 `;
 
 // 카드 버튼 스타일 (더 진한 회색, 크기 조정)
