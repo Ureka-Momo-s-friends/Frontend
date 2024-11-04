@@ -2,6 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Card, Form, Modal, Container, Image } from "react-bootstrap";
 import Header from "../../components/Header";
+import {
+  ProfileContainer,
+  CardSection,
+  StyledCard,
+  CardButton,
+  ProfileImage,
+} from "./style"; // 스타일 임포트
 
 function ProfileUpdatePage() {
   const navigate = useNavigate();
@@ -146,32 +153,23 @@ function ProfileUpdatePage() {
   };
 
   return (
-    <Container className="profile-container mt-4">
+    <ProfileContainer>
       <Header />
-      <div className="card-section">
-        <Card>
+      <CardSection>
+        <StyledCard>
           <Card.Body>
             <div className="info-section d-flex justify-content-between align-items-center">
               <h2>프로필 수정</h2>
-              <Button
-                className="card-button"
-                variant="secondary"
-                size="sm"
-                onClick={() => setShowModal(true)}
-              >
-                수정
-              </Button>
+              <CardButton onClick={() => setShowModal(true)}>수정</CardButton>
             </div>
             <div className="text-center mt-3">
-              <Image
+              <ProfileImage
                 src={
                   userData.profileImg
                     ? `data:image/jpeg;base64,${userData.profileImg}`
                     : null
                 }
                 alt="User Profile"
-                roundedCircle
-                style={{ width: "100px", height: "100px", objectFit: "cover" }}
               />
             </div>
             <p className="mt-3">이름: {userData.username}</p>
@@ -184,8 +182,8 @@ function ProfileUpdatePage() {
               탈퇴하기
             </div>
           </Card.Body>
-        </Card>
-      </div>
+        </StyledCard>
+      </CardSection>
 
       {/* 삭제 모달 */}
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
@@ -194,7 +192,6 @@ function ProfileUpdatePage() {
         </Modal.Header>
         <Modal.Body>
           <p>계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
-          {/* 이메일 또는 구글 인증 입력 필드 추가 가능 */}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
@@ -252,7 +249,7 @@ function ProfileUpdatePage() {
           </Button>
         </Modal.Footer>
       </Modal>
-    </Container>
+    </ProfileContainer>
   );
 }
 

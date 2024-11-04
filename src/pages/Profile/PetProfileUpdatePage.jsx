@@ -10,6 +10,14 @@ import {
   Image,
 } from "react-bootstrap";
 import Header from "../../components/Header";
+import {
+  ProfileContainer,
+  CardSection,
+  StyledCard,
+  CardButton,
+  PetProfileImage,
+  ModalImage,
+} from "./style"; // 공통 스타일 임포트
 
 function PetProfileUpdatePage() {
   const [petList, setPetList] = useState([]); // 전체 고양이 목록을 저장할 state
@@ -18,6 +26,7 @@ function PetProfileUpdatePage() {
   const [selectedPet, setSelectedPet] = useState({
     id: null,
     petName: "",
+    breed: "",
     birthDate: "",
     gender: "",
     profileImg: null,
@@ -25,6 +34,7 @@ function PetProfileUpdatePage() {
   const [newPet, setNewPet] = useState({
     petName: "",
     birthDate: "",
+    breed: "",
     gender: "",
     profileImg: null,
   }); // 추가할 고양이 정보를 저장할 state
@@ -86,6 +96,7 @@ function PetProfileUpdatePage() {
     const genderBoolean = selectedPet.gender === "암컷" ? true : false;
     const petData = {
       petName: selectedPet.petName,
+      petBreed: selectedPet.petBreed,
       birthDate: selectedPet.birthDate,
       gender: genderBoolean,
       member: loggedInUser.id, // 현재 로그인된 사용자의 ID
@@ -142,7 +153,7 @@ function PetProfileUpdatePage() {
       petName: newPet.petName,
       birthDate: newPet.birthDate,
       gender: genderBoolean,
-      memberId: loggedInUser.id, // 수정된 부분: memberId 필드
+      memberId: loggedInUser.id,
     };
 
     // JSON 데이터를 FormData에 추가
@@ -204,61 +215,54 @@ function PetProfileUpdatePage() {
   };
 
   return (
-    <Container className="profile-container mt-4">
+    <ProfileContainer>
       <Header />
       {petList.map((pet) => (
-        <Card key={pet.id} className="mb-3">
-          <Card.Body>
-            <Row>
-              <Col xs={3}>
-                {/* 여기서 이미지를 왼쪽에 배치 */}
-                <Image
-                  src={pet.profileImg}
-                  roundedCircle
-                  className="img-fluid"
-                  alt="Pet Profile"
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    objectFit: "cover",
-                  }}
-                />
-              </Col>
-              <Col xs={9}>
-                <div className="info-section d-flex justify-content-between align-items-center">
-                  <h6>{`${pet.petName}`}</h6>
-                  <Button
-                    className="card-button"
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedPet({
-                        id: pet.id,
-                        petName: pet.petName,
-                        birthDate: pet.birthDate,
-                        gender: pet.gender ? "암컷" : "수컷",
-                        profileImg: null,
-                      });
-                      setShowEditModal(true);
-                    }}
+        <CardSection key={pet.id}>
+          <StyledCard>
+            <Card.Body>
+              <Row>
+                <Col xs={3}>
+                  {/* 여기서 이미지를 왼쪽에 배치 */}
+                  <PetProfileImage
+                    src={pet.profileImg}
+                    alt="Pet Profile"
+                    className="img-fluid"
+                  />
+                </Col>
+                <Col xs={9}>
+                  <div className="info-section d-flex justify-content-between align-items-center">
+                    <h6>{`${pet.petName}`}</h6>
+                    <CardButton
+                      onClick={() => {
+                        setSelectedPet({
+                          id: pet.id,
+                          petName: pet.petName,
+                          birthDate: pet.birthDate,
+                          gender: pet.gender ? "암컷" : "수컷",
+                          profileImg: null,
+                        });
+                        setShowEditModal(true);
+                      }}
+                    >
+                      수정
+                    </CardButton>
+                  </div>
+                  <p>{`${pet.breed || "종 정보 없음"} | ${pet.birthDate} | ${
+                    pet.gender ? "암컷" : "수컷"
+                  }`}</p>
+                  <div
+                    className="text-center mt-3"
+                    onClick={() => handleDeletePet(pet.id)}
+                    style={{ cursor: "pointer", color: "#ff0000" }}
                   >
-                    수정
-                  </Button>
-                </div>
-                <p>{`${pet.breed || "종 정보 없음"} | ${pet.birthDate} | ${
-                  pet.gender ? "암컷" : "수컷"
-                }`}</p>
-                <div
-                  className="text-center mt-3"
-                  onClick={() => handleDeletePet(pet.id)}
-                  style={{ cursor: "pointer", color: "#ff0000" }}
-                >
-                  삭제하기
-                </div>
-              </Col>
-            </Row>
-          </Card.Body>
-        </Card>
+                    삭제하기
+                  </div>
+                </Col>
+              </Row>
+            </Card.Body>
+          </StyledCard>
+        </CardSection>
       ))}
 
       <Button
@@ -284,6 +288,16 @@ function PetProfileUpdatePage() {
                 value={selectedPet.petName}
                 onChange={(e) =>
                   setSelectedPet({ ...selectedPet, petName: e.target.value })
+                }
+              />
+            </Form.Group>
+            <Form.Group controlId="formPetBreed">
+              <Form.Label>종</Form.Label>
+              <Form.Control
+                type="text"
+                value={selectedPet.petBreed}
+                onChange={(e) =>
+                  setSelectedPet({ ...selectedPet, petBreed: e.target.value })
                 }
               />
             </Form.Group>
@@ -341,6 +355,16 @@ function PetProfileUpdatePage() {
                 }
               />
             </Form.Group>
+            <Form.Group controlId="formNewPetBreed">
+              <Form.Label>종</Form.Label>
+              <Form.Control
+                type="text"
+                value={newPet.petBreed}
+                onChange={(e) =>
+                  setNewPet({ ...newPet, petBreed: e.target.value })
+                }
+              />
+            </Form.Group>
             <Form.Group controlId="formNewBirthDate" className="mt-3">
               <Form.Label>생일</Form.Label>
               <Form.Control
@@ -377,7 +401,7 @@ function PetProfileUpdatePage() {
           </Form>
         </Modal.Body>
       </Modal>
-    </Container>
+    </ProfileContainer>
   );
 }
 
