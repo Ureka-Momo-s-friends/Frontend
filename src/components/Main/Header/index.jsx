@@ -96,7 +96,7 @@ const Header = ({ isBack }) => {
 
   return (
     <S.Layer>
-      {isBack && <BackArrowIcon onClick={() => navigate("/")} />}
+      {isBack && <BackArrowIcon onClick={() => navigate(-1)} />}
       <img
         src="/img/mm.png"
         alt="로고"
@@ -116,8 +116,10 @@ const Header = ({ isBack }) => {
                 objectFit: "cover",
               }}
             />
-          ) : (
+          ) : user ? (
             <span>👤</span>
+          ) : (
+            "Login"
           )}
           {isDropdownOpen && (
             <S.DropdownMenu>
