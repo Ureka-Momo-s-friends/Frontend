@@ -4,7 +4,7 @@ import ProfilePage from "./pages/Profile/ProfilePage";
 import ProfileUpdatePage from "./pages/Profile/ProfileUpdatePage";
 import PetProfileUpdatePage from "./pages/Profile/PetProfileUpdatePage";
 import "./ProfilePage.css";
-import Layout from "pages/Layout";
+import Layout from "components/Layout";
 
 const Router = () => {
   return (
