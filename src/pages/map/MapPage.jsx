@@ -60,6 +60,12 @@ const MapPage = () => {
     }
   }, [map, selectedLatLng, selectedMarker]);
 
+  const handleCatImageClick = (lat, lng) => {
+    if (map) {
+      const newCenter = new window.kakao.maps.LatLng(lat, lng);
+      map.setCenter(newCenter); // 클릭한 고양이 위치로 지도 중심 이동
+    }
+  };
   const handleShowOffcanvas = () => {
     if (userId) {
       setShowOffcanvas(!showOffcanvas);
@@ -158,7 +164,7 @@ const MapPage = () => {
         const customOverlay = new window.kakao.maps.CustomOverlay({
           position: catPosition,
           content: overlayContent,
-          yAnchor: 1.5,
+          yAnchor: 1.7,
         });
 
         window.kakao.maps.event.addListener(marker, "click", () => {
@@ -409,6 +415,7 @@ const MapPage = () => {
                   key={index}
                   src={cat.catImgUrl}
                   alt={`Cat ${index + 1}`}
+                  onClick={() => handleCatImageClick(cat.lat, cat.lon)} // 클릭 시 지도 이동
                   style={{
                     width: "100%",
                     marginBottom: "10px",
