@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import * as S from "./style";
-import BottomSheetLoggedIn from "./Bottemsheet"; // 로그인 상태에서 사용할 바텀 시트
+import BottomSheetLoggedIn from "./Bottomsheet"; // 로그인 상태에서 사용할 바텀 시트
 import BottomSheetNotLoggedIn from "../../Map/MapBottomSheet"; // 비로그인 상태에서 사용할 바텀 시트
 
 const BuyAndCart = ({ productName, price, productId }) => {
