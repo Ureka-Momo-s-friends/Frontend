@@ -96,7 +96,7 @@ const Header = ({ isBack }) => {
 
   return (
     <S.Layer>
-      {isBack && <BackArrowIcon onClick={() => navigate("/")} />}
+      {isBack && <BackArrowIcon onClick={() => navigate(-1)} />}
       <img
         src="/img/mm.png"
         alt="로고"
@@ -105,9 +105,11 @@ const Header = ({ isBack }) => {
       />
       <S.HeaderTop>
         <S.ProfileIcon onClick={handleProfileClick} ref={dropdownRef}>
-          {user && user.profileImg ? (
+          {user ? (
             <img
-              src={user.profileImg}
+              src={
+                user.profileImg ? user.profileImg : "/img/default-avatar.png"
+              }
               alt="프로필"
               style={{
                 width: "40px",
@@ -117,7 +119,7 @@ const Header = ({ isBack }) => {
               }}
             />
           ) : (
-            <span>👤</span>
+            "Login"
           )}
           {isDropdownOpen && (
             <S.DropdownMenu>

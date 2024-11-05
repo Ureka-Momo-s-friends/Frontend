@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import * as S from "./style";
 import { XIcon } from "assets/svgs";
+import { useNavigate } from "react-router-dom";
 
 const BottomSheet = ({ onClose, productName, price, productId }) => {
   const [quantity, setQuantity] = useState(1);
   const totalPrice = price * quantity;
   const loggedInUser = JSON.parse(localStorage.getItem("user"));
   const userId = loggedInUser ? loggedInUser.id : null;
+  const navigate = useNavigate();
 
   const increaseQuantity = () => setQuantity(quantity + 1);
   const decreaseQuantity = () => {
@@ -97,6 +99,7 @@ const BottomSheet = ({ onClose, productName, price, productId }) => {
         <p>총 상품 금액: {totalPrice.toLocaleString()}원</p>
       </S.PriceInfo>
       <S.BtnWrapper>
+        <S.Button onClick={handleCartClick}>장바구니</S.Button>
         <S.Button onClick={handleCartClick}>장바구니</S.Button>
       </S.BtnWrapper>
     </S.BottomSheet>

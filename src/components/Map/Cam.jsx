@@ -1,28 +1,35 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import BottomSheet from "./MapBottomSheet"; // 바텀 시트 컴포넌트 가져오기
 
-function Cam({ addStrayCat, userLatLng }) {
+function Cam({ addStrayCat, userLatLng, selectedLatLng }) {
   const fileInputRef = useRef(null);
   const camImgSrc = "/img/cam-button.png";
   const loggedInUser = JSON.parse(localStorage.getItem("user"));
   const userId = loggedInUser ? loggedInUser.id : null;
 
+  const [showBottomSheet, setShowBottomSheet] = useState(false); // 바텀 시트 상태 추가
+
   // 이미지 버튼 클릭 시 파일 입력창 트리거
   const handleButtonClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
+    if (userId) {
+      if (fileInputRef.current) {
+        fileInputRef.current.click();
+      }
+    } else {
+      setShowBottomSheet(true); // 비로그인 시 바텀 시트 표시
     }
   };
 
   // 파일 선택 후 처리
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
-
+    const location = selectedLatLng || userLatLng;
     if (file && file.size <= 5 * 1024 * 1024) {
       try {
         const formData = new FormData();
         formData.append("catImg", file); // 이미지 추가
-        formData.append("lat", userLatLng.lat);
-        formData.append("lon", userLatLng.lng);
+        formData.append("lat", location.lat);
+        formData.append("lon", location.lng);
         formData.append("memberId", userId);
 
         const apiResponse = await fetch("http://localhost:8080/api/strayCats", {
@@ -47,6 +54,8 @@ function Cam({ addStrayCat, userLatLng }) {
       alert("File size should be 5 MB or less.");
     }
   };
+
+  const closeBottomSheet = () => setShowBottomSheet(false); // 바텀 시트 닫기 함수
 
   return (
     <div
@@ -84,6 +93,14 @@ function Cam({ addStrayCat, userLatLng }) {
           }}
         />
       </button>
+
+      {/* 바텀 시트 표시 조건 */}
+      {showBottomSheet && (
+        <BottomSheet
+          message="로그인이 필요합니다!"
+          onClose={closeBottomSheet}
+        />
+      )}
     </div>
   );
 }

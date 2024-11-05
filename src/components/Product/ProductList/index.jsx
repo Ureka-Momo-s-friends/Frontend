@@ -1,9 +1,8 @@
 import React from "react";
 import * as S from "./style";
 import { useNavigate } from "react-router-dom";
-import products from "assets/products.json";
 
-const ProductList = ({ categoryId }) => {
+const ProductList = ({ products }) => {
   const route = useNavigate();
 
   return (

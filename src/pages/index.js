@@ -2,6 +2,19 @@ import HomePage from "./main/HomePage";
 import MapPage from "./map/MapPage";
 import CartPage from "./cart/CartPage";
 import ProductDetailPage from "./main/ProductDetailPage";
-import "bootstrap/dist/css/bootstrap.min.css";
+import ProfilePage from "./Profile/ProfilePage";
+import ProfileUpdatePage from "./Profile/ProfileUpdatePage";
+import ProfilePetUpdatePage from "./Profile/ProfilePetUpdatePage";
+import ProductSearchPage from "./main/ProductSearchPage";
 
-export { HomePage, MapPage, ProductDetailPage, CartPage };
+export {
+  HomePage,
+  MapPage,
+  ProductDetailPage,
+  CartPage,
+  ProfilePage,
+  ProfileUpdatePage,
+  ProfilePetUpdatePage,
+  ProductSearchPage,
+  CartPage,
+};
