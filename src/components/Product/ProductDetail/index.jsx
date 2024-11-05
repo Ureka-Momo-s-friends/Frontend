@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as S from "./style";
 import { useParams } from "react-router-dom";
-import products from "assets/products.json";
-import Header from "components/Main/Header";
 import BuyAndCart from "../BuyAndCart";
 
 const ProductDetail = () => {

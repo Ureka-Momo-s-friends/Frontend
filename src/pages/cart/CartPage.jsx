@@ -358,7 +358,6 @@ const Cart = () => {
           },
         );
         if (!response.ok) throw new Error("Failed to fetch cart");
-        /** @type {CartResponse[]} */
         const data = await response.json();
         setCartItems(data);
       } catch (error) {

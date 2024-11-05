@@ -91,7 +91,6 @@ const PaymentHistory = () => {
   return (
     <>
       <S.PaymentListContainer>
-        <Header /> {/* 헤더 추가 */}
         <h2>결제 내역</h2>
         {paymentData.length === 0 ? (
           <p>결제 내역이 없습니다.</p>
@@ -137,7 +136,6 @@ const PaymentHistory = () => {
             </S.PaymentCard>
           ))
         )}
-        <Bottombar /> {/* 바텀바 추가 */}
       </S.PaymentListContainer>
     </>
   );

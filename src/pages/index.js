@@ -11,7 +11,6 @@ export {
   HomePage,
   MapPage,
   ProductDetailPage,
-  CartPage,
   ProfilePage,
   ProfileUpdatePage,
   ProfilePetUpdatePage,

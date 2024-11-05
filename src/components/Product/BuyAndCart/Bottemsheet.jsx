@@ -56,6 +56,7 @@ const BottomSheet = ({ onClose, productName, price, productId }) => {
 
       alert("장바구니에 추가되었습니다.");
       onClose();
+      navigate("/cart");
     } catch (error) {
       console.error("Error Details:", {
         message: error.message,

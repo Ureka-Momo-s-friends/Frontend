@@ -12,6 +12,7 @@ import {
 import PaymentPage from "pages/Pay/PaymentPage";
 import PaymentSuccess from "pages/Pay/PaymentSuccess";
 import PaymentHistory from "pages/Pay/PaymentHistory";
+import Layout from "components/Layout";
 
 const Router = () => {
   return (
