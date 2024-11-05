@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import BottomSheet from "./MapBottomSheet"; // 바텀 시트 컴포넌트 가져오기
 
-function Cam({ addStrayCat, userLatLng }) {
+function Cam({ addStrayCat, userLatLng, selectedLatLng }) {
   const fileInputRef = useRef(null);
   const camImgSrc = "/img/cam-button.png";
   const loggedInUser = JSON.parse(localStorage.getItem("user"));
@@ -23,13 +23,13 @@ function Cam({ addStrayCat, userLatLng }) {
   // 파일 선택 후 처리
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
-
+    const location = selectedLatLng || userLatLng;
     if (file && file.size <= 5 * 1024 * 1024) {
       try {
         const formData = new FormData();
         formData.append("catImg", file); // 이미지 추가
-        formData.append("lat", userLatLng.lat);
-        formData.append("lon", userLatLng.lng);
+        formData.append("lat", location.lat);
+        formData.append("lon", location.lng);
         formData.append("memberId", userId);
 
         const apiResponse = await fetch("http://localhost:8080/api/strayCats", {

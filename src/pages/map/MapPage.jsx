@@ -13,9 +13,62 @@ const MapPage = () => {
   const [strayCats, setStrayCats] = useState([]);
   const [userLatLng, setUserLatLng] = useState(null);
   const [showBottomSheet, setShowBottomSheet] = useState(false); // 바텀 시트 상태 추가
+  const [selectedLatLng, setSelectedLatLng] = useState(null);
+  const [selectedMarker, setSelectedMarker] = useState(null); // 마커 추가
+  useEffect(() => {
+    if (map) {
+      // 클릭 이벤트 핸들러 정의
+      const handleMapClick = (mouseEvent) => {
+        const latLng = mouseEvent.latLng;
+        const clickedLatLng = { lat: latLng.getLat(), lng: latLng.getLng() };
+
+        // 이미 선택된 위치와 동일한 곳을 클릭했을 때 마커 제거
+        if (
+          selectedLatLng &&
+          selectedLatLng.lat === clickedLatLng.lat &&
+          selectedLatLng.lng === clickedLatLng.lng
+        ) {
+          if (selectedMarker) {
+            selectedMarker.setMap(null); // 기존 마커 제거
+          }
+          setSelectedLatLng(null); // 선택된 위치 초기화
+          setSelectedMarker(null); // 마커 상태 초기화
+        } else {
+          // 새로운 위치에 마커 추가
+          if (selectedMarker) {
+            selectedMarker.setMap(null); // 기존 마커 제거
+          }
+
+          // 새로운 마커 생성
+          const marker = new window.kakao.maps.Marker({
+            position: latLng,
+            map,
+          });
+
+          setSelectedLatLng(clickedLatLng); // 선택된 위치 업데이트
+          setSelectedMarker(marker); // 새로운 마커 상태 업데이트
+        }
+      };
+
+      // 지도 클릭 이벤트 리스너 등록 (한 번만 등록)
+      window.kakao.maps.event.addListener(map, "click", handleMapClick);
+
+      // 컴포넌트가 언마운트되거나 리렌더링될 때 이벤트 리스너 제거
+      return () => {
+        window.kakao.maps.event.removeListener(map, "click", handleMapClick);
+      };
+    }
+  }, [map, selectedLatLng, selectedMarker]);
+
+  const handleCatImageClick = (lat, lng) => {
+    if (map) {
+      const newCenter = new window.kakao.maps.LatLng(lat, lng);
+      map.setCenter(newCenter); // 클릭한 고양이 위치로 지도 중심 이동
+    }
+  };
   const handleShowOffcanvas = () => {
     if (userId) {
-      setShowOffcanvas(true);
+      setShowOffcanvas(!showOffcanvas);
     } else {
       setShowBottomSheet(true); // 비로그인 시 바텀 시트 표시
     }
@@ -111,7 +164,7 @@ const MapPage = () => {
         const customOverlay = new window.kakao.maps.CustomOverlay({
           position: catPosition,
           content: overlayContent,
-          yAnchor: 1.5,
+          yAnchor: 1.7,
         });
 
         window.kakao.maps.event.addListener(marker, "click", () => {
@@ -317,7 +370,64 @@ const MapPage = () => {
       </header>
 
       <div id="map" style={styles.mapContainer}>
-        <Cam addStrayCat={addStrayCat} userLatLng={userLatLng} />
+        <Cam
+          addStrayCat={addStrayCat}
+          userLatLng={userLatLng}
+          selectedLatLng={selectedLatLng}
+        />
+        {showOffcanvas && (
+          <div
+            onClick={handleShowOffcanvas}
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(0, 0, 0, 0.5)", // 반투명 검은색
+              zIndex: 1,
+              opacity: showOffcanvas ? 1 : 0,
+              transition: "opacity 0.3s ease", // 투명도 전환
+            }}
+          />
+        )}
+        {/* 커스텀 오프캔버스 */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            width: "40%", // 맵의 30% 너비로 설정
+            height: "100%", // 맵의 전체 높이에 맞춤
+            backgroundColor: "white",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)",
+            zIndex: 2,
+            overflowY: "auto",
+            transform: showOffcanvas ? "translateX(0)" : "translateX(100%)",
+            transition: "transform 0.3s ease",
+          }}
+        >
+          <div style={{ padding: "10px" }}>
+            <h5>내 길냥이 도감</h5>
+            {strayCats.length > 0 ? (
+              strayCats.map((cat, index) => (
+                <img
+                  key={index}
+                  src={cat.catImgUrl}
+                  alt={`Cat ${index + 1}`}
+                  onClick={() => handleCatImageClick(cat.lat, cat.lon)} // 클릭 시 지도 이동
+                  style={{
+                    width: "100%",
+                    marginBottom: "10px",
+                    borderRadius: "8px",
+                  }}
+                />
+              ))
+            ) : (
+              <p>고양이 사진을 불러오는 중입니다...</p>
+            )}
+          </div>
+        </div>
       </div>
 
       <div style={styles.buttonsContainer}>
@@ -341,34 +451,6 @@ const MapPage = () => {
       </div>
 
       <Bottombar />
-
-      <Offcanvas
-        show={showOffcanvas}
-        onHide={handleCloseOffcanvas}
-        placement="end"
-      >
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>내 길냥이 도감</Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body>
-          {strayCats.length > 0 ? (
-            strayCats.map((cat, index) => (
-              <img
-                key={index}
-                src={cat.catImgUrl}
-                alt={`Cat ${index + 1}`}
-                style={{
-                  width: "100%",
-                  marginBottom: "10px",
-                  borderRadius: "8px",
-                }}
-              />
-            ))
-          ) : (
-            <p>고양이 사진을 불러오는 중입니다...</p>
-          )}
-        </Offcanvas.Body>
-      </Offcanvas>
 
       {/* 바텀 시트 표시 조건 */}
       {showBottomSheet && (
