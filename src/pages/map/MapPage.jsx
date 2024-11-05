@@ -13,6 +13,28 @@ const MapPage = () => {
   const [strayCats, setStrayCats] = useState([]);
   const [userLatLng, setUserLatLng] = useState(null);
   const [showBottomSheet, setShowBottomSheet] = useState(false); // 바텀 시트 상태 추가
+  const [selectedLatLng, setSelectedLatLng] = useState(null);
+  const [selectedMarker, setSelectedMarker] = useState(null); // 마커 추가
+  useEffect(() => {
+    if (map) {
+      window.kakao.maps.event.addListener(map, "click", (mouseEvent) => {
+        const latLng = mouseEvent.latLng;
+        setSelectedLatLng({ lat: latLng.getLat(), lng: latLng.getLng() });
+
+        // 기존 마커 제거
+        if (selectedMarker) {
+          selectedMarker.setMap(null);
+        }
+
+        // 클릭한 위치에 마커 추가
+        const marker = new window.kakao.maps.Marker({
+          position: latLng,
+          map,
+        });
+        setSelectedMarker(marker);
+      });
+    }
+  }, [map, selectedMarker]);
   const handleShowOffcanvas = () => {
     if (userId) {
       setShowOffcanvas(true);
@@ -317,7 +339,11 @@ const MapPage = () => {
       </header>
 
       <div id="map" style={styles.mapContainer}>
-        <Cam addStrayCat={addStrayCat} userLatLng={userLatLng} />
+        <Cam
+          addStrayCat={addStrayCat}
+          userLatLng={userLatLng}
+          selectedLatLng={selectedLatLng}
+        />
       </div>
 
       <div style={styles.buttonsContainer}>
