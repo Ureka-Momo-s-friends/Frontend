@@ -297,11 +297,6 @@ const AddressSection = ({ address, onAddressChange }) => {
     setIsEditing(false);
   };
 
-  const handleCancel = () => {
-    setTempAddress(address);
-    setIsEditing(false);
-  };
-
   return (
     <div className="address-section">
       <div className="address-header">
@@ -322,7 +317,7 @@ const AddressSection = ({ address, onAddressChange }) => {
       {isEditing ? (
         <textarea
           className="address-textarea"
-          placeholder="배송 받으실 주소를 입력해주세요"
+          placeholder="배송지를 입력해주세요"
           value={tempAddress}
           onChange={(e) => setTempAddress(e.target.value)}
           autoFocus
