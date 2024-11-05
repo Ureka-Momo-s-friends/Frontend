@@ -70,10 +70,12 @@ const PaymentSuccess = () => {
         navigate("/history"); // 결제 내역 페이지로 이동
       } else {
         const errorText = await response.text();
+        console.error("결제 취소 실패:", errorText);
         alert(`결제 취소 실패: ${errorText}`);
       }
     } catch (error) {
-      console.error("결제 취소 요청 중 오류:", error);
+      console.error("결제 취소 요청 중 오류 발생:", error);
+      alert("결제 취소 중 오류가 발생했습니다. 다시 시도해 주세요.");
     }
   };
 

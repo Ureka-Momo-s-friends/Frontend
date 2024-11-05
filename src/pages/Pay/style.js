@@ -1,7 +1,6 @@
 import styled from "@emotion/styled";
 
-// 기존 스타일 유지
-
+// 기존 스타일
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -71,12 +70,10 @@ export const LoginButton = styled.button`
 `;
 
 // 추가된 스타일
-
-// 전체 결제 내역 컨테이너 스타일
 export const PaymentContainer = styled.div`
   padding: 20px;
   width: 100%;
-  max-width: 600px; /* 가로 600px */
+  max-width: 600px;
   margin: 0 auto;
 
   h2 {
@@ -87,36 +84,81 @@ export const PaymentContainer = styled.div`
   }
 `;
 
-// 결제 내역 카드 스타일
+export const PaymentListContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+`;
+
+export const PaymentProductName = styled.div`
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+`;
+
 export const PaymentCard = styled.div`
-  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f9f9f9;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  margin-bottom: 16px;
-  width: 100%; /* 가로를 부모 컨테이너에 맞춤 */
+  padding: 15px 20px;
+  transition: box-shadow 0.3s;
   &:hover {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   }
 `;
 
-// 카드 버튼 스타일 (결제 내역 상세 보기 등)
+export const PaymentDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+`;
+
+export const PaymentAmount = styled.span`
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+`;
+
+export const PaymentStatus = styled.span`
+  font-size: 14px;
+  color: ${(props) => (props.status === "CANCELLED" ? "#ff4d4d" : "#28a745")};
+`;
+
+export const PaymentDate = styled.span`
+  font-size: 12px;
+  color: #666;
+`;
+
+export const PaymentAction = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+`;
+
 export const CardButton = styled.button`
-  background-color: #007bff;
+  background-color: ${(props) =>
+    props.variant === "cancel" ? "#ff4d4d" : "#007bff"};
   color: white;
-  padding: 10px 20px;
+  padding: 8px 16px;
   border: none;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 12px;
   cursor: pointer;
-  margin-top: 12px;
-  width: 100%; /* 부모의 너비를 따라감 */
   &:hover {
-    background-color: #0056b3;
+    background-color: ${(props) =>
+      props.variant === "cancel" ? "#cc0000" : "#0056b3"};
   }
 `;
 
-// 상태 텍스트 스타일 (성공, 취소 등)
 export const StatusText = styled.span`
   font-size: 16px;
   font-weight: bold;
