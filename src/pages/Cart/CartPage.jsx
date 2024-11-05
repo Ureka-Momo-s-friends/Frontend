@@ -5,41 +5,42 @@ const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
 
+  // 로컬 스토리지에서 장바구니 항목 가져오기
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCartItems(savedCart);
   }, []);
 
+  // 장바구니 목록이 변경되면 로컬 스토리지를 감시하여 업데이트
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      localStorage.removeItem("cart");
+    }
+  }, [cartItems]);
+
+  // 장바구니에서 항목 삭제
   const handleRemoveItem = (index) => {
+    const itemToRemove = cartItems[index]; // 필터링하기 전에 itemToRemove 저장
+
+    if (!itemToRemove) {
+      alert("삭제할 항목이 없습니다.");
+      return;
+    }
+
     const updatedCartItems = cartItems.filter((_, i) => i !== index);
     setCartItems(updatedCartItems);
     localStorage.setItem("cart", JSON.stringify(updatedCartItems));
 
-    const itemToRemove = cartItems[index];
-
-    fetch(`http://localhost:8080/api/carts/${itemToRemove.productId}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("장바구니 항목 삭제 실패");
-        }
-        alert("장바구니에서 항목이 삭제되었습니다.");
-      })
-      .catch((error) => {
-        console.error("장바구니 항목 삭제 중 오류 발생:", error);
-        alert("장바구니 항목 삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
-      });
+    alert(`${itemToRemove.productName}이(가) 장바구니에서 삭제되었습니다.`);
   };
 
+  // 총 가격 계산
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0,
   );
 
+  // 결제 페이지로 이동
   const handleProceedToPayment = () => {
     if (cartItems.length > 0) {
       navigate("/payment", { state: { cartItems, totalPrice } });

@@ -52,6 +52,11 @@ const PaymentHistory = () => {
       });
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return isNaN(date.getTime()) ? "Invalid Date" : date.toLocaleString(); // 지역 시간 형식으로 변환
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -86,7 +91,7 @@ const PaymentHistory = () => {
                     {payment.status}
                   </S.StatusText>
                 </td>
-                <td>{payment.created_at || "Invalid Date"}</td>
+                <td>{formatDate(payment.paymentDate)}</td>
                 <td>
                   {payment.status === "SUCCESS" && (
                     <Button
