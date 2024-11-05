@@ -79,11 +79,13 @@ function ProfilePetUpdate() {
     const genderBoolean = selectedPet.gender === "암컷" ? true : false;
     const petData = {
       petName: selectedPet.petName,
-      petBreed: selectedPet.petBreed,
+      breed: selectedPet.breed, // breed 필드 추가
       birthDate: selectedPet.birthDate,
       gender: genderBoolean,
       member: loggedInUser.id, // 현재 로그인된 사용자의 ID
     };
+
+    console.log("Pet data being sent for update:", petData); // 디버깅용 로그
 
     // JSON 데이터를 FormData에 추가
     formData.append(
@@ -111,6 +113,7 @@ function ProfilePetUpdate() {
         return response.json();
       })
       .then((updatedPet) => {
+        console.log("Updated pet data:", updatedPet); // 디버깅용 로그
         // 상태 업데이트 후 전체 목록 새로 불러오기
         fetchPetList();
         setShowEditModal(false);
@@ -134,6 +137,7 @@ function ProfilePetUpdate() {
     const formData = new FormData();
     const petData = {
       petName: newPet.petName,
+      breed: newPet.breed, // breed 필드 추가
       birthDate: newPet.birthDate,
       gender: genderBoolean,
       memberId: loggedInUser.id,
@@ -171,6 +175,7 @@ function ProfilePetUpdate() {
         setNewPet({
           petName: "",
           birthDate: "",
+          breed: "", // 초기화 시 breed 추가
           gender: "",
           profileImg: null,
         });
@@ -223,6 +228,7 @@ function ProfilePetUpdate() {
                           id: pet.id,
                           petName: pet.petName,
                           birthDate: pet.birthDate,
+                          breed: pet.breed,
                           gender: pet.gender ? "암컷" : "수컷",
                           profileImg: null,
                         });
@@ -232,13 +238,13 @@ function ProfilePetUpdate() {
                       수정
                     </S.CardButton>
                   </div>
-                  <p>{`${pet.breed || "종 정보 없음"} | ${pet.birthDate} | ${
+                  <p>{`${pet.breed} | ${pet.birthDate} | ${
                     pet.gender ? "암컷" : "수컷"
                   }`}</p>
-                  <div className="text-start mt-3">
+                  <div className="mt-3">
                     <span
-                      style={{ cursor: "pointer", color: "#ff0000" }}
                       onClick={() => handleDeletePet(pet.id)}
+                      style={{ cursor: "pointer", color: "#ff0000" }}
                     >
                       삭제하기
                     </span>
@@ -276,16 +282,53 @@ function ProfilePetUpdate() {
                 }
               />
             </Form.Group>
-            <Form.Group controlId="formPetBreed">
+            <Form.Group controlId="formPetBreed" className="mt-3">
               <Form.Label>종</Form.Label>
               <Form.Control
-                type="text"
-                value={selectedPet.petBreed}
+                as="select"
+                value={selectedPet.breed}
                 onChange={(e) =>
-                  setSelectedPet({ ...selectedPet, petBreed: e.target.value })
+                  setSelectedPet({ ...selectedPet, breed: e.target.value })
                 }
-              />
+              >
+                <option value="">종 선택</option>
+                <option value="네바 마스커레이드">네바 마스커레이드</option>
+                <option value="노르웨이 숲">노르웨이 숲</option>
+                <option value="라가머핀">라가머핀</option>
+                <option value="라팜">라팜</option>
+                <option value="랙돌">랙돌</option>
+                <option value="메인쿤">메인쿤</option>
+                <option value="버만">버만</option>
+                <option value="샤르트뢰">샤르트뢰</option>
+                <option value="셀커크 렉스">셀커크 렉스</option>
+                <option value="소말리">소말리</option>
+                <option value="스코티시 스트레이트">스코티시 스트레이트</option>
+                <option value="스코티시 폴드">스코티시 폴드</option>
+                <option value="아비시니안">아비시니안</option>
+                <option value="엑조틱 숏헤어">엑조틱 숏헤어</option>
+                <option value="재패니즈 밥테일">재패니즈 밥테일</option>
+                <option value="코니시 렉스">코니시 렉스</option>
+                <option value="아메리칸 밥테일">아메리칸 밥테일</option>
+                <option value="아메리칸 숏헤어">아메리칸 숏헤어</option>
+                <option value="아메리칸 와이어헤어">아메리칸 와이어헤어</option>
+                <option value="아메리칸 컬">아메리칸 컬</option>
+                <option value="아시안">아시안</option>
+                <option value="오리엔탈">오리엔탈</option>
+                <option value="오스트레일리안 미스트">
+                  오스트레일리안 미스트
+                </option>
+                <option value="오시캣">오시캣</option>
+                <option value="이집션 마우">이집션 마우</option>
+                <option value="저먼 렉스">저먼 렉스</option>
+                <option value="카오 마니">카오 마니</option>
+                <option value="코니시 렉스">코니시 렉스</option>
+                <option value="코랏">코랏</option>
+                <option value="쿠리리안 밥테일">쿠리리안 밥테일</option>
+                <option value="타이">타이</option>
+                <option value="톤키니즈">톤키니즈</option>
+              </Form.Control>
             </Form.Group>
+
             <Form.Group controlId="formBirthDate" className="mt-3">
               <Form.Label>생일</Form.Label>
               <Form.Control
@@ -340,16 +383,53 @@ function ProfilePetUpdate() {
                 }
               />
             </Form.Group>
-            <Form.Group controlId="formNewPetBreed">
+            <Form.Group controlId="formNewPetBreed" className="mt-3">
               <Form.Label>종</Form.Label>
               <Form.Control
-                type="text"
-                value={newPet.petBreed}
+                as="select"
+                value={newPet.breed}
                 onChange={(e) =>
-                  setNewPet({ ...newPet, petBreed: e.target.value })
+                  setNewPet({ ...newPet, breed: e.target.value })
                 }
-              />
+              >
+                <option value="">종 선택</option>
+                <option value="네바 마스커레이드">네바 마스커레이드</option>
+                <option value="노르웨이 숲">노르웨이 숲</option>
+                <option value="라가머핀">라가머핀</option>
+                <option value="라팜">라팜</option>
+                <option value="랙돌">랙돌</option>
+                <option value="메인쿤">메인쿤</option>
+                <option value="버만">버만</option>
+                <option value="샤르트뢰">샤르트뢰</option>
+                <option value="셀커크 렉스">셀커크 렉스</option>
+                <option value="소말리">소말리</option>
+                <option value="스코티시 스트레이트">스코티시 스트레이트</option>
+                <option value="스코티시 폴드">스코티시 폴드</option>
+                <option value="아비시니안">아비시니안</option>
+                <option value="엑조틱 숏헤어">엑조틱 숏헤어</option>
+                <option value="재패니즈 밥테일">재패니즈 밥테일</option>
+                <option value="코니시 렉스">코니시 렉스</option>
+                <option value="아메리칸 밥테일">아메리칸 밥테일</option>
+                <option value="아메리칸 숏헤어">아메리칸 숏헤어</option>
+                <option value="아메리칸 와이어헤어">아메리칸 와이어헤어</option>
+                <option value="아메리칸 컬">아메리칸 컬</option>
+                <option value="아시안">아시안</option>
+                <option value="오리엔탈">오리엔탈</option>
+                <option value="오스트레일리안 미스트">
+                  오스트레일리안 미스트
+                </option>
+                <option value="오시캣">오시캣</option>
+                <option value="이집션 마우">이집션 마우</option>
+                <option value="저먼 렉스">저먼 렉스</option>
+                <option value="카오 마니">카오 마니</option>
+                <option value="코니시 렉스">코니시 렉스</option>
+                <option value="코랏">코랏</option>
+                <option value="쿠리리안 밥테일">쿠리리안 밥테일</option>
+                <option value="타이">타이</option>
+                <option value="톤키니즈">톤키니즈</option>
+              </Form.Control>
             </Form.Group>
+
             <Form.Group controlId="formNewBirthDate" className="mt-3">
               <Form.Label>생일</Form.Label>
               <Form.Control
