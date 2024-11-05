@@ -17,3 +17,11 @@ export const NoResults = styled.div`
   padding: 40px 0;
   border-radius: 8px;
 `;
+
+export const YesResults = styled.div`
+  text-align: center;
+  font-size: 18px;
+  color: #888;
+  padding: 0;
+  border-radius: 8px;
+`;

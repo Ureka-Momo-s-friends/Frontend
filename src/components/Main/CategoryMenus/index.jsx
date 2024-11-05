@@ -53,11 +53,7 @@ const CategoryMenus = ({ categoryId, setCategoryId }) => {
             height={"50px"}
           />
         </div>
-        <span>
-          스크래쳐
-          <br />
-          캣타워
-        </span>
+        <span>스크래쳐</span>
       </S.Category>
     </S.CategoryWrapper>
   );
