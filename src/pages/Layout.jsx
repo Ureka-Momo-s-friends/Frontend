@@ -1,4 +1,5 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
 import styled from "@emotion/styled";
 import Header from "components/Main/Header";
 import Bottombar from "components/Main/Bottombar";
@@ -20,14 +21,16 @@ const Wrapper = styled.div`
   }
 `;
 
-function Layout({ children }) {
+const Layout = () => {
   return (
     <Wrapper>
       <Header />
-      <main>{children}</main>
+      <main>
+        <Outlet />
+      </main>
       <Bottombar />
     </Wrapper>
   );
-}
+};
 
 export default Layout;

@@ -7,6 +7,7 @@ export const Layer = styled.div`
   min-width: 320px;
   width: 100%;
   padding: 16px;
+  padding-bottom: 72px;
   background: #fff;
   border-top: 1px solid #ddd;
   display: flex;

@@ -1,7 +1,6 @@
 import React from "react";
 import MainContents from "components/Main/MainContents";
 import { useNavigate } from "react-router-dom";
-import Layout from "pages/Layout";
 
 function HomePage() {
   const navigate = useNavigate();
@@ -11,11 +10,9 @@ function HomePage() {
   };
 
   return (
-    <Layout>
-      <section>
-        <MainContents />
-      </section>
-    </Layout>
+    <section>
+      <MainContents />
+    </section>
   );
 }
 

@@ -2,7 +2,6 @@ import React from "react";
 import * as S from "./style";
 import { useParams } from "react-router-dom";
 import products from "assets/products.json";
-import Header from "components/Main/Header";
 import BuyAndCart from "../BuyAndCart";
 
 const ProductDetail = () => {
@@ -11,7 +10,6 @@ const ProductDetail = () => {
 
   return (
     <S.Layer>
-      <Header isBack={true} />
       <S.Thumnail>
         <img src={product.thumbnail} alt={product.name} width={"100%"} />
       </S.Thumnail>
@@ -34,7 +32,11 @@ const ProductDetail = () => {
         <h5>상품 설명</h5>
         <div>{product.detail}</div>
       </S.Descripsion>
-      <BuyAndCart productName={product.name} price={product.salePrice} />
+      <BuyAndCart
+        productName={product.name}
+        price={product.salePrice}
+        productId={productId}
+      />
     </S.Layer>
   );
 };

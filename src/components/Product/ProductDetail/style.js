@@ -59,5 +59,5 @@ export const SalePrice = styled.span`
 
 export const Descripsion = styled.div`
   padding: 16px;
-  margin-bottom: 80px;
+  margin-bottom: 140px;
 `;

@@ -72,7 +72,10 @@ const MapPage = () => {
     document.head.appendChild(script);
 
     return () => {
-      document.head.removeChild(script);
+      const scriptTag = document.querySelector(`script[src*="dapi.kakao.com"]`);
+      if (scriptTag) {
+        document.head.removeChild(scriptTag);
+      }
     };
   }, []);
 
@@ -230,48 +233,25 @@ const MapPage = () => {
 
   const styles = {
     mapPage: {
-      width: "90%",
-      maxWidth: "600px",
-      margin: "0 auto",
-      height: "100%",
+      width: "100%",
+      height: "95vh",
       display: "flex",
       flexDirection: "column",
-      justifyContent: "space-between",
-    },
-    header: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      backgroundColor: "#f8f9fa",
-      padding: "10px 20px",
-      height: "50px",
-      boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
-    },
-    headerTitle: {
-      margin: 0,
-      fontSize: "18px",
-      textAlign: "center",
-      flexGrow: 1,
-      fontFamily: "Inter, sans-serif",
-    },
-    backButton: {
-      fontSize: "24px",
-      fontWeight: "bold",
-      background: "none",
-      border: "none",
-      cursor: "pointer",
+      position: "relative",
+      paddingBottom: "76px",
     },
     mapContainer: {
+      position: "relative",
       flex: 1,
       width: "100%",
-      height: "60vh",
+      minHeight: 0,
     },
     buttonsContainer: {
       display: "flex",
       justifyContent: "space-around",
       alignItems: "center",
-      margin: "20px 0 76px",
-      padding: "0 20px",
+      padding: "20px",
+      flexShrink: 0, // 버튼 컨테이너 크기 고정
     },
     footerButton1: {
       flex: 4,
@@ -294,23 +274,10 @@ const MapPage = () => {
       color: "#ffffff",
       borderRadius: "5px",
     },
-    mapContainer: {
-      position: "relative", // 추가
-      flex: 1,
-      width: "100%",
-      height: "60vh",
-    },
   };
 
   return (
     <div style={styles.mapPage}>
-      <header style={styles.header}>
-        <button onClick={() => window.history.back()} style={styles.backButton}>
-          &lt;
-        </button>
-        <h1 style={styles.headerTitle}>길냥이 찾기</h1>
-      </header>
-
       <div id="map" style={styles.mapContainer}>
         <Cam addStrayCat={addStrayCat} userLatLng={userLatLng} />
       </div>

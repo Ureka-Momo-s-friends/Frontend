@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import * as S from "./style";
 import BottomSheet from "./Bottemsheet";
 
-const BuyAndCart = ({ productName, price }) => {
+const BuyAndCart = ({ productName, price, productId }) => {
   const [showBottomSheet, setShowBottomSheet] = useState(false);
 
   const handleOpenBottomSheet = () => setShowBottomSheet(true);
@@ -20,6 +20,7 @@ const BuyAndCart = ({ productName, price }) => {
             onClose={handleCloseBottomSheet}
             productName={productName}
             price={price}
+            productId={productId}
           />
         </>
       )}
