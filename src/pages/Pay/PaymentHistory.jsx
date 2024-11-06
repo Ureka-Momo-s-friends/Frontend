@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as S from "./style"; // 스타일 모듈 임포트
 import ProfileTitle from "components/Profile/ProfileContent/ProfileTitle";
+import { MdOutlineArrowForwardIos } from "react-icons/md";
 
 const PaymentHistory = () => {
   const [orderData, setOrderData] = useState([]);
@@ -77,6 +78,10 @@ const PaymentHistory = () => {
     return <div>Error: {error}</div>;
   }
 
+  const handleCardClick = () => {
+    alert("눌럿엉");
+  };
+
   return (
     <>
       <S.PaymentListContainer>
@@ -104,17 +109,16 @@ const PaymentHistory = () => {
                     : "날짜 정보 없음"}
                 </S.PaymentDate>
               </S.PaymentDetails>
-              <S.PaymentAction>
-                {order.orderStatus === "취소완료" ? (
-                  ""
-                ) : (
-                  <S.CardButton
-                    onClick={() => handleCancelOrder(order.orderId)}
-                  >
-                    취소
-                  </S.CardButton>
-                )}
-              </S.PaymentAction>
+              {/* {order.orderStatus === "취소완료" ? (
+                ""
+              ) : (
+                <S.CardButton onClick={() => handleCancelOrder(order.orderId)}>
+                  취소
+                </S.CardButton>
+              )} */}
+              <S.IconContainer onClick={handleCardClick}>
+                <MdOutlineArrowForwardIos size={24} />
+              </S.IconContainer>
             </S.PaymentCard>
           ))
         )}
