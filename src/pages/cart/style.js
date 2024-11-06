@@ -3,13 +3,13 @@ import styled from "@emotion/styled";
 export const CartWrapper = styled.div`
   width: 100%;
   padding: 0 16px;
-  padding-bottom: 280px;
+  padding-bottom: 330px;
 `;
 
 export const CartTitle = styled.h2`
   font-size: 1.25rem;
   font-weight: bold;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
 `;
 
 export const CartItemWrapper = styled.div`
@@ -48,15 +48,8 @@ export const ItemName = styled.h3`
   margin: 0;
 `;
 
-export const PriceContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0.5rem 0;
-`;
-
 export const ItemPrice = styled.p`
-  font-size: 1rem;
+  font-size: 1.125rem;
   font-weight: medium;
   margin: 0.5rem 0;
   text-decoration: line-through;
@@ -128,19 +121,54 @@ export const SummaryRow = styled.div`
   margin-bottom: 1rem;
 `;
 
+export const PriceContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0.5rem 0;
+`;
+
+export const DiscountRate = styled.span`
+  color: #ff4444;
+  font-weight: bold;
+  font-size: 1.125rem;
+`;
+
 export const CartTotal = styled.div`
-  text-align: right;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `;
 
 export const TotalLabel = styled.p`
   font-weight: bold;
   margin: 0;
+  margin-right: 8px;
 `;
 
 export const TotalAmount = styled.p`
+  position: relative;
+  font-size: 1.25rem;
+  font-weight: medium;
+  margin: 0;
+  text-decoration: line-through;
+  color: #999;
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+    background-color: #ff4444;
+  }
+`;
+
+export const TotalSaleAmount = styled.p`
   font-size: 1.25rem;
   font-weight: bold;
-  margin: 0.25rem 0;
+  margin: 0;
 `;
 
 export const AddressSection = styled.div`

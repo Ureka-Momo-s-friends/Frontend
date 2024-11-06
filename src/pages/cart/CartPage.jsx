@@ -23,6 +23,8 @@ const CartItem = ({
     }
   };
 
+  const discountRate = Math.round(((price - salePrice) / price) * 100);
+
   return (
     <S.CartItemWrapper>
       <S.ItemImage>
@@ -34,6 +36,7 @@ const CartItem = ({
           <div>
             <S.ItemName>{name}</S.ItemName>
             <S.PriceContainer>
+              <S.DiscountRate>{discountRate}%</S.DiscountRate>
               <S.ItemPrice>{(price * quantity).toLocaleString()}</S.ItemPrice>
               <S.ItemSalePrice>
                 {(salePrice * quantity).toLocaleString()}원
@@ -177,15 +180,22 @@ const Cart = () => {
     }
   };
 
-  const total = cartItems.reduce(
+  const totalSalePrice = cartItems.reduce(
     (sum, item) => sum + item.product.salePrice * item.amount,
     0,
+  );
+  const totalOriginalPrice = cartItems.reduce(
+    (sum, item) => sum + item.product.price * item.amount,
+    0,
+  );
+  const totalDiscountRate = Math.round(
+    ((totalOriginalPrice - totalSalePrice) / totalOriginalPrice) * 100,
   );
 
   const handlePurchase = () => {
     if (cartItems.length > 0 && address.trim()) {
       navigate("/payment", {
-        state: { cartItems, totalPrice: total },
+        state: { cartItems, totalPrice: totalSalePrice, address: address },
       });
     } else {
       alert("주소를 입력하고 장바구니에 상품을 추가해주세요.");
@@ -218,7 +228,13 @@ const Cart = () => {
             <span>전 상품 무료배송!</span>
             <S.CartTotal>
               <S.TotalLabel>총 결제액</S.TotalLabel>
-              <S.TotalAmount>{total.toLocaleString()}원</S.TotalAmount>
+              <S.DiscountRate>{totalDiscountRate}%</S.DiscountRate>
+              <S.TotalAmount>
+                {totalOriginalPrice.toLocaleString()}원
+              </S.TotalAmount>
+              <S.TotalSaleAmount>
+                {totalSalePrice.toLocaleString()}원
+              </S.TotalSaleAmount>
             </S.CartTotal>
           </S.SummaryRow>
         </S.CartSummary>

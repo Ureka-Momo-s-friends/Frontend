@@ -12,27 +12,14 @@ const PaymentSuccess = () => {
   const [isPaymentSaved, setIsPaymentSaved] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     const savePaymentInfo = async () => {
-      if (isPaymentSaved) return;
+      if (isPaymentSaved) return; // 이미 저장된 경우 리턴
 
       try {
-        const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
         const address = localStorage.getItem("address") || "배송지 정보 없음";
         const loggedInUser = JSON.parse(localStorage.getItem("user"));
-        const zonecode = localStorage.getItem("zonecode") || 12345;
-
-        // 요청 데이터 확인용 로그
-        console.log("Request body:", {
-          memberId: loggedInUser.id,
-          paymentKey: paymentKey,
-          address: address,
-          addressDetail: "추가 주소 정보", // 이 부분도 필요하다면 적절한 값으로 변경
-          zonecode: "우편번호", // 이 부분도 필요하다면 적절한 값으로 변경
-          orderDetailRequestList: cartItems.map((item) => ({
-            productId: item.productId,
-            amount: item.amount,
-          })),
-        });
 
         const response = await fetch("http://localhost:8080/api/orders/save", {
           method: "POST",
@@ -41,35 +28,38 @@ const PaymentSuccess = () => {
           },
           body: JSON.stringify({
             memberId: loggedInUser.id,
-            paymentKey: paymentKey,
             address: address,
-            addressDetail: "추가 주소 정보", // 이 부분도 필요하다면 적절한 값으로 변경
-            zonecode: parseInt(zonecode, 10), // zonecode를 정수로 변환하여 전송
-            orderDetailRequestList: cartItems.map((item) => ({
-              productId: item.productId,
-              amount: item.amount,
-            })),
+            paymentKey: paymentKey,
           }),
         });
 
-        if (response.ok) {
-          alert("주문 및 결제 정보가 저장되었습니다.");
-          setIsPaymentSaved(true);
-          localStorage.removeItem("cart");
-        } else {
-          console.error("주문 및 결제 정보 저장 실패");
-          const errorDetails = await response.json();
-          console.error("Error details:", errorDetails); // 추가된 로그
+        if (isMounted && !isPaymentSaved) {
+          // 마운트 상태와 저장 여부 다시 한번 체크
+          if (response.ok) {
+            alert("주문 및 결제 정보가 저장되었습니다.");
+            setIsPaymentSaved(true);
+            localStorage.removeItem("address");
+          } else {
+            console.error("주문 및 결제 정보 저장 실패");
+            const errorDetails = await response.json();
+            console.error("Error details:", errorDetails);
+          }
         }
       } catch (error) {
-        console.error("주문 및 결제 정보 전송 중 오류:", error);
+        if (isMounted) {
+          console.error("주문 및 결제 정보 전송 중 오류:", error);
+        }
       }
     };
 
     if (paymentKey && orderId && amount && !isPaymentSaved) {
       savePaymentInfo();
     }
-  }, [paymentKey, orderId, amount, isPaymentSaved]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [paymentKey, orderId, amount, isPaymentSaved]); // isPaymentSaved 의존성 추가
 
   const handleGoHome = () => {
     navigate("/");

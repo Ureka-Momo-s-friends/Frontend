@@ -4,24 +4,33 @@ import { loadTossPayments } from "@tosspayments/sdk";
 
 const PaymentPage = () => {
   const location = useLocation();
-  const { cartItems, totalPrice } = location.state || {
+  const { cartItems, totalPrice, address } = location.state || {
     cartItems: [],
     totalPrice: 0,
+    address: "",
   };
 
   useEffect(() => {
+    if (address) {
+      localStorage.setItem("address", address);
+    }
+
     const clientKey = process.env.REACT_APP_TOSS_CLIENT_KEY;
     loadTossPayments(clientKey).then((tossPayments) => {
-      // 페이지가 로드될 때 자동으로 결제 요청 실행
+      const orderName =
+        cartItems.length > 1
+          ? `${cartItems[0].product.name} 외 ${cartItems.length - 1}건`
+          : cartItems[0].product.name;
+
       tossPayments.requestPayment("카드", {
         amount: totalPrice,
         orderId: "order-id-" + new Date().getTime(),
-        orderName: cartItems.map((item) => item.product.name).join(", "), // 수정된 부분
+        orderName: orderName,
         successUrl: window.location.origin + "/success",
         failUrl: window.location.origin + "/fail",
       });
     });
-  }, [cartItems, totalPrice]);
+  }, [cartItems, totalPrice, address]);
 
   return (
     <div>
