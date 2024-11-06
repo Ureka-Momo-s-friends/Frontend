@@ -5,9 +5,17 @@ export const CategoryWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 32px;
+  gap: 15px;
   margin: 24px 0;
-  padding: 0 16px;
+  padding: 0 15px;
+
+  @media (min-width: 768px) {
+    gap: calc(15px + (32 - 15) * ((100vw - 768px) / (1200 - 768)));
+  }
+
+  @media (min-width: 1200px) {
+    gap: 32px;
+  }
 
   & > div:nth-of-type(${(props) => props.activeid + 1}) {
     font-weight: 900;

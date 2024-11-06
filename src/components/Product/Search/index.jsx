@@ -8,7 +8,7 @@ const Search = () => {
   const keyword = searchParams.get("keyword") || "";
   const [products, setProducts] = useState([]);
 
-  const fetchMovies = async () => {
+  const fetchProducts = async () => {
     try {
       const response = await fetch(
         `http://localhost:8080/api/products/search?keyword=${encodeURIComponent(keyword)}`,
@@ -22,7 +22,7 @@ const Search = () => {
 
   useEffect(() => {
     if (keyword) {
-      fetchMovies();
+      fetchProducts();
     }
   }, [keyword]);
 
@@ -31,7 +31,12 @@ const Search = () => {
       {products.length === 0 ? (
         <S.NoResults>검색 결과가 없습니다.</S.NoResults>
       ) : (
-        <ProductList products={products} />
+        <>
+          <S.YesResults>
+            {keyword} 검색 결과 {products.length}건
+          </S.YesResults>
+          <ProductList products={products} />
+        </>
       )}
     </S.Layer>
   );

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Minus, Plus, X, Edit2, Check } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const styles = `
   .cart-container {
@@ -296,11 +297,6 @@ const AddressSection = ({ address, onAddressChange }) => {
     setIsEditing(false);
   };
 
-  const handleCancel = () => {
-    setTempAddress(address);
-    setIsEditing(false);
-  };
-
   return (
     <div className="address-section">
       <div className="address-header">
@@ -321,7 +317,7 @@ const AddressSection = ({ address, onAddressChange }) => {
       {isEditing ? (
         <textarea
           className="address-textarea"
-          placeholder="배송 받으실 주소를 입력해주세요"
+          placeholder="배송지를 입력해주세요"
           value={tempAddress}
           onChange={(e) => setTempAddress(e.target.value)}
           autoFocus
@@ -344,6 +340,7 @@ const Cart = () => {
   const [address, setAddress] = useState("");
   const loggedInUser = JSON.parse(localStorage.getItem("user"));
   const userId = loggedInUser ? loggedInUser.id : null;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -415,6 +412,16 @@ const Cart = () => {
     0,
   );
 
+  const handlePurchase = () => {
+    if (cartItems.length > 0 && address.trim()) {
+      navigate("/payment", {
+        state: { cartItems, totalPrice: total },
+      });
+    } else {
+      alert("주소를 입력하고 장바구니에 상품을 추가해주세요.");
+    }
+  };
+
   return (
     <>
       <style>{styles}</style>
@@ -454,6 +461,7 @@ const Cart = () => {
           <button
             className="purchase-button"
             disabled={!address.trim() || cartItems.length === 0}
+            onClick={handlePurchase}
           >
             구매하기
           </button>

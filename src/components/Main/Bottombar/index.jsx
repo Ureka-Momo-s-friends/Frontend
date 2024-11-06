@@ -29,7 +29,7 @@ const Bottombar = () => {
 
   return (
     <S.Layer>
-      <MenuItem link="/MapPage">
+      <MenuItem link="/map">
         <CatIcon />
         길냥이
       </MenuItem>
