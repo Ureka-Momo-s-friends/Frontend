@@ -120,7 +120,11 @@ const MapPage = () => {
                 placeClosestShelters(data, mapInstance, userLat, userLng);
               })
               .catch((error) => console.error("Error loading JSON:", error));
-            fetchStrayCats(mapInstance);
+
+            // userId가 있을 때만 fetchStrayCats 실행
+            if (userId) {
+              fetchStrayCats(mapInstance);
+            }
           },
           (error) => {
             console.error("Geolocation error:", error);
