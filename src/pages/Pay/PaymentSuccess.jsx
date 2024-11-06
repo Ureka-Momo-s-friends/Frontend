@@ -24,10 +24,7 @@ const PaymentSuccess = () => {
         // 요청 데이터 확인용 로그
         console.log("Request body:", {
           memberId: loggedInUser.id,
-          orderId: orderId,
-          amount: parseInt(amount, 10),
           paymentKey: paymentKey,
-          status: "SUCCESS",
           address: address,
           addressDetail: "추가 주소 정보", // 이 부분도 필요하다면 적절한 값으로 변경
           zonecode: "우편번호", // 이 부분도 필요하다면 적절한 값으로 변경
@@ -44,10 +41,7 @@ const PaymentSuccess = () => {
           },
           body: JSON.stringify({
             memberId: loggedInUser.id,
-            orderId: orderId,
-            amount: parseInt(amount, 10),
             paymentKey: paymentKey,
-            status: "SUCCESS",
             address: address,
             addressDetail: "추가 주소 정보", // 이 부분도 필요하다면 적절한 값으로 변경
             zonecode: parseInt(zonecode, 10), // zonecode를 정수로 변환하여 전송

@@ -46,7 +46,7 @@ const PaymentHistory = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ status: "CANCELLED" }), // 요청 본문에 상태를 포함
+          body: JSON.stringify("취소완료"), // 요청 본문에 상태를 포함
         },
       );
 
@@ -55,7 +55,7 @@ const PaymentHistory = () => {
         setOrderData((prevData) =>
           prevData.map((order) =>
             order.orderId === orderId
-              ? { ...order, orderStatus: "CANCELLED" }
+              ? { ...order, orderStatus: "취소완료" }
               : order,
           ),
         );
@@ -65,30 +65,6 @@ const PaymentHistory = () => {
     } catch (error) {
       console.error("주문 취소 중 오류 발생:", error);
       alert("주문 취소 중 오류가 발생했습니다.");
-    }
-  };
-
-  // 주문 삭제 함수
-  const handleDeleteOrder = async (orderId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/api/orders/delete/${orderId}`,
-        {
-          method: "DELETE",
-        },
-      );
-
-      if (response.ok) {
-        alert("주문이 삭제되었습니다.");
-        setOrderData((prevData) =>
-          prevData.filter((order) => order.orderId !== orderId),
-        );
-      } else {
-        alert("주문 삭제에 실패했습니다.");
-      }
-    } catch (error) {
-      console.error("주문 삭제 중 오류 발생:", error);
-      alert("주문 삭제 중 오류가 발생했습니다.");
     }
   };
 
@@ -128,12 +104,15 @@ const PaymentHistory = () => {
                 </S.PaymentDate>
               </S.PaymentDetails>
               <S.PaymentAction>
-                <S.CardButton onClick={() => handleCancelOrder(order.orderId)}>
-                  취소
-                </S.CardButton>
-                <S.CardButton onClick={() => handleDeleteOrder(order.orderId)}>
-                  삭제
-                </S.CardButton>
+                {order.orderStatus === "취소완료" ? (
+                  ""
+                ) : (
+                  <S.CardButton
+                    onClick={() => handleCancelOrder(order.orderId)}
+                  >
+                    취소
+                  </S.CardButton>
+                )}
               </S.PaymentAction>
             </S.PaymentCard>
           ))
