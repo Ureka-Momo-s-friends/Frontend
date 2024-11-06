@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import * as S from "./style"; // 스타일 모듈 임포트
-import Bottombar from "components/Main/Bottombar";
-import Header from "components/Main/Header";
 
 const PaymentHistory = () => {
   const [orderData, setOrderData] = useState([]);

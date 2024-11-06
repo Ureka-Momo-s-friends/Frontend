@@ -1,12 +1,9 @@
 import React from "react";
-import { GoogleLogin, googleLogout } from "@react-oauth/google";
-import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
 
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
 function Login({ setUser, setShowModal }) {
-  const navigate = useNavigate();
-
   const handleLoginSuccess = (credentialResponse) => {
     try {
       const token = credentialResponse.credential;
