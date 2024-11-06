@@ -20,7 +20,7 @@ const PaymentHistory = () => {
 
       try {
         const response = await fetch(
-          `http://localhost:8080/api/orders?memberId=${memberId}`, // memberId 쿼리 매개변수로 전달
+          `https://ureca-momo.store/api/orders?memberId=${memberId}`, // memberId 쿼리 매개변수로 전달
         );
         if (!response.ok) throw new Error("주문 내역을 불러오는 중 오류 발생");
 
@@ -40,7 +40,7 @@ const PaymentHistory = () => {
   const handleCancelOrder = async (orderId) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/orders/${orderId}`,
+        `https://ureca-momo.store/api/orders/${orderId}`,
         {
           method: "PUT",
           headers: {

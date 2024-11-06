@@ -24,7 +24,7 @@ function Login({ setUser, setShowModal }) {
         contact: decodedResponse.email || "", // 기본값 확인
       };
 
-      fetch("http://localhost:8080/api/members/google-login", {
+      fetch("https://ureca-momo.store/api/members/google-login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

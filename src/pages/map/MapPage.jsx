@@ -185,7 +185,7 @@ const MapPage = () => {
   };
 
   const fetchStrayCats = (mapInstance) => {
-    fetch(`http://localhost:8080/api/strayCats?memberId=${userId}`, {
+    fetch(`https://ureca-momo.store/api/strayCats?memberId=${userId}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     })

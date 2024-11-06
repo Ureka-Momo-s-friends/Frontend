@@ -13,7 +13,7 @@ const MainContents = () => {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/products?category=${encodeURIComponent(categorys[categoryId])}`,
+          `https://ureca-momo.store/api/products?category=${encodeURIComponent(categorys[categoryId])}`,
         );
 
         if (!response.ok) {

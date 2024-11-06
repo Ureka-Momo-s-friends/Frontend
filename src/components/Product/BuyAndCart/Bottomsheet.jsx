@@ -24,7 +24,7 @@ const BottomSheet = ({ onClose, productName, price, productId }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/carts/${userId}`,
+        `https://ureca-momo.store/api/carts/${userId}`,
         {
           method: "POST",
           headers: {

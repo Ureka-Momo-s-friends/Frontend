@@ -21,17 +21,20 @@ const PaymentSuccess = () => {
         const address = localStorage.getItem("address") || "배송지 정보 없음";
         const loggedInUser = JSON.parse(localStorage.getItem("user"));
 
-        const response = await fetch("http://localhost:8080/api/orders/save", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        const response = await fetch(
+          "https://ureca-momo.store/api/orders/save",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              memberId: loggedInUser.id,
+              address: address,
+              paymentKey: paymentKey,
+            }),
           },
-          body: JSON.stringify({
-            memberId: loggedInUser.id,
-            address: address,
-            paymentKey: paymentKey,
-          }),
-        });
+        );
 
         if (isMounted && !isPaymentSaved) {
           // 마운트 상태와 저장 여부 다시 한번 체크
@@ -72,7 +75,7 @@ const PaymentSuccess = () => {
   // 결제 취소 처리 함수
   const handleCancelPayment = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/pays/cancel", {
+      const response = await fetch("https://ureca-momo.store/api/pays/cancel", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

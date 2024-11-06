@@ -119,7 +119,7 @@ const Cart = () => {
     const fetchCart = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/carts/${userId}`,
+          `https://ureca-momo.store/api/carts/${userId}`,
           {
             method: "GET",
             headers: {
@@ -143,7 +143,7 @@ const Cart = () => {
   const handleUpdateQuantity = async (cartId, newAmount) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/carts/${cartId}`,
+        `https://ureca-momo.store/api/carts/${cartId}`,
         {
           method: "PUT",
           headers: {
@@ -167,7 +167,7 @@ const Cart = () => {
   const handleRemoveItem = async (cartId) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/carts/${cartId}`,
+        `https://ureca-momo.store/api/carts/${cartId}`,
         {
           method: "DELETE",
         },

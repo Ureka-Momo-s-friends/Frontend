@@ -27,7 +27,7 @@ function ProfileUpdate() {
       return;
     }
 
-    fetch(`http://localhost:8080/api/members/${loggedInUser.id}`)
+    fetch(`https://ureca-momo.store/api/members/${loggedInUser.id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
@@ -104,7 +104,7 @@ function ProfileUpdate() {
       formData.append("profileImg", profileImgUrl);
     }
 
-    fetch(`http://localhost:8080/api/members/${loggedInUser.id}`, {
+    fetch(`https://ureca-momo.store/api/members/${loggedInUser.id}`, {
       method: "PUT",
       body: formData,
     })
@@ -115,7 +115,7 @@ function ProfileUpdate() {
         return response.json();
       })
       .then((data) => {
-        fetch(`http://localhost:8080/api/members/${loggedInUser.id}`)
+        fetch(`https://ureca-momo.store/api/members/${loggedInUser.id}`)
           .then((response) => response.json())
           .then((updatedData) => {
             updateUserDataGlobally(updatedData);
@@ -134,7 +134,7 @@ function ProfileUpdate() {
       return;
     }
 
-    fetch(`http://localhost:8080/api/members/${loggedInUser.id}`, {
+    fetch(`https://ureca-momo.store/api/members/${loggedInUser.id}`, {
       method: "DELETE",
     })
       .then((response) => {

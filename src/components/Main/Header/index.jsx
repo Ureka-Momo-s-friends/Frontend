@@ -87,7 +87,7 @@ const Header = ({ isBack }) => {
       }
 
       const response = await fetch(
-        "http://localhost:8080/api/members/register",
+        "https://ureca-momo.store/api/members/register",
         {
           method: "POST",
           body: formData,

@@ -32,10 +32,13 @@ function Cam({ addStrayCat, userLatLng, selectedLatLng }) {
         formData.append("lon", location.lng);
         formData.append("memberId", userId);
 
-        const apiResponse = await fetch("http://localhost:8080/api/strayCats", {
-          method: "POST",
-          body: formData,
-        });
+        const apiResponse = await fetch(
+          "https://ureca-momo.store/api/strayCats",
+          {
+            method: "POST",
+            body: formData,
+          },
+        );
 
         if (!apiResponse.ok) {
           throw new Error(

@@ -37,7 +37,7 @@ function ProfilePetUpdate() {
     }
 
     // API 호출을 통해 해당 사용자의 고양이 데이터 불러오기
-    fetch(`http://localhost:8080/api/pets/member/${loggedInUser.id}`)
+    fetch(`https://ureca-momo.store/api/pets/member/${loggedInUser.id}`)
       .then((response) => response.json())
       .then((data) => {
         // 데이터가 base64로 인코딩된 이미지를 포함하고 있는 경우 처리
@@ -102,7 +102,7 @@ function ProfilePetUpdate() {
     }
 
     // API 호출을 통해 고양이 정보 업데이트
-    fetch(`http://localhost:8080/api/pets/${selectedPet.id}`, {
+    fetch(`https://ureca-momo.store/api/pets/${selectedPet.id}`, {
       method: "PUT",
       body: formData,
     })
@@ -158,7 +158,7 @@ function ProfilePetUpdate() {
     }
 
     // API 호출을 통해 새로운 고양이 추가
-    fetch("http://localhost:8080/api/pets", {
+    fetch("https://ureca-momo.store/api/pets", {
       method: "POST",
       body: formData,
     })
@@ -187,7 +187,7 @@ function ProfilePetUpdate() {
 
   // 고양이 정보를 삭제하는 함수
   const handleDeletePet = (petId) => {
-    fetch(`http://localhost:8080/api/pets/${petId}`, {
+    fetch(`https://ureca-momo.store/api/pets/${petId}`, {
       method: "DELETE",
     })
       .then((response) => {

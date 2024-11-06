@@ -11,7 +11,7 @@ const ProductDetail = () => {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/products/${productId}`,
+          `https://ureca-momo.store/api/products/${productId}`,
         );
 
         if (!response.ok) {

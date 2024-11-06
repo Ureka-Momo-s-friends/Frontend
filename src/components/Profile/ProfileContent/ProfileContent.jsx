@@ -37,7 +37,7 @@ function ProfileContent() {
   };
 
   const fetchPetList = (userId) => {
-    fetch(`http://localhost:8080/api/pets/member/${userId}`)
+    fetch(`https://ureca-momo.store/api/pets/member/${userId}`)
       .then((response) => response.json())
       .then((data) => {
         const petsWithImages = data.map((pet) => ({
@@ -62,7 +62,7 @@ function ProfileContent() {
       return;
     }
 
-    fetch(`http://localhost:8080/api/members/${loggedInUser.id}`)
+    fetch(`https://ureca-momo.store/api/members/${loggedInUser.id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("데이터를 가져오는 데 실패했습니다.");

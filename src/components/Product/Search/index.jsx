@@ -11,7 +11,7 @@ const Search = () => {
   const fetchProducts = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/products/search?keyword=${encodeURIComponent(keyword)}`,
+        `https://ureca-momo.store/api/products/search?keyword=${encodeURIComponent(keyword)}`,
       );
       const data = await response.json();
       setProducts(data);
