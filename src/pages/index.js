@@ -1,6 +1,6 @@
 import HomePage from "./main/HomePage";
 import MapPage from "./map/MapPage";
-import CartPage from "./cart/CartPage";
+import CartPage from "./Cart/CartPage";
 import ProductDetailPage from "./main/ProductDetailPage";
 import ProfilePage from "./Profile/ProfilePage";
 import ProfileUpdatePage from "./Profile/ProfileUpdatePage";

@@ -36,14 +36,9 @@ const BottomSheet = ({ onClose, productName, price, productId }) => {
             productId: parseInt(productId, 10),
           }),
         },
-      ).then((res) => {
-        console.log("Response Status:", res.status);
-        console.log("Response Headers:", Object.fromEntries(res.headers));
-        return res;
-      });
+      );
 
       if (!response.ok) {
-        // 에러 응답 상세 정보 로깅
         const errorText = await response.text();
         console.error("Error Response:", errorText);
         throw new Error(
@@ -54,6 +49,17 @@ const BottomSheet = ({ onClose, productName, price, productId }) => {
       const result = await response.json();
       console.log("Success Response:", result);
 
+      // 기존 localStorage의 cartItems를 가져와 새로운 아이템을 추가
+      const existingCartItems = JSON.parse(localStorage.getItem("cart")) || [];
+      const newCartItem = {
+        productId: productId,
+        productName: productName,
+        price: price,
+        amount: quantity,
+      };
+      const updatedCartItems = [...existingCartItems, newCartItem];
+      localStorage.setItem("cart", JSON.stringify(updatedCartItems));
+
       alert("장바구니에 추가되었습니다.");
       onClose();
       navigate("/cart");
@@ -63,7 +69,6 @@ const BottomSheet = ({ onClose, productName, price, productId }) => {
         stack: error.stack,
       });
 
-      // 서버 연결 실패 시 좀 더 명확한 에러 메시지
       if (error.message.includes("Failed to fetch")) {
         alert("서버 연결에 실패했습니다. 서버가 실행 중인지 확인해주세요.");
       } else {

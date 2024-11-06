@@ -4,80 +4,94 @@ import Bottombar from "components/Main/Bottombar";
 import Header from "components/Main/Header";
 
 const PaymentHistory = () => {
-  const [paymentData, setPaymentData] = useState([]);
+  const [orderData, setOrderData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // 결제 내역을 가져오는 함수
-    fetch("http://localhost:8080/api/pays/all")
-      .then((response) => response.json())
-      .then((data) => {
-        setPaymentData(data);
+    // 주문 내역을 가져오는 함수
+    const fetchOrderData = async () => {
+      const loggedInUser = JSON.parse(localStorage.getItem("user")); // 로그인한 사용자 정보 가져오기
+      const memberId = loggedInUser ? loggedInUser.id : null; // 사용자 ID 가져오기
+
+      if (!memberId) {
+        setError("로그인이 필요합니다.");
         setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching payment data:", error);
-        setError("결제 내역을 불러오는 중 오류가 발생했습니다.");
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/orders?memberId=${memberId}`, // memberId 쿼리 매개변수로 전달
+        );
+        if (!response.ok) throw new Error("주문 내역을 불러오는 중 오류 발생");
+
+        const data = await response.json();
+        setOrderData(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchOrderData();
   }, []);
 
   // 결제 취소 함수
-  const handleCancelPayment = (paymentKey) => {
-    fetch(`http://localhost:8080/api/pays/cancel`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ paymentKey }),
-    })
-      .then((response) => {
-        if (response.ok) {
-          alert("결제가 취소되었습니다.");
-          setPaymentData((prevData) =>
-            prevData.map((payment) =>
-              payment.paymentKey === paymentKey
-                ? { ...payment, status: "CANCELLED" }
-                : payment,
-            ),
-          );
-        } else {
-          console.error("결제 취소 실패");
-          alert("결제 취소에 실패했습니다.");
-        }
-      })
-      .catch((error) => {
-        console.error("결제 취소 중 오류 발생:", error);
-        alert("결제 취소 중 오류가 발생했습니다.");
-      });
+  const handleCancelOrder = async (orderId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/orders/${orderId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: "CANCELLED" }), // 요청 본문에 상태를 포함
+        },
+      );
+
+      if (response.ok) {
+        alert("주문이 취소되었습니다.");
+        setOrderData((prevData) =>
+          prevData.map((order) =>
+            order.orderId === orderId
+              ? { ...order, orderStatus: "CANCELLED" }
+              : order,
+          ),
+        );
+      } else {
+        alert("주문 취소에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("주문 취소 중 오류 발생:", error);
+      alert("주문 취소 중 오류가 발생했습니다.");
+    }
   };
 
-  // 결제 삭제 함수 (옵션)
-  const handleDeletePayment = (paymentKey) => {
-    if (!paymentKey) {
-      alert("결제 키가 올바르지 않습니다.");
-      return;
-    }
+  // 주문 삭제 함수
+  const handleDeleteOrder = async (orderId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/orders/delete/${orderId}`,
+        {
+          method: "DELETE",
+        },
+      );
 
-    fetch(`http://localhost:8080/api/pays/delete/${paymentKey}`, {
-      method: "DELETE",
-    })
-      .then((response) => {
-        if (response.ok) {
-          alert("결제 정보가 성공적으로 삭제되었습니다.");
-          // 결제 내역 목록 갱신
-          setPaymentData((prevData) =>
-            prevData.filter((payment) => payment.paymentKey !== paymentKey),
-          );
-        } else {
-          alert("결제 정보 삭제에 실패했습니다.");
-        }
-      })
-      .catch((error) => {
-        console.error("결제 삭제 중 오류 발생:", error);
-        alert("결제 삭제 중 오류가 발생했습니다.");
-      });
+      if (response.ok) {
+        alert("주문이 삭제되었습니다.");
+        setOrderData((prevData) =>
+          prevData.filter((order) => order.orderId !== orderId),
+        );
+      } else {
+        alert("주문 삭제에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("주문 삭제 중 오류 발생:", error);
+      alert("주문 삭제 중 오류가 발생했습니다.");
+    }
   };
 
   if (loading) {
@@ -91,45 +105,35 @@ const PaymentHistory = () => {
   return (
     <>
       <S.PaymentListContainer>
-        <h2>결제 내역</h2>
-        {paymentData.length === 0 ? (
-          <p>결제 내역이 없습니다.</p>
+        <h2>주문 내역</h2>
+        {orderData.length === 0 ? (
+          <p>주문 내역이 없습니다.</p>
         ) : (
-          paymentData.map((payment) => (
-            <S.PaymentCard key={payment.pay_id}>
+          orderData.map((order) => (
+            <S.PaymentCard key={order.orderId}>
               <S.PaymentDetails>
-                {/* 상품명 표시 */}
                 <S.PaymentProductName>
-                  {payment.orders?.orderName || "상품명 정보 없음"}
+                  {order.orderName || "상품명 정보 없음"}
                 </S.PaymentProductName>
-                {/* 상태에 따라 금액 앞에 기호 추가 */}
                 <S.PaymentAmount>
-                  {payment.status === "SUCCESS"
-                    ? `- ${payment.amount}원`
-                    : payment.status === "CANCELLED"
-                      ? `+ ${payment.amount}원`
-                      : `${payment.amount}원`}
+                  {order.amount
+                    ? order.amount.toLocaleString() + "원"
+                    : "금액 정보 없음"}
                 </S.PaymentAmount>
-                <S.PaymentStatus status={payment.status}>
-                  {payment.status}
+                <S.PaymentStatus status={order.orderStatus}>
+                  {order.orderStatus || "상태 정보 없음"}
                 </S.PaymentStatus>
                 <S.PaymentDate>
-                  {new Date(payment.paymentDate).toLocaleString()}
+                  {order.orderTime
+                    ? new Date(order.orderTime).toLocaleString()
+                    : "날짜 정보 없음"}
                 </S.PaymentDate>
               </S.PaymentDetails>
               <S.PaymentAction>
-                {payment.status === "SUCCESS" && (
-                  <S.CardButton
-                    variant="cancel"
-                    onClick={() => handleCancelPayment(payment.paymentKey)}
-                  >
-                    취소
-                  </S.CardButton>
-                )}
-                <S.CardButton
-                  variant="delete"
-                  onClick={() => handleDeletePayment(payment.paymentKey)}
-                >
+                <S.CardButton onClick={() => handleCancelOrder(order.orderId)}>
+                  취소
+                </S.CardButton>
+                <S.CardButton onClick={() => handleDeleteOrder(order.orderId)}>
                   삭제
                 </S.CardButton>
               </S.PaymentAction>
