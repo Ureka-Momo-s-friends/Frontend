@@ -178,7 +178,9 @@ function ProfileContent() {
                 <p style={{ margin: 0 }}>
                   성별: {selectedPet.gender ? "암컷" : "수컷"}
                 </p>
-                <p style={{ margin: 0 }}>생일: {selectedPet.birthDate}</p>
+                <p style={{ margin: 0 }}>
+                  생일: {selectedPet.birthDate || "알 수 없음"}
+                </p>
               </div>
               <div className="pet-image ml-3">
                 <S.ModalImage
@@ -193,11 +195,6 @@ function ProfileContent() {
             </div>
           )}
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClosePetModal}>
-            닫기
-          </Button>
-        </Modal.Footer>
       </Modal>
 
       <Modal show={showUserModal} onHide={handleCloseUserModal} centered>

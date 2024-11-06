@@ -34,6 +34,10 @@ const baseStyle = css`
     -o-user-drag: none;
     user-drag: none;
   }
+  .required:after {
+    content: " *";
+    color: red;
+  }
 `;
 
 const GlobalStyle = () => <Global styles={baseStyle} />;
