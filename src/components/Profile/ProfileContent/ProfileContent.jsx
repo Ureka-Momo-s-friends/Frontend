@@ -97,6 +97,9 @@ function ProfileContent() {
       <S.CardSection>
         <S.StyledCard onClick={handleUserClick}>
           <div className="info-section d-flex justify-content-between align-items-center">
+            <h5 style={{ fontSize: "16px", fontWeight: "bold", margin: 0 }}>
+              내 프로필
+            </h5>
             <S.CardButton onClick={() => navigate("update")}>편집</S.CardButton>
           </div>
           <div className="d-flex align-items-center mt-3">
@@ -221,11 +224,6 @@ function ProfileContent() {
             </div>
           )}
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseUserModal}>
-            닫기
-          </Button>
-        </Modal.Footer>
       </Modal>
     </S.ProfileContainer>
   );
