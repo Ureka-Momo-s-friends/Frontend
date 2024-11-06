@@ -3,13 +3,13 @@ import styled from "@emotion/styled";
 export const CartWrapper = styled.div`
   width: 100%;
   padding: 0 16px;
-  padding-bottom: 280px;
+  padding-bottom: 330px;
 `;
 
 export const CartTitle = styled.h2`
   font-size: 1.25rem;
   font-weight: bold;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
 `;
 
 export const CartItemWrapper = styled.div`

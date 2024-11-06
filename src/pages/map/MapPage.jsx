@@ -73,7 +73,6 @@ const MapPage = () => {
       setShowBottomSheet(true); // 비로그인 시 바텀 시트 표시
     }
   };
-  const handleCloseOffcanvas = () => setShowOffcanvas(false);
   const closeBottomSheet = () => setShowBottomSheet(false); // 바텀 시트 닫기
 
   useEffect(() => {
