@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Bottombar from "components/Main/Bottombar";
-import { Offcanvas, Popover, OverlayTrigger } from "react-bootstrap";
+import { OverlayTrigger } from "react-bootstrap";
 import Cam from "../../components/Map/Cam";
 import BottomSheet from "../../components/Map/MapBottomSheet";
 const MapPage = () => {
