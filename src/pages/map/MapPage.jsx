@@ -73,6 +73,9 @@ const MapPage = () => {
       setShowBottomSheet(true); // 비로그인 시 바텀 시트 표시
     }
   };
+  const closeOffcanvas = () => {
+    setShowOffcanvas(false);
+  };
   const closeBottomSheet = () => setShowBottomSheet(false); // 바텀 시트 닫기
 
   useEffect(() => {
@@ -378,6 +381,20 @@ const MapPage = () => {
           }}
         >
           <div style={{ padding: "10px" }}>
+            <button
+              onClick={closeOffcanvas}
+              style={{
+                position: "absolute",
+                top: "1px",
+                right: "10px",
+                background: "none",
+                border: "none",
+                fontSize: "30px",
+                cursor: "pointer",
+              }}
+            >
+              &times;
+            </button>
             <h5>내 길냥이 도감</h5>
             {strayCats.length > 0 ? (
               strayCats.map((cat, index) => (

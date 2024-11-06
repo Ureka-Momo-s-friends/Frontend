@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Form, Modal } from "react-bootstrap";
 import * as S from "../style";
+import ProfileTitle from "../ProfileContent/ProfileTitle";
 
 function ProfileUpdate() {
   const navigate = useNavigate();
@@ -157,11 +158,11 @@ function ProfileUpdate() {
 
   return (
     <S.ProfileContainer>
+      <ProfileTitle title={"프로필 수정"} />
       <S.CardSection>
         <S.StyledCard>
           <S.Card>
             <div className="info-section d-flex justify-content-between align-items-center">
-              <h2>프로필 수정</h2>
               <S.CardButton onClick={() => setShowModal(true)}>
                 수정
               </S.CardButton>

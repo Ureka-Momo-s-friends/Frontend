@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Modal, Row, Col } from "react-bootstrap";
 import * as S from "../style";
+import ProfileTitle from "../ProfileContent/ProfileTitle";
 
 function ProfilePetUpdate() {
   const [petList, setPetList] = useState([]); // 전체 고양이 목록을 저장할 state
@@ -204,6 +205,7 @@ function ProfilePetUpdate() {
 
   return (
     <S.ProfileContainer>
+      <ProfileTitle title={"우리집 냥이들"} />
       {petList.map((pet) => (
         <S.CardSection key={pet.id}>
           <S.StyledCard>
