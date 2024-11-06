@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 
 // 프로필 페이지 전체 컨테이너 스타일
 export const ProfileContainer = styled.div`
-  background-color: #f5f5f5;
   padding: 20px;
   width: 100%;
   height: 100%;
@@ -21,7 +20,7 @@ export const CardSection = styled.div`
 // 카드 스타일
 export const StyledCard = styled.div`
   background-color: #ffffff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border: none;
   border-radius: 10px;
   padding: 15px;
@@ -100,4 +99,13 @@ export const SaveButton = styled.button`
   &:hover {
     background-color: #0056b3;
   }
+`;
+
+export const ProfileTitle = styled.div`
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 1rem;
 `;

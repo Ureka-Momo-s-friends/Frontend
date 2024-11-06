@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import * as S from "./style"; // 스타일 모듈 임포트
+import ProfileTitle from "components/Profile/ProfileContent/ProfileTitle";
 
 const PaymentHistory = () => {
   const [orderData, setOrderData] = useState([]);
@@ -79,7 +80,7 @@ const PaymentHistory = () => {
   return (
     <>
       <S.PaymentListContainer>
-        <h2>주문 내역</h2>
+        <ProfileTitle title={"주문 내역"} />
         {orderData.length === 0 ? (
           <p>주문 내역이 없습니다.</p>
         ) : (
