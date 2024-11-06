@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import * as S from "./style"; // 스타일 모듈 임포트
 import ProfileTitle from "components/Profile/ProfileContent/ProfileTitle";
 import { MdOutlineArrowForwardIos } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 const PaymentHistory = () => {
   const [orderData, setOrderData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 주문 내역을 가져오는 함수
@@ -79,7 +81,7 @@ const PaymentHistory = () => {
   }
 
   const handleCardClick = () => {
-    alert("눌럿엉");
+    navigate("/history/detail");
   };
 
   return (

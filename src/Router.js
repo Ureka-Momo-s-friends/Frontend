@@ -8,6 +8,7 @@ import {
   ProfilePetUpdatePage,
   ProductSearchPage,
   CartPage,
+  OrderDetailPage,
 } from "./pages";
 import PaymentPage from "pages/Pay/PaymentPage";
 import PaymentSuccess from "pages/Pay/PaymentSuccess";
@@ -29,6 +30,7 @@ const Router = () => {
         <Route path="payment" element={<PaymentPage />} />
         <Route path="success" element={<PaymentSuccess />} />
         <Route path="history" element={<PaymentHistory />} />
+        <Route path="history/detail" element={<OrderDetailPage />} />
       </Route>
       <Route path="*" element={<div>404 Not Found</div>} />
     </Routes>
