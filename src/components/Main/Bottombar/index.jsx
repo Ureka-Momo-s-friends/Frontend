@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as S from "./style";
 import { CartIcon, CatIcon, HomeIcon, UserIcon } from "assets/svgs";
-import BottomSheet from "../../Map/MapBottomSheet"; // 바텀 시트 컴포넌트 가져오기
-//그냥 맵하고 똑같은 바텀시트 디자인 사용하기 위해서 같은 파일 불러왔습니다.
+import BottomSheet from "../../Map/MapBottomSheet";
 
 const MenuItem = ({ link, children, onClick }) => {
   return (
@@ -13,19 +12,46 @@ const MenuItem = ({ link, children, onClick }) => {
 };
 
 const Bottombar = () => {
-  const loggedInUser = JSON.parse(localStorage.getItem("user"));
-  const userId = loggedInUser ? loggedInUser.id : null;
+  const [userId, setUserId] = useState(null);
+  const [showBottomSheet, setShowBottomSheet] = useState(false);
 
-  const [showBottomSheet, setShowBottomSheet] = useState(false); // 바텀 시트 상태
+  // localStorage 변경 감지 및 userId 업데이트
+  useEffect(() => {
+    const updateUserId = () => {
+      const loggedInUser = JSON.parse(localStorage.getItem("user"));
+      setUserId(loggedInUser ? loggedInUser.id : null);
+    };
+
+    // 초기 userId 설정
+    updateUserId();
+
+    // storage 이벤트 리스너 추가
+    const handleStorageChange = (e) => {
+      if (e.key === "user") {
+        updateUserId();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    // 컴포넌트가 마운트될 때마다 userId 확인
+    const interval = setInterval(updateUserId, 1000);
+
+    // 클린업 함수
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
 
   const handleProtectedClick = (event) => {
     if (!userId) {
-      event.preventDefault(); // 페이지 이동 막기
-      setShowBottomSheet(true); // 바텀 시트 표시
+      event.preventDefault();
+      setShowBottomSheet(true);
     }
   };
 
-  const closeBottomSheet = () => setShowBottomSheet(false); // 바텀 시트 닫기 함수
+  const closeBottomSheet = () => setShowBottomSheet(false);
 
   return (
     <S.Layer>
@@ -45,7 +71,6 @@ const Bottombar = () => {
         마이
       </MenuItem>
 
-      {/* 바텀 시트 조건부 렌더링 */}
       {showBottomSheet && (
         <BottomSheet
           message="홈페이지 상단에서 로그인을 해주세요!"
