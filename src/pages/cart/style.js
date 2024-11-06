@@ -48,7 +48,22 @@ export const ItemName = styled.h3`
   margin: 0;
 `;
 
+export const PriceContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0.5rem 0;
+`;
+
 export const ItemPrice = styled.p`
+  font-size: 1rem;
+  font-weight: medium;
+  margin: 0.5rem 0;
+  text-decoration: line-through;
+  color: #999;
+`;
+
+export const ItemSalePrice = styled.p`
   font-size: 1.125rem;
   font-weight: bold;
   margin: 0.5rem 0;

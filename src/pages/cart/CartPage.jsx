@@ -8,6 +8,7 @@ const CartItem = ({
   image,
   name,
   price,
+  salePrice,
   quantity,
   onUpdateQuantity,
   onRemove,
@@ -32,7 +33,12 @@ const CartItem = ({
         <S.ItemHeader>
           <div>
             <S.ItemName>{name}</S.ItemName>
-            <S.ItemPrice>{(price * quantity).toLocaleString()}원</S.ItemPrice>
+            <S.PriceContainer>
+              <S.ItemPrice>{(price * quantity).toLocaleString()}</S.ItemPrice>
+              <S.ItemSalePrice>
+                {(salePrice * quantity).toLocaleString()}원
+              </S.ItemSalePrice>
+            </S.PriceContainer>
           </div>
           <S.RemoveButton onClick={() => onRemove(id)}>
             <X size={20} />
@@ -172,7 +178,7 @@ const Cart = () => {
   };
 
   const total = cartItems.reduce(
-    (sum, item) => sum + item.product.price * item.amount,
+    (sum, item) => sum + item.product.salePrice * item.amount,
     0,
   );
 
@@ -198,6 +204,7 @@ const Cart = () => {
             image={item.product.thumbnail}
             name={item.product.name}
             price={item.product.price}
+            salePrice={item.product.salePrice}
             quantity={item.amount}
             onUpdateQuantity={handleUpdateQuantity}
             onRemove={handleRemoveItem}
