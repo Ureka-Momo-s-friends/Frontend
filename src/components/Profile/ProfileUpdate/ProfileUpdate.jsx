@@ -158,7 +158,7 @@ function ProfileUpdate() {
 
   return (
     <S.ProfileContainer>
-      <ProfileTitle title={"프로필 수정"} />
+      <ProfileTitle title={"내 프로필"} />
       <S.CardSection>
         <S.StyledCard>
           <S.Card>
