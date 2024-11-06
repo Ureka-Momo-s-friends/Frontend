@@ -38,7 +38,7 @@ const PaymentSuccess = () => {
           if (response.ok) {
             alert("주문 및 결제 정보가 저장되었습니다.");
             setIsPaymentSaved(true);
-            localStorage.removeItem("cart");
+            localStorage.removeItem("address");
           } else {
             console.error("주문 및 결제 정보 저장 실패");
             const errorDetails = await response.json();

@@ -4,12 +4,17 @@ import { loadTossPayments } from "@tosspayments/sdk";
 
 const PaymentPage = () => {
   const location = useLocation();
-  const { cartItems, totalPrice } = location.state || {
+  const { cartItems, totalPrice, address } = location.state || {
     cartItems: [],
     totalPrice: 0,
+    address: "",
   };
 
   useEffect(() => {
+    if (address) {
+      localStorage.setItem("address", address);
+    }
+
     const clientKey = process.env.REACT_APP_TOSS_CLIENT_KEY;
     loadTossPayments(clientKey).then((tossPayments) => {
       const orderName =
@@ -25,7 +30,7 @@ const PaymentPage = () => {
         failUrl: window.location.origin + "/fail",
       });
     });
-  }, [cartItems, totalPrice]);
+  }, [cartItems, totalPrice, address]);
 
   return (
     <div>
