@@ -22,6 +22,20 @@ const Header = ({ isBack }) => {
     }
   }, []);
 
+  // Header 컴포넌트 내부에 다음 useEffect 추가
+  useEffect(() => {
+    const handleProfileUpdate = (event) => {
+      const updatedUserData = event.detail;
+      setUser(updatedUserData);
+    };
+
+    window.addEventListener("profileUpdated", handleProfileUpdate);
+
+    return () => {
+      window.removeEventListener("profileUpdated", handleProfileUpdate);
+    };
+  }, []);
+
   const handleProfileClick = () => {
     setIsDropdownOpen((prev) => !prev);
   };
@@ -42,7 +56,13 @@ const Header = ({ isBack }) => {
     setNewProfileImg(event.target.files[0]);
   };
 
-  const handleSaveChanges = (event) => {
+  const updateUserData = (userData) => {
+    // 로컬 스토리지와 상태를 동시에 업데이트
+    localStorage.setItem("user", JSON.stringify(userData));
+    setUser(userData);
+  };
+
+  const handleSaveChanges = async (event) => {
     event.preventDefault();
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
 
@@ -51,47 +71,55 @@ const Header = ({ isBack }) => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append(
-      "userData",
-      JSON.stringify({
-        username: newName,
-        contact: newContact,
-        googleId: loggedInUser.googleId,
-      }),
-    );
+    try {
+      const formData = new FormData();
+      formData.append(
+        "userData",
+        JSON.stringify({
+          username: newName,
+          contact: newContact,
+          googleId: loggedInUser.googleId,
+        }),
+      );
 
-    if (newProfileImg) {
-      formData.append("profileImg", newProfileImg);
+      if (newProfileImg) {
+        formData.append("profileImg", newProfileImg);
+      }
+
+      const response = await fetch(
+        "http://localhost:8080/api/members/register",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to register new user");
+      }
+
+      const data = await response.json();
+
+      // 프로필 이미지 처리를 별도 함수로 분리
+      const profileImageSrc = data.profileImg
+        ? `data:image/jpeg;base64,${data.profileImg}`
+        : null;
+
+      const userWithProfileImg = {
+        ...data,
+        profileImg: profileImageSrc,
+      };
+
+      updateUserData(userWithProfileImg);
+      setShowModal(false);
+
+      // 폼 초기화
+      setNewName("");
+      setNewContact("");
+      setNewProfileImg(null);
+    } catch (error) {
+      console.error("Error registering new user:", error);
     }
-
-    fetch("http://localhost:8080/api/members/register", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to register new user");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        const profileImageSrc = data.profileImg
-          ? `data:image/jpeg;base64,${data.profileImg}`
-          : null;
-
-        const userWithProfileImg = {
-          ...data,
-          profileImg: profileImageSrc,
-        };
-
-        setUser(userWithProfileImg);
-        localStorage.setItem("user", JSON.stringify(userWithProfileImg));
-        setShowModal(false);
-      })
-      .catch((error) => {
-        console.error("Error registering new user:", error);
-      });
   };
 
   return (
@@ -107,9 +135,8 @@ const Header = ({ isBack }) => {
         <S.ProfileIcon onClick={handleProfileClick} ref={dropdownRef}>
           {user ? (
             <img
-              src={
-                user.profileImg ? user.profileImg : "/img/default-avatar.png"
-              }
+              key={user.profileImg} // 이미지가 변경될 때 강제로 리렌더링
+              src={user.profileImg || "/img/default-avatar.png"}
               alt="프로필"
               style={{
                 width: "40px",
