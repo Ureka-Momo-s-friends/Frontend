@@ -129,7 +129,7 @@ export const PaymentAmount = styled.span`
 
 export const PaymentStatus = styled.span`
   font-size: 14px;
-  color: ${(props) => (props.status === "CANCELLED" ? "#ff4d4d" : "#28a745")};
+  color: ${(props) => (props.status === "취소완료" ? "#ff4d4d" : "#28a745")};
 `;
 
 export const PaymentDate = styled.span`
