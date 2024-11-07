@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import styled from "@emotion/styled";
 import Header from "components/Main/Header";
 import Bottombar from "components/Main/Bottombar";
@@ -13,6 +13,7 @@ const Wrapper = styled.div`
   max-width: 600px;
   min-width: 320px;
   margin: 0 auto;
+  overflow: hidden;
   main {
     width: 100%;
     display: flex;
@@ -22,9 +23,14 @@ const Wrapper = styled.div`
 `;
 
 const Layout = () => {
+  const location = useLocation();
+  console.log(location);
+
+  const isBack = /^(\/search|\/product\/\d+)$/.test(location.pathname);
+
   return (
     <Wrapper>
-      <Header />
+      <Header isBack={isBack} />
       <main>
         <Outlet />
       </main>

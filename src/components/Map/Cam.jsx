@@ -93,6 +93,7 @@ function Cam({ addStrayCat, userLatLng, selectedLatLng }) {
             cursor: "pointer",
             width: "70px",
             height: "70px",
+            zIndex: "1",
           }}
         />
       </button>

@@ -5,7 +5,6 @@ import "./App.css";
 function App() {
   return (
     <BrowserRouter>
-      {/* <NavBar /> NavBar 추가 */}
       <Router />
     </BrowserRouter>
   );
