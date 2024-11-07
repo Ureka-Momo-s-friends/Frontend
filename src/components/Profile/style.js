@@ -24,6 +24,7 @@ export const StyledCard = styled.div`
   border: none;
   border-radius: 10px;
   padding: 15px;
+  cursor: ${(props) => (props.onClick ? "pointer" : "default")};
 `;
 
 export const Card = styled.div`

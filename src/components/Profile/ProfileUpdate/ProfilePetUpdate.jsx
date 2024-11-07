@@ -4,9 +4,9 @@ import * as S from "../style";
 import ProfileTitle from "../ProfileContent/ProfileTitle";
 
 function ProfilePetUpdate() {
-  const [petList, setPetList] = useState([]); // 전체 고양이 목록을 저장할 state
-  const [showEditModal, setShowEditModal] = useState(false); // 수정 모달 표시 상태
-  const [showAddModal, setShowAddModal] = useState(false); // 추가 모달 표시 상태
+  const [petList, setPetList] = useState([]);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [selectedPet, setSelectedPet] = useState({
     id: null,
     petName: "",
@@ -14,21 +14,29 @@ function ProfilePetUpdate() {
     birthDate: "",
     gender: "",
     profileImg: null,
-  }); // 수정할 고양이 정보를 저장할 state
-  const [newPet, setNewPet] = useState({
+  });
+
+  // 초기 상태를 객체로 정의
+  const initialPetState = {
     petName: "",
     birthDate: "",
     breed: "",
-    gender: "",
+    gender: "암컷",
     profileImg: null,
-  }); // 추가할 고양이 정보를 저장할 state
+  };
 
-  // 컴포넌트가 처음 렌더링될 때 고양이 목록을 불러오는 함수
+  const [newPet, setNewPet] = useState(initialPetState);
+
+  // 모달 닫기 함수
+  const handleCloseAddModal = () => {
+    setShowAddModal(false);
+    setNewPet(initialPetState); // 모달을 닫을 때 newPet 상태를 초기화
+  };
+
   useEffect(() => {
     fetchPetList();
   }, []);
 
-  // 사용자의 고양이 목록을 불러오는 함수
   const fetchPetList = () => {
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
 
@@ -37,11 +45,9 @@ function ProfilePetUpdate() {
       return;
     }
 
-    // API 호출을 통해 해당 사용자의 고양이 데이터 불러오기
     fetch(`http://localhost:8080/api/pets/member/${loggedInUser.id}`)
       .then((response) => response.json())
       .then((data) => {
-        // 데이터가 base64로 인코딩된 이미지를 포함하고 있는 경우 처리
         const petsWithImages = data.map((pet) => ({
           ...pet,
           profileImg: pet.profileImg
@@ -55,7 +61,6 @@ function ProfilePetUpdate() {
       });
   };
 
-  // 파일이 변경될 때 호출되는 핸들러
   const handleFileChange = (e, isEdit = false) => {
     const file = e.target.files[0];
     if (isEdit) {
@@ -65,7 +70,6 @@ function ProfilePetUpdate() {
     }
   };
 
-  // 고양이 정보를 수정하고 저장하는 함수
   const handleSaveChanges = (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -76,33 +80,24 @@ function ProfilePetUpdate() {
       return;
     }
 
-    // 성별 값을 boolean 형태로 변환
     const genderBoolean = selectedPet.gender === "암컷" ? true : false;
     const petData = {
       petName: selectedPet.petName,
-      breed: selectedPet.breed, // breed 필드 추가
+      breed: selectedPet.breed,
       birthDate: selectedPet.birthDate,
       gender: genderBoolean,
-      member: loggedInUser.id, // 현재 로그인된 사용자의 ID
+      member: loggedInUser.id,
     };
 
-    console.log("Pet data being sent for update:", petData); // 디버깅용 로그
-
-    // JSON 데이터를 FormData에 추가
     formData.append(
       "petData",
       new Blob([JSON.stringify(petData)], { type: "application/json" }),
     );
 
-    // 새로운 파일이 선택된 경우에만 파일 추가
     if (selectedPet.profileImg && selectedPet.profileImg instanceof File) {
       formData.append("profileImg", selectedPet.profileImg);
-      console.log("Image file added for update:", selectedPet.profileImg.name);
-    } else {
-      console.log("No new image file selected for update");
     }
 
-    // API 호출을 통해 고양이 정보 업데이트
     fetch(`http://localhost:8080/api/pets/${selectedPet.id}`, {
       method: "PUT",
       body: formData,
@@ -114,8 +109,6 @@ function ProfilePetUpdate() {
         return response.json();
       })
       .then((updatedPet) => {
-        console.log("Updated pet data:", updatedPet); // 디버깅용 로그
-        // 상태 업데이트 후 전체 목록 새로 불러오기
         fetchPetList();
         setShowEditModal(false);
       })
@@ -124,7 +117,6 @@ function ProfilePetUpdate() {
       });
   };
 
-  // 새로운 고양이를 추가하는 함수
   const handleAddPet = (e) => {
     e.preventDefault();
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
@@ -133,32 +125,25 @@ function ProfilePetUpdate() {
       return;
     }
 
-    // 성별 값을 boolean 형태로 변환
     const genderBoolean = newPet.gender === "암컷" ? true : false;
     const formData = new FormData();
     const petData = {
       petName: newPet.petName,
-      breed: newPet.breed, // breed 필드 추가
+      breed: newPet.breed,
       birthDate: newPet.birthDate,
       gender: genderBoolean,
       memberId: loggedInUser.id,
     };
 
-    // JSON 데이터를 FormData에 추가
     formData.append(
       "petData",
       new Blob([JSON.stringify(petData)], { type: "application/json" }),
     );
 
-    // 새로운 이미지 파일이 선택된 경우에만 추가
     if (newPet.profileImg && newPet.profileImg instanceof File) {
       formData.append("profileImg", newPet.profileImg);
-      console.log("Image File added to FormData:", newPet.profileImg.name);
-    } else {
-      console.log("No image file selected");
     }
 
-    // API 호출을 통해 새로운 고양이 추가
     fetch("http://localhost:8080/api/pets", {
       method: "POST",
       body: formData,
@@ -170,23 +155,14 @@ function ProfilePetUpdate() {
         return response.json();
       })
       .then((createdPet) => {
-        // 상태 업데이트 후 전체 목록 새로 불러오기
         fetchPetList();
-        setShowAddModal(false);
-        setNewPet({
-          petName: "",
-          birthDate: "",
-          breed: "", // 초기화 시 breed 추가
-          gender: "",
-          profileImg: null,
-        });
+        handleCloseAddModal(); // setShowAddModal(false) 대신 handleCloseAddModal 사용
       })
       .catch((error) => {
         console.error("Error adding pet:", error);
       });
   };
 
-  // 고양이 정보를 삭제하는 함수
   const handleDeletePet = (petId) => {
     fetch(`http://localhost:8080/api/pets/${petId}`, {
       method: "DELETE",
@@ -195,7 +171,6 @@ function ProfilePetUpdate() {
         if (!response.ok) {
           throw new Error("Failed to delete pet");
         }
-        // 상태 업데이트 후 전체 목록 새로 불러오기
         fetchPetList();
       })
       .catch((error) => {
@@ -212,7 +187,6 @@ function ProfilePetUpdate() {
             <S.Card>
               <Row>
                 <Col xs={3}>
-                  {/* 여기서 이미지를 왼쪽에 배치 */}
                   <S.PetProfileImage
                     src={
                       pet.profileImg ? pet.profileImg : "/img/default-cat.png"
@@ -240,7 +214,7 @@ function ProfilePetUpdate() {
                       수정
                     </S.CardButton>
                   </div>
-                  <p>{`${pet.breed} | ${pet.birthDate} | ${
+                  <p>{`${pet.breed || "종 알 수 없음"} | ${pet.birthDate || "생일 미상"} | ${
                     pet.gender ? "암컷" : "수컷"
                   }`}</p>
                   <div className="mt-3">
@@ -275,13 +249,14 @@ function ProfilePetUpdate() {
         <Modal.Body>
           <Form onSubmit={handleSaveChanges}>
             <Form.Group controlId="formPetName">
-              <Form.Label>이름</Form.Label>
+              <Form.Label className="required">이름</Form.Label>
               <Form.Control
                 type="text"
                 value={selectedPet.petName}
                 onChange={(e) =>
                   setSelectedPet({ ...selectedPet, petName: e.target.value })
                 }
+                required
               />
             </Form.Group>
             <Form.Group controlId="formPetBreed" className="mt-3">
@@ -369,20 +344,21 @@ function ProfilePetUpdate() {
       </Modal>
 
       {/* 추가 모달 */}
-      <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
+      <Modal show={showAddModal} onHide={handleCloseAddModal}>
         <Modal.Header closeButton>
           <Modal.Title>고양이 추가</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleAddPet}>
             <Form.Group controlId="formNewPetName">
-              <Form.Label>이름</Form.Label>
+              <Form.Label className="required">이름</Form.Label>
               <Form.Control
                 type="text"
                 value={newPet.petName}
                 onChange={(e) =>
                   setNewPet({ ...newPet, petName: e.target.value })
                 }
+                required
               />
             </Form.Group>
             <Form.Group controlId="formNewPetBreed" className="mt-3">

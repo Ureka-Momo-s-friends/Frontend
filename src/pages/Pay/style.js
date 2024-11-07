@@ -102,13 +102,11 @@ export const PaymentProductName = styled.div`
 `;
 
 export const PaymentCard = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 80% 20%; // 75%는 상세정보, 25%는 클릭 영역
   background-color: #f9f9f9;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 15px 20px;
   transition: box-shadow 0.3s;
   &:hover {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
@@ -119,6 +117,30 @@ export const PaymentDetails = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5px;
+  padding: 15px;
+`;
+
+export const IconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  color: #666;
+  height: 100%; // 부모 높이만큼 확장
+
+  /* 호버 효과 */
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+
+  /* 아이콘 크기 유지 */
+  svg {
+    width: 24px;
+    height: 24px;
+  }
 `;
 
 export const PaymentAmount = styled.span`
