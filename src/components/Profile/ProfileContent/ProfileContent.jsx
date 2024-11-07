@@ -184,64 +184,66 @@ function ProfileContent() {
         </S.StyledCard>
       </S.CardSection>
 
+      {/* 고양이 상세정보 모달 */}
       <Modal show={showPetModal} onHide={handleClosePetModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>고양이 상세 정보</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {selectedPet && (
-            <div className="d-flex align-items-center">
-              <div className="pet-info text-left flex-grow-1">
-                <h3 style={{ fontWeight: "bold" }}>{selectedPet.petName}</h3>
-                <p style={{ margin: 0, color: "#888" }}>
-                  {selectedPet.breed || "알 수 없음"}
+            <S.ProfileImageContainer>
+              <div className="pet-info flex-grow-1">
+                <h3 style={{ fontWeight: "bold", marginBottom: "10px" }}>
+                  {selectedPet.petName}
+                </h3>
+                <p style={{ margin: "5px 0", color: "#666" }}>
+                  종: {selectedPet.breed || "알 수 없음"}
                 </p>
-                <p style={{ margin: 0 }}>
+                <p style={{ margin: "5px 0", color: "#666" }}>
                   성별: {selectedPet.gender ? "암컷" : "수컷"}
                 </p>
-                <p style={{ margin: 0 }}>
+                <p style={{ margin: "5px 0", color: "#666" }}>
                   생일: {selectedPet.birthDate || "알 수 없음"}
                 </p>
               </div>
-              <div className="pet-image ml-3">
-                <S.ModalImage
-                  src={
-                    selectedPet.profileImg
-                      ? selectedPet.profileImg
-                      : "/img/default-cat.png"
-                  }
-                  alt="Selected Pet"
-                />
-              </div>
-            </div>
+              <S.ModalImage
+                src={
+                  selectedPet.profileImg
+                    ? selectedPet.profileImg
+                    : "/img/default-cat.png"
+                }
+                alt="Selected Pet"
+              />
+            </S.ProfileImageContainer>
           )}
         </Modal.Body>
       </Modal>
 
+      {/* 사용자 상세정보 모달 */}
       <Modal show={showUserModal} onHide={handleCloseUserModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>사용자 상세 정보</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {selectedUser && (
-            <div className="d-flex align-items-center">
-              <div className="user-info text-left flex-grow-1">
-                <h3 style={{ fontWeight: "bold" }}>{selectedUser.username}</h3>
-                <p style={{ margin: 0 }}>
+            <S.ProfileImageContainer>
+              <div className="user-info flex-grow-1">
+                <h3 style={{ fontWeight: "bold", marginBottom: "10px" }}>
+                  {selectedUser.username}
+                </h3>
+                <p style={{ margin: "5px 0", color: "#666" }}>
                   연락처: {formatPhoneNumber(selectedUser.contact)}
                 </p>
               </div>
-              <div className="user-image ml-3">
-                <S.ModalImage
-                  src={
-                    selectedUser.profileImg
-                      ? `data:image/jpeg;base64,${selectedUser.profileImg}`
-                      : "/img/default-avatar.png"
-                  }
-                  alt="Selected User"
-                />
-              </div>
-            </div>
+              <S.ModalImage
+                src={
+                  selectedUser.profileImg
+                    ? `data:image/jpeg;base64,${selectedUser.profileImg}`
+                    : "/img/default-avatar.png"
+                }
+                alt="Selected User"
+              />
+            </S.ProfileImageContainer>
           )}
         </Modal.Body>
       </Modal>
