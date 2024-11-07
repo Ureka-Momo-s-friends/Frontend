@@ -370,7 +370,7 @@ const MapPage = () => {
       fontSize: "16px",
       cursor: "pointer",
       border: "none",
-      backgroundColor: isHovered1 ? "#A9826C" : "#D2B48C",
+      backgroundColor: isHovered1 ? "#65b0ba" : "#a1dde6",
       color: "#4B2E2E",
       borderRadius: "7px",
       transition: "background-color 0.3s ease",

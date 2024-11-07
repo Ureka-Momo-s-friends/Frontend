@@ -92,6 +92,16 @@ function ProfileContent() {
     return <div>No user data available</div>;
   }
 
+  const formatPhoneNumber = (phoneNumber) => {
+    if (!phoneNumber) return "";
+    const cleaned = phoneNumber.replace(/\D/g, "");
+    const match = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/);
+    if (match) {
+      return `${match[1]}-${match[2]}-${match[3]}`;
+    }
+    return phoneNumber;
+  };
+
   return (
     <S.ProfileContainer>
       <S.CardSection>
@@ -209,7 +219,9 @@ function ProfileContent() {
             <div className="d-flex align-items-center">
               <div className="user-info text-left flex-grow-1">
                 <h3 style={{ fontWeight: "bold" }}>{selectedUser.username}</h3>
-                <p style={{ margin: 0 }}>연락처: {selectedUser.contact}</p>
+                <p style={{ margin: 0 }}>
+                  연락처: {formatPhoneNumber(selectedUser.contact)}
+                </p>
               </div>
               <div className="user-image ml-3">
                 <S.ModalImage

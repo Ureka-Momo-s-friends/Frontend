@@ -21,6 +21,31 @@ function ProfileUpdate() {
   const [newContact, setNewContact] = useState("");
   const [profileImgUrl, setProfileImgUrl] = useState(null);
 
+  const [contactError, setContactError] = useState("");
+
+  const formatPhoneNumber = (phoneNumber) => {
+    if (!phoneNumber) return "";
+    const cleaned = phoneNumber.replace(/\D/g, "");
+    const match = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/);
+    if (match) {
+      return `${match[1]}-${match[2]}-${match[3]}`;
+    }
+    return cleaned;
+  };
+
+  const handleContactChange = (e) => {
+    const input = e.target.value.replace(/\D/g, "").slice(0, 11);
+    setNewContact(input);
+
+    if (input.length === 11) {
+      setContactError("");
+    } else if (input.length > 0) {
+      setContactError("전화번호는 11자리여야 합니다");
+    } else {
+      setContactError("");
+    }
+  };
+
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
     if (!loggedInUser || !loggedInUser.id) {
@@ -79,6 +104,11 @@ function ProfileUpdate() {
 
   const handleSaveChanges = (e) => {
     e.preventDefault();
+
+    if (newContact.length !== 11) {
+      setContactError("전화번호는 11자리여야 합니다");
+      return;
+    }
 
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
     if (!loggedInUser || !loggedInUser.id) {
@@ -178,7 +208,7 @@ function ProfileUpdate() {
               />
             </div>
             <p className="mt-3">이름: {userData.username}</p>
-            <p>전화번호: {userData.contact}</p>
+            <p>전화번호: {formatPhoneNumber(userData.contact)}</p>
             <div
               className="text-center mt-3"
               onClick={() => setShowDeleteModal(true)}
@@ -225,9 +255,14 @@ function ProfileUpdate() {
               <Form.Label>전화번호</Form.Label>
               <Form.Control
                 type="text"
-                value={newContact}
-                onChange={(e) => setNewContact(e.target.value)}
+                value={formatPhoneNumber(newContact)}
+                onChange={handleContactChange}
+                isInvalid={!!contactError}
+                placeholder="숫자만 입력하세요"
               />
+              <Form.Control.Feedback type="invalid">
+                {contactError}
+              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group controlId="formProfileImg" className="mt-3">
               <Form.Label>프로필 이미지</Form.Label>
