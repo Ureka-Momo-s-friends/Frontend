@@ -1,6 +1,8 @@
 import { Global, css } from "@emotion/react";
 
 const baseStyle = css`
+  @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap");
+
   html,
   body,
   #root {
@@ -11,7 +13,7 @@ const baseStyle = css`
     margin: 0;
     padding: 0;
     border: 0;
-    font-family: "Kodchasan-Light", "NanumSquareRoundExtraBold", "Sans-serif";
+    font-family: "Noto Sans KR", sans-serif;
   }
 
   input {
