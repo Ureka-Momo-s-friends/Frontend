@@ -51,7 +51,7 @@ function OrderDetail({ orderNumber, order, onCancel, onBack }) {
   const handleCancelOrder = async () => {
     try {
       const response = await fetch(
-        `https://ureca-momo.store/apii/orders/${order.orderId}`,
+        `https://ureca-momo.store/api/orders/${order.orderId}`,
         {
           method: "PUT",
           headers: {
