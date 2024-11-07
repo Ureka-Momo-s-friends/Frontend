@@ -50,6 +50,13 @@ export const CardButton = styled.button`
   }
 `;
 
+export const ProfileImageContainer = styled.div`
+  display: flex;
+  align-items: flex-start; // 위쪽 정렬
+  justify-content: space-between; // 좌우 양끝 정렬
+  gap: 20px; // 요소들 사이 간격
+`;
+
 // 프로필 이미지 스타일 (둥글게)
 export const ProfileImage = styled.img`
   width: 80px;
