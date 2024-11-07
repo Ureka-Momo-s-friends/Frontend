@@ -6,7 +6,7 @@ import ProfilePage from "./Profile/ProfilePage";
 import ProfileUpdatePage from "./Profile/ProfileUpdatePage";
 import ProfilePetUpdatePage from "./Profile/ProfilePetUpdatePage";
 import ProductSearchPage from "./main/ProductSearchPage";
-import OrderDetailPage from "./Pay/OrderDetailPage";
+
 export {
   HomePage,
   MapPage,
@@ -16,5 +16,4 @@ export {
   ProfilePetUpdatePage,
   ProductSearchPage,
   CartPage,
-  OrderDetailPage,
 };
