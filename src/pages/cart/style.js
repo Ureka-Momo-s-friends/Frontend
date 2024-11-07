@@ -104,7 +104,7 @@ export const FixedBottomArea = styled.div`
   left: 0;
   right: 0;
   background: white;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  border-top: 1px solid #ddd;
   z-index: 1000;
   max-width: 600px;
   margin: 0 auto;
