@@ -54,6 +54,8 @@ export const CardButton = styled.button`
 export const ProfileImage = styled.img`
   width: 80px;
   height: 80px;
+  min-width: 80px;
+  min-height: 80px;
   border-radius: 50%; /* 둥글게 */
   object-fit: cover;
   margin-right: 15px;
@@ -63,8 +65,12 @@ export const ProfileImage = styled.img`
 export const PetProfileImage = styled.img`
   width: 80px;
   height: 80px;
-  border-radius: 50%; /* 둥글게 */
+  min-width: 80px;
+  min-height: 80px;
+  border-radius: 50%;
   object-fit: cover;
+  display: block;
+  flex-shrink: 0;
   margin-right: 15px;
 `;
 
