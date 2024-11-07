@@ -23,7 +23,7 @@ function OrderDetail({ orderNumber, order, onCancel, onBack }) {
 
       try {
         const response = await fetch(
-          `http://localhost:8080/api/orders/${order.orderId}`, // memberId 쿼리 매개변수로 전달
+          `https://ureca-momo.store/api/orders/${order.orderId}`, // memberId 쿼리 매개변수로 전달
         );
         if (!response.ok) throw new Error("주문 내역을 불러오는 중 오류 발생");
 
@@ -51,7 +51,7 @@ function OrderDetail({ orderNumber, order, onCancel, onBack }) {
   const handleCancelOrder = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/orders/${order.orderId}`,
+        `https://ureca-momo.store/apii/orders/${order.orderId}`,
         {
           method: "PUT",
           headers: {
