@@ -8,7 +8,7 @@ export const ProfileContainer = styled.div`
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  margin-bottom: 56px;
+  margin-bottom: 36px;
 `;
 
 // 카드 섹션 스타일
