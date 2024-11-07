@@ -13,6 +13,7 @@ export const Layer = styled.div`
   justify-content: space-around;
   align-items: center;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 10px 0px;
+  z-index: 9;
 `;
 
 export const StyledNavLink = styled(NavLink)`

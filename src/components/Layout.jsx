@@ -13,6 +13,7 @@ const Wrapper = styled.div`
   max-width: 600px;
   min-width: 320px;
   margin: 0 auto;
+  overflow: hidden;
   main {
     width: 100%;
     display: flex;

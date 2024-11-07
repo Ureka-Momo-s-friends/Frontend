@@ -228,10 +228,14 @@ const Cart = () => {
             <span>전 상품 무료배송!</span>
             <S.CartTotal>
               <S.TotalLabel>총 결제액</S.TotalLabel>
-              <S.DiscountRate>{totalDiscountRate}%</S.DiscountRate>
-              <S.TotalAmount>
-                {totalOriginalPrice.toLocaleString()}원
-              </S.TotalAmount>
+              {cartItems.length > 0 && (
+                <>
+                  <S.DiscountRate>{totalDiscountRate}%</S.DiscountRate>
+                  <S.TotalAmount>
+                    {totalOriginalPrice.toLocaleString()}원
+                  </S.TotalAmount>
+                </>
+              )}
               <S.TotalSaleAmount>
                 {totalSalePrice.toLocaleString()}원
               </S.TotalSaleAmount>
