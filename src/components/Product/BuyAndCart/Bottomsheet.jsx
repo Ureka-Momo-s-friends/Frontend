@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import * as S from "./style";
 import { XIcon } from "assets/svgs";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const BottomSheet = ({ onClose, productName, price, productId }) => {
   const [quantity, setQuantity] = useState(1);
@@ -60,7 +61,12 @@ const BottomSheet = ({ onClose, productName, price, productId }) => {
       const updatedCartItems = [...existingCartItems, newCartItem];
       localStorage.setItem("cart", JSON.stringify(updatedCartItems));
 
-      alert("장바구니에 추가되었습니다.");
+      Swal.fire({
+        icon: "success",
+        title: "장바구니에 추가되었습니다!",
+        showConfirmButton: false,
+        timer: 1200,
+      });
       onClose();
       navigate("/cart");
     } catch (error) {

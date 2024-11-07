@@ -7,7 +7,10 @@ const ProfileTitle = ({ title }) => {
   const navigate = useNavigate();
   return (
     <S.ProfileTitle>
-      <BackArrowIcon onClick={() => navigate(-1)} />
+      <BackArrowIcon
+        onClick={() => navigate(-1)}
+        style={{ cursor: "pointer" }}
+      />
       {title}
     </S.ProfileTitle>
   );

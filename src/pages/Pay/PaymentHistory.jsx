@@ -101,6 +101,7 @@ const PaymentHistory = () => {
         )}
         order={selectedOrder}
         onCancel={handleCancelSuccess}
+        onBack={() => setSelectedOrder(null)}
       />
     );
   }

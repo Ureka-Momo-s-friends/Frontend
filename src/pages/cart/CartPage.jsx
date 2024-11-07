@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Minus, Plus, X, Edit2, Check } from "lucide-react";
 import * as S from "./style";
+import Swal from "sweetalert2";
 
 const CartItem = ({
   id,
@@ -205,7 +206,13 @@ const Cart = () => {
         state: { cartItems, totalPrice: totalSalePrice, address: address },
       });
     } else {
-      alert("주소를 입력하고 장바구니에 상품을 추가해주세요.");
+      // alert("주소를 입력하고 장바구니에 상품을 추가해주세요.");
+      Swal.fire({
+        icon: "warning",
+        title: "주소를 입력하고 장바구니에 상품을 추가해주세요.",
+        showConfirmButton: false,
+        timer: 1200,
+      });
     }
   };
 

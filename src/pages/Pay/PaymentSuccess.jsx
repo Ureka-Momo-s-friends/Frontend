@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import * as S from "./style"; // 스타일을 위한 임포트
+import Swal from "sweetalert2";
 
 const PaymentSuccess = () => {
   const location = useLocation();
@@ -36,7 +37,13 @@ const PaymentSuccess = () => {
         if (isMounted && !isPaymentSaved) {
           // 마운트 상태와 저장 여부 다시 한번 체크
           if (response.ok) {
-            alert("주문 및 결제 정보가 저장되었습니다.");
+            // alert("주문 및 결제 정보가 저장되었습니다.");
+            Swal.fire({
+              icon: "success",
+              title: "주문 및 결제 정보가 저장되었습니다.",
+              showConfirmButton: false,
+              timer: 1200,
+            });
             setIsPaymentSaved(true);
             localStorage.removeItem("address");
           } else {
@@ -81,16 +88,32 @@ const PaymentSuccess = () => {
       });
 
       if (response.ok) {
-        alert("결제가 취소되었습니다.");
+        // alert("결제가 취소되었습니다.");
+        Swal.fire({
+          icon: "success",
+          title: "결제가 취소되었습니다.",
+          showConfirmButton: false,
+          timer: 1200,
+        });
         navigate("/history"); // 결제 내역 페이지로 이동
       } else {
         const errorText = await response.text();
         console.error("결제 취소 실패:", errorText);
-        alert(`결제 취소 실패: ${errorText}`);
+        Swal.fire({
+          icon: "error",
+          title: "주문 취소에 실패했습니다.",
+          showConfirmButton: false,
+          timer: 1200,
+        });
       }
     } catch (error) {
       console.error("결제 취소 요청 중 오류 발생:", error);
-      alert("결제 취소 중 오류가 발생했습니다. 다시 시도해 주세요.");
+      Swal.fire({
+        icon: "error",
+        title: "주문 취소 중 오류가 발생했습니다.",
+        showConfirmButton: false,
+        timer: 1200,
+      });
     }
   };
 

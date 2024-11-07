@@ -170,10 +170,10 @@ export const CardButton = styled.button`
   background-color: ${(props) =>
     props.variant === "cancel" ? "#ff4d4d" : "#007bff"};
   color: white;
-  padding: 8px 16px;
+  padding: 6px 13px;
   border: none;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 15px;
   cursor: pointer;
   &:hover {
     background-color: ${(props) =>
@@ -211,5 +211,6 @@ export const StyledCard = styled.div`
   border: none;
   border-radius: 10px;
   padding: 15px;
+  padding-bottom: 1px;
   cursor: ${(props) => (props.onClick ? "pointer" : "default")};
 `;
