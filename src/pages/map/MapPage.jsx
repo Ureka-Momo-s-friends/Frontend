@@ -56,7 +56,7 @@ const MapPage = () => {
           const customOverlay = new window.kakao.maps.CustomOverlay({
             position: latLng,
             content: overlayContent,
-            yAnchor: 1.2,
+            yAnchor: 1.4,
           });
           customOverlay.setMap(map);
 
@@ -202,7 +202,7 @@ const MapPage = () => {
 
         const overlayContent = `
           <div style="padding:5px; background:#fff; border:1px solid #ccc; border-radius:5px;">
-            <img src="${cat.catImgUrl}" alt="Cat Image" style="width:50px; height:50px; border-radius:50%;" />
+            <img src="${cat.catImgUrl}" alt="Cat Image" style="width:50px; height:50px; border-radius:5px;" />
           </div>`;
         const customOverlay = new window.kakao.maps.CustomOverlay({
           position: catPosition,
@@ -213,6 +213,15 @@ const MapPage = () => {
         window.kakao.maps.event.addListener(marker, "click", () => {
           customOverlay.setMap(customOverlay.getMap() ? null : map);
         });
+
+        // "새 길냥이" 마커 제거
+        if (selectedMarker) {
+          selectedMarker.setMap(null); // 기존 마커 제거
+          selectedOverlay.setMap(null);
+        }
+        setSelectedLatLng(null); // 선택된 위치 초기화
+        setSelectedMarker(null); // 마커 상태 초기화
+        setSelectedOverlay(null);
       });
     }
   }, [map, strayCats]);
