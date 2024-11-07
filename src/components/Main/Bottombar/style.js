@@ -14,6 +14,9 @@ export const Layer = styled.div`
   align-items: center;
   z-index: 9;
   border-top: 1px solid #ddd;
+  .cart-icon-wrapper {
+    transform: translateX(-3.5px);
+  }
 `;
 
 export const StyledNavLink = styled(NavLink)`
@@ -22,8 +25,17 @@ export const StyledNavLink = styled(NavLink)`
 
   &.active {
     color: #6263fb;
-    path {
+
+    /* CatIcon과 CartIcon에 대한 스타일 */
+    path[fill],
+    svg[fill] {
+      fill: #6263fb;
+      stroke: none;
+    }
+    path[stroke],
+    svg[stroke] {
       stroke: #6263fb;
+      fill: none;
     }
   }
 `;

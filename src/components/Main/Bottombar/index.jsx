@@ -63,7 +63,9 @@ const Bottombar = () => {
         <HomeIcon />홈
       </MenuItem>
       <MenuItem link="/cart" onClick={handleProtectedClick}>
-        <CartIcon />
+        <div className="cart-icon-wrapper">
+          <CartIcon />
+        </div>
         장바구니
       </MenuItem>
       <MenuItem link="/profile" onClick={handleProtectedClick}>
