@@ -341,7 +341,7 @@ const MapPage = () => {
   const styles = {
     mapPage: {
       width: "100%",
-      height: "90vh",
+      height: "79vh",
       display: "flex",
       flexDirection: "column",
       position: "relative",
@@ -358,9 +358,9 @@ const MapPage = () => {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
-      padding: "10px 0 20px 0",
+      padding: "10px 5px 20px 5px",
       flexShrink: 0, // 버튼 컨테이너 크기 고정
-      gap: "10px",
+      gap: "5px",
       marginBottom: "-50px",
     },
     footerButton1: {
@@ -424,7 +424,7 @@ const MapPage = () => {
           position: "absolute",
           top: 0,
           right: 0,
-          width: "40%", // 맵의 30% 너비로 설정
+          width: "50%", // 맵의 30% 너비로 설정
           height: "100%", // 맵의 전체 높이에 맞춤
           backgroundColor: "white",
           boxShadow: showOffcanvas ? "0 0 10px rgba(0, 0, 0, 0.3)" : "none",
@@ -439,12 +439,13 @@ const MapPage = () => {
             onClick={closeOffcanvas}
             style={{
               position: "absolute",
-              top: "-5px",
+              top: "-1px",
               right: "10px",
               background: "none",
               border: "none",
               fontSize: "30px",
               cursor: "pointer",
+              color: "#333",
             }}
           >
             &times;
