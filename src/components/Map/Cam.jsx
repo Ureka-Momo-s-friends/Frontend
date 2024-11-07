@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import BottomSheet from "./MapBottomSheet"; // 바텀 시트 컴포넌트 가져오기
+import imageCompression from "browser-image-compression";
 
 function Cam({ addStrayCat, userLatLng, selectedLatLng }) {
   const fileInputRef = useRef(null);
@@ -24,10 +25,26 @@ function Cam({ addStrayCat, userLatLng, selectedLatLng }) {
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     const location = selectedLatLng || userLatLng;
-    if (file && file.size <= 5 * 1024 * 1024) {
+
+    if (file) {
       try {
+        let options = {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 1024,
+          initialQuality: 0.5,
+          useWebWorker: true,
+        };
+
+        let compressedFile = file;
+        compressedFile = await imageCompression(compressedFile, options);
+
+        if (compressedFile.size > 5 * 1024 * 1024) {
+          alert("Please select a smaller file.");
+          return;
+        }
+
         const formData = new FormData();
-        formData.append("catImg", file); // 이미지 추가
+        formData.append("catImg", compressedFile);
         formData.append("lat", location.lat);
         formData.append("lon", location.lng);
         formData.append("memberId", userId);
@@ -52,9 +69,8 @@ function Cam({ addStrayCat, userLatLng, selectedLatLng }) {
         addStrayCat(newStrayCat);
       } catch (error) {
         console.error("Upload failed:", error);
+        alert("File size should be less.");
       }
-    } else {
-      alert("File size should be 5 MB or less.");
     }
   };
 
