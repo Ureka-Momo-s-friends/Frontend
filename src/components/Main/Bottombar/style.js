@@ -12,8 +12,8 @@ export const Layer = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 10px 0px;
   z-index: 9;
+  border-top: 1px solid #ddd;
 `;
 
 export const StyledNavLink = styled(NavLink)`
