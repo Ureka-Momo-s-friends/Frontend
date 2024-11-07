@@ -189,16 +189,15 @@ function ProfilePetUpdate() {
           <S.StyledCard>
             <S.Card>
               <Row>
-                <Col xs={3}>
+                <Col xs="auto">
                   <S.PetProfileImage
                     src={
                       pet.profileImg ? pet.profileImg : "/img/default-cat.png"
                     }
                     alt="Pet Profile"
-                    className="img-fluid"
                   />
                 </Col>
-                <Col xs={9}>
+                <Col>
                   <div className="info-section d-flex justify-content-between align-items-center">
                     <h6>{`${pet.petName}`}</h6>
                     <S.CardButton

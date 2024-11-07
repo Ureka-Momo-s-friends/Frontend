@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, ListGroup, Modal } from "react-bootstrap";
+import { ListGroup, Modal } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaReceipt } from "react-icons/fa"; // 영수증 이모티콘 추가
 import * as S from "../style";
@@ -112,21 +112,29 @@ function ProfileContent() {
             </h5>
             <S.CardButton onClick={() => navigate("update")}>편집</S.CardButton>
           </div>
-          <div className="d-flex align-items-center mt-3">
-            <S.ProfileImage
-              src={
-                userData.profileImg
-                  ? `data:image/jpeg;base64,${userData.profileImg}`
-                  : "/img/default-avatar.png"
-              }
-              alt="User Profile"
-            />
-            <div>
-              <p style={{ margin: 0, fontWeight: "bold" }}>
-                {userData.username}
-              </p>
-            </div>
-          </div>
+          <ListGroup variant="flush" className="mt-3">
+            <ListGroup.Item
+              style={{
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <S.ProfileImage
+                src={
+                  userData.profileImg
+                    ? `data:image/jpeg;base64,${userData.profileImg}`
+                    : "/img/default-avatar.png"
+                }
+                alt="User Profile"
+              />
+              <div>
+                <p style={{ margin: 0, fontWeight: "bold" }}>
+                  {userData.username}
+                </p>
+              </div>
+            </ListGroup.Item>
+          </ListGroup>
         </S.StyledCard>
       </S.CardSection>
 
