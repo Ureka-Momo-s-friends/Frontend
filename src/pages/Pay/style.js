@@ -170,10 +170,10 @@ export const CardButton = styled.button`
   background-color: ${(props) =>
     props.variant === "cancel" ? "#ff4d4d" : "#007bff"};
   color: white;
-  padding: 8px 16px;
+  padding: 6px 13px;
   border: none;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 15px;
   cursor: pointer;
   &:hover {
     background-color: ${(props) =>
@@ -185,4 +185,32 @@ export const StatusText = styled.span`
   font-size: 16px;
   font-weight: bold;
   color: ${(props) => (props.status === "CANCELLED" ? "#ff4d4d" : "#28a745")};
+`;
+
+export const ThumbnailImage = styled.img`
+  width: 80px;
+  height: 80px;
+  min-width: 80px;
+  min-height: 80px;
+  border-radius: 5px
+  object-fit: cover;
+  margin-right: 15px;
+`;
+
+// 카드 섹션 스타일
+export const CardSection = styled.div`
+  width: 100%;
+  margin-bottom: 20px;
+  position: relative;
+`;
+
+// 카드 스타일
+export const StyledCard = styled.div`
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: none;
+  border-radius: 10px;
+  padding: 15px;
+  padding-bottom: 1px;
+  cursor: ${(props) => (props.onClick ? "pointer" : "default")};
 `;

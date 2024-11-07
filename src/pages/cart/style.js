@@ -23,7 +23,7 @@ export const ItemImage = styled.div`
   width: 96px;
   height: 96px;
   flex-shrink: 0;
-
+  cursor: pointer;
   img {
     width: 100%;
     height: 100%;
@@ -46,6 +46,7 @@ export const ItemName = styled.h3`
   font-size: 1.125rem;
   font-weight: 500;
   margin: 0;
+  cursor: pointer;
 `;
 
 export const ItemPrice = styled.p`

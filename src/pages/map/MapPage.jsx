@@ -202,7 +202,7 @@ const MapPage = () => {
 
         const overlayContent = `
           <div style="padding:5px; background:#fff; border:1px solid #ccc; border-radius:5px;">
-            <img src="${cat.catImgUrl}" alt="Cat Image" style="width:50px; height:50px; border-radius:5px;" />
+            <img src="${cat.catImgUrl}" alt="Cat Image" style="width:50px; border-radius:5px;" />
           </div>`;
         const customOverlay = new window.kakao.maps.CustomOverlay({
           position: catPosition,
@@ -449,7 +449,7 @@ const MapPage = () => {
           >
             &times;
           </button>
-          <h5 style={{ paddingBottom: "2px" }}>내 길냥이 도감</h5>
+          <h5 style={{ paddingBottom: "2px" }}>길냥이 도감</h5>
           {strayCats.length > 0 ? (
             strayCats.map((cat, index) => (
               <img

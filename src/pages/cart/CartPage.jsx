@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Minus, Plus, X, Edit2, Check } from "lucide-react";
 import * as S from "./style";
+import Swal from "sweetalert2";
 
 const CartItem = ({
   id,
+  productId,
   image,
   name,
   price,
@@ -13,6 +15,8 @@ const CartItem = ({
   onUpdateQuantity,
   onRemove,
 }) => {
+  const navigate = useNavigate();
+
   const handleIncrease = () => {
     onUpdateQuantity(id, quantity + 1);
   };
@@ -23,18 +27,22 @@ const CartItem = ({
     }
   };
 
+  const handleProductClick = () => {
+    navigate(`/product/${productId}`);
+  };
+
   const discountRate = Math.round(((price - salePrice) / price) * 100);
 
   return (
     <S.CartItemWrapper>
-      <S.ItemImage>
+      <S.ItemImage onClick={handleProductClick}>
         <img src={image} alt={name} />
       </S.ItemImage>
 
       <S.ItemContent>
         <S.ItemHeader>
           <div>
-            <S.ItemName>{name}</S.ItemName>
+            <S.ItemName onClick={handleProductClick}>{name}</S.ItemName>
             <S.PriceContainer>
               <S.DiscountRate>{discountRate}%</S.DiscountRate>
               <S.ItemPrice>{(price * quantity).toLocaleString()}</S.ItemPrice>
@@ -198,7 +206,13 @@ const Cart = () => {
         state: { cartItems, totalPrice: totalSalePrice, address: address },
       });
     } else {
-      alert("주소를 입력하고 장바구니에 상품을 추가해주세요.");
+      // alert("주소를 입력하고 장바구니에 상품을 추가해주세요.");
+      Swal.fire({
+        icon: "warning",
+        title: "주소를 입력하고 장바구니에 상품을 추가해주세요.",
+        showConfirmButton: false,
+        timer: 1200,
+      });
     }
   };
 
@@ -211,6 +225,7 @@ const Cart = () => {
           <CartItem
             key={item.id}
             id={item.id}
+            productId={item.product.id}
             image={item.product.thumbnail}
             name={item.product.name}
             price={item.product.price}
