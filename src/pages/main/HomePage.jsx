@@ -1,10 +1,11 @@
 import React from "react";
+import MainContents from "components/Main/MainContents";
 
 function HomePage() {
   return (
-    <div>
-      <h1>Home Page</h1>
-    </div>
+    <section>
+      <MainContents />
+    </section>
   );
 }
 
